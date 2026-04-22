@@ -22,18 +22,18 @@ Como o projeto está em fase de definição, estas são as tecnologias que prete
 
 | Nome | Portfólio | Curso |
 |------|--------| ------ |
-| José Eduardo | [JoseeFeitas](https://github.com/Joseefreitas) | Ciência da Computação |
-| Maria Clara | [clarinhapontess](https://github.com/clarinhapontess) | Ciência da Computação |
-| Leticia Soares | [LeticiaCamelloBarros ](https://github.com/LeticiaCamelloBarros) | Ciência da Computação |
-| Dandara Resende | [DandaaGoxtosura](https://github.com/DandaaGoxtosura) | Ciência da Computação |
-| João Pedro | [JoaoPedroSSBarbosa](https://github.com/JoaoPedroSSBarbosa) | Ciência da Computação |
 | Arthur Apolinário | [Arthur-Davila](https://github.com/Arthur-Davila) | Ciência da Computação |
 | Arthur Vitorino | [ArthurVFT](https://github.com/ArthurVFT) | Ciência da Computação |
-| Gabriel Peixoto | [gabrielpferreira15 ](https://github.com/gabrielpferreira15) | Ciência da Computação |
-| Victor Carraly | [carraly](https://github.com/carraly) | Ciência da Computação |
-| Juan Riquelme | [JuanRiquelme662](https://github.com/JuanRiquelme662) | Ciência da Computação |
-| Renata Mariana | [renatamari](https://www.behance.net/renatamari) | Design |
 | Beatriz Miranda | [Triz](https://www.linkedin.com/in/triz-miranda?utm_source=share_via&utm_content=profile&utm_medium=member_ios) | Design |
+| Dandara Resende | [DandaaGoxtosura](https://github.com/DandaaGoxtosura) | Ciência da Computação |
+| Gabriel Peixoto | [gabrielpferreira15 ](https://github.com/gabrielpferreira15) | Ciência da Computação |
+| João Pedro | [JoaoPedroSSBarbosa](https://github.com/JoaoPedroSSBarbosa) | Ciência da Computação |
+| José Eduardo | [JoseeFeitas](https://github.com/Joseefreitas) | Ciência da Computação |
+| Juan Riquelme | [JuanRiquelme662](https://github.com/JuanRiquelme662) | Ciência da Computação |
+| Leticia Soares | [LeticiaCamelloBarros ](https://github.com/LeticiaCamelloBarros) | Ciência da Computação |
+| Maria Clara | [clarinhapontess](https://github.com/clarinhapontess) | Ciência da Computação |
+| Renata Mariana | [renatamari](https://www.behance.net/renatamari) | Design |
+| Victor Carraly | [carraly](https://github.com/carraly) | Ciência da Computação |
 ---
 
 ## 📦 Entregas do Projeto
@@ -53,7 +53,7 @@ Como o projeto está em fase de definição, estas são as tecnologias que prete
 - 🖼️ [Protótipo low-fi](https://www.figma.com/design/p561k6jcOjxkagocJufCZi/Prot%C3%B3tipo-de-Baixa-Fidelidade---La%C3%A7o-Favela?node-id=0-1&p=f&t=kjKfMVQHY6uYFnQq-0)
 
 ### 🎥 Apresentação
-- ▶️ [Slide SR1]()
+- ▶️ [Slide SR1](https://www.canva.com/design/DAHHJpx8v3Y/lxxYE-AipoUv2mrwLtzH-Q/view?utlId=ha3c147b7db#1)
 
 </details>
 
