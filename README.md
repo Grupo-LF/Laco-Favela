@@ -46,6 +46,8 @@ Como o projeto está em fase de definição, estas são as tecnologias que prete
 - 📄 [Análise de Similares e Benchmark](https://docs.google.com/document/d/1Uq_T1YkkVAovEQbeZL52nkBkXJOpY-af4NwTP4yyLWo/edit?tab=t.0)
 - 📄 [Relatório de Resultados](https://docs.google.com/document/d/1XR-KdyFfTKJaMS4oQV9uXczbuc_HYJldB3d2oNbvZ3Y/edit?tab=t.0)
 - 📄 [Histórias Épicas](https://docs.google.com/document/d/1m9j5ivkl5_tIzJZQO01UvtbhR_zjDNWwrEB4ApOkY8g/edit?usp=sharing)
+- 📄  requisitos do projeto : pillow , django , selenium , web-driver
+
 
 ### 🎨 Processos Criativos
 - 🖼️ [Ideação de Funcionalidades](https://www.figma.com/board/Cim1scYcWIXAFUz55xNpQ8/Idea%C3%A7%C3%A3o---La%C3%A7o-Favela?node-id=0-1&t=DFOWC7KiCY094sZW-1)
