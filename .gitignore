@@ -207,3 +207,15 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+# Django Media uploads
+media/
+
+# Selenium WebDrivers (if stored locally in the project)
+chromedriver
+geckodriver
+msedgedriver
+
+# Testing artifacts (screenshots, downloads, and logs from Selenium)
+test_screenshots/
+selenium.log
