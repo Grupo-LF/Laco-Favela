@@ -1,0 +1,28 @@
+/* ========================================
+   GLOBAL CSS - IMPORTA TODOS OS MÓDULOS
+   ======================================== */
+
+/* 1. Variáveis e configurações */
+@import './variables.css';
+
+/* 2. Reset básico */
+@import './reset.css';
+
+/* 3. Utilitários (flex, grid, gaps) */
+@import './utilities.css';
+
+/* 4. Layout (sidebar, main) */
+@import './layout.css';
+
+/* 5. Componentes (cards, botões, badges) */
+@import './components.css';
+
+/* 6. Tabelas */
+@import './tables.css';
+
+/* 7. Formulários */
+@import './forms.css';
+
+/* 8. Estilos específicos por página */
+@import './pages/dashboard.css';
+@import './pages/feedbacks.css';

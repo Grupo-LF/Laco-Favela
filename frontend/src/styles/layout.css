@@ -1,0 +1,261 @@
+/* Sidebar */
+/* ========================================
+   SIDEBAR - Desktop (padrão)
+   ======================================== */
+.sidebar {
+    width: 260px;
+    background-color: var(--bg-sidebar);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    padding: 2rem 0;
+    flex-shrink: 0;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Botão de recolher/expandir (só desktop) */
+.sidebar-toggle {
+    position: absolute;
+    top: 20px;
+    right: -12px;
+    width: 24px;
+    height: 24px;
+    background: #666;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    transition: all 0.3s ease;
+}
+
+.sidebar.closed {
+    width: 70px;
+}
+
+.sidebar.closed .sidebar-toggle {
+    transform: rotate(180deg);
+}
+
+/* Esconde textos quando fechado */
+.sidebar.closed .user-profile div:not(.user-avatar),
+.sidebar.closed .nav-title,
+.sidebar.closed .nav-item span:not(.nav-icon) {
+    display: none;
+}
+
+.sidebar.closed .nav-item {
+    justify-content: center;
+    padding: 0.75rem 0;
+}
+
+.sidebar.closed .nav-icon {
+    font-size: 1.5rem;
+}
+
+/* Botão sanduíche (só aparece no celular/tablet) */
+.menu-hamburger {
+    position: fixed;
+    top: 15px;
+    left: 15px;
+    z-index: 1001;
+    background: #555;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 1.5rem;
+    cursor: pointer;
+    display: none;
+}
+
+/* Overlay para fechar sidebar no celular */
+.sidebar-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 999;
+    display: none;
+}
+
+/* ========================================
+   CELULAR E TABLET (até 1024px)
+   ======================================== */
+@media (max-width: 1024px) {
+    /* Sidebar vira menu flutuante */
+    .sidebar {
+        position: fixed;
+        top: 0;
+        left: -260px;
+        height: 100vh;
+        z-index: 1000;
+        transition: left 0.3s ease;
+    }
+
+    .sidebar.open {
+        left: 0;
+    }
+
+    /* Mostra botão sanduíche */
+    .menu-hamburger {
+        display: block;
+    }
+
+    /* Mostra overlay quando sidebar aberta */
+    .sidebar.open ~ .sidebar-overlay,
+    body.has-sidebar-open .sidebar-overlay {
+        display: block;
+    }
+
+    /* Ajuste do conteúdo */
+    .main-content {
+        padding: 1rem;
+        margin-top: 60px;
+    }
+
+    /* Esconde botão de toggle no celular */
+    .sidebar-toggle {
+        display: none;
+    }
+
+    /* Grids viram coluna única */
+    .grid-4, .grid-3, .grid-2 {
+        grid-template-columns: 1fr;
+    }
+
+    /* Header empilha */
+    .header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+}
+
+/* ========================================
+   MAIN CONTENT
+   ======================================== */
+.main-content {
+    flex: 1;
+    padding: 2rem;
+    overflow-y: auto;
+    width: 100%;
+    min-width: 0;
+    transition: all 0.3s ease;
+}
+
+/* Quando sidebar está fechada no desktop, conteúdo ocupa mais espaço */
+.sidebar.closed ~ .main-content {
+    margin-left: 0;
+}
+
+.logo-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 2rem;
+}
+
+.logo {
+    width: 80px; height: 80px;
+    background: #d9d9d9;
+    border-radius: 50%;
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
+    color: #333; 
+    font-weight: bold;
+}
+
+.user-profile {
+    background: rgba(255,255,255,0.2);
+    margin: 0 1.5rem 2rem;
+    padding: 1rem;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.user-avatar {
+    width: 40px; height: 40px;
+    background: #d9d9d9;
+    border-radius: 50%;
+    display: inline-flex; 
+    align-items: center; 
+    justify-content: center;
+    color: #333; 
+    font-weight: bold; 
+    margin-bottom: 0.5rem;
+}
+
+/* Navegação */
+.nav-section { margin-bottom: 1.5rem; }
+.nav-title {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin: 0 1.75rem 0.5rem;
+    color: #e0e0e0;
+}
+
+.nav-item {
+    padding: 0.75rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    cursor: pointer;
+    color: white;
+    text-decoration: none;
+    transition: 0.2s;
+}
+
+.nav-item:hover, .nav-item.active {
+    background: rgba(255,255,255,0.3);
+    border-radius: 10px ;
+    margin-left: 1rem;
+    margin-right: 1.5rem;
+    color:black;
+}
+
+.nav-icon { 
+    width: 16px; 
+    height: 16px; 
+    background: rgb(252, 248, 248); 
+    opacity: 0.5; 
+}
+
+.nav-item.active .nav-icon { opacity: 1; background-color: black; }
+
+/* Main Content */
+.main-content {
+    flex: 1;
+     width: 100%;          
+    min-width: 0;  
+    padding: 2rem;
+    overflow-y: auto;
+}
+
+.view-section {
+    width: 100%;
+    display: none;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+.view-section.active {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    width: 100%;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    width: 100%;
+}
