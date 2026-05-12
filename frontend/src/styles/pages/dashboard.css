@@ -1,0 +1,28 @@
+/* Gráficos do Dashboard */
+.chart-placeholder { 
+    height: 200px; 
+    display: flex; 
+    align-items: flex-end; 
+    justify-content: space-around; 
+    padding-top: 2rem;
+}
+
+.bar { 
+    width: 40px; 
+    background: #888; 
+    border-radius: 4px 4px 0 0; 
+}
+
+.pie-chart { 
+    width: 150px; 
+    height: 150px; 
+    border-radius: 50%; 
+    background: conic-gradient(#555 0% 30%, #888 30% 70%, #bbb 70% 90%, #ddd 90% 100%); 
+    margin: 0 auto; 
+}
+
+/* Cores dos cards no dashboard */
+.card-blue .card-value { color: var(--card-blue); }
+.card-green .card-value { color: var(--card-green); }
+.card-orange .card-value { color: var(--card-orange); }
+.card-red .card-value { color: var(--card-red); }
