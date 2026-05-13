@@ -1,54 +1,26 @@
-// frontend/src/services/api.js
-const API_BASE = 'http://localhost:8000/api';
+import axios from 'axios';
 
-// Exemplo para o app "familias"
-export const listarFamilias = async () => {
-  const res = await fetch(`${API_BASE}/familias/`);
-  return res.json();
-};
+const api = axios.create({
+  baseURL: 'http://localhost:8000/api',
+});
 
-export const criarFamilia = async (dados) => {
-  const res = await fetch(`${API_BASE}/familias/`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(dados),
-  });
-  return res.json();
-};
-
-// Exemplo para o app "formularios" (Ciclo de coleta)
-export const listarCiclos = async () => {
-  const res = await fetch(`${API_BASE}/ciclos/`);
-  return res.json();
-};
-
-export const enviarRespostaCiclo = async (respostas) => {
-  const res = await fetch(`${API_BASE}/respostas-ciclo/`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(respostas),
-  });
-  return res.json();
-};
-
-export const cadastrarPresidente = async (respostas) => {
+api.interceptors.request.use((config) => {
   const token = localStorage.getItem('token');
-  // Para fins de testes locais, enquanto o login ainda não existe e o admin não é um superuser,
-  // adicione um token de superuser manualmente na linha a seguir e a descomente:
-  // const token = "insira_token_aqui"
-  const res = await fetch(`${API_BASE}/presidentes/`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': `application/json`,
-      'Authorization': `Token ${token}`
-     },
-    body: JSON.stringify(respostas),
-  });
-
-  if (!res.ok) {
-    const errorData = await res.json();
-    throw new Error(JSON.stringify(errorData)); 
+  if (token) {
+    config.headers.Authorization = `Token ${token}`;
   }
+  return config;
+});
 
-  return res.json();
-};
+// Famílias
+export const listarFamilias = () => api.get('/familias/');
+export const criarFamilia = (dados) => api.post('/familias/', dados);
+
+// Ciclos
+export const listarCiclos = () => api.get('/ciclos/');
+export const enviarRespostaCiclo = (respostas) => api.post('/respostas-ciclo/', respostas);
+
+// Presidentes
+export const cadastrarPresidente = (dados) => api.post('/presidentes/', dados);
+
+export default api;
