@@ -23,5 +23,6 @@ urlpatterns = [
     path('api/', include('apps.presidentes.urls')),
     path('api/', include('apps.familias.urls')),
     path('api/', include('apps.feedbacks.urls')),
+    path('api/', include('apps.formularios.urls')),
     path('api/login/', obtain_auth_token),
 ]
