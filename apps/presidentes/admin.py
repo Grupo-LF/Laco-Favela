@@ -5,6 +5,6 @@ from .models import Presidente
 
 @admin.register(Presidente)
 class PresidenteAdmin(admin.ModelAdmin):
-    list_display = ['nome', 'setor', 'cota', 'ativo', 'criado_em']
+    list_display = ['nome', 'comunidade', 'cota', 'ativo', 'criado_em']
     list_filter = ['ativo']
-    search_fields = ['nome', 'setor']
+    search_fields = ['nome', 'comunidade']
