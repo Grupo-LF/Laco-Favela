@@ -218,3 +218,4 @@ msedgedriver
 # Testing artifacts (screenshots, downloads, and logs from Selenium)
 test_screenshots/
 selenium.log
+frontend/node_modules/

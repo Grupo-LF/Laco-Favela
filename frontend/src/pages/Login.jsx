@@ -1,0 +1,62 @@
+import React, { useState } from 'react';
+import '../styles/pages/login.css';
+import api from '../services/api';
+
+const Login = ({ onLogin }) => {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [erro, setErro] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setErro('');
+    try {
+      const res = await api.post('/login/', { username, password });
+      onLogin(res.data.token);
+    } catch (err) {
+      setErro('Usuário ou senha incorretos.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="login-container">
+      <div className="login-card">
+        <h2 className="login-title">Laço Favela</h2>
+        <form onSubmit={handleSubmit}>
+          <div className="login-field">
+            <label>Usuário</label>
+            <input
+              type="text"
+              className="input-full"
+              value={username}
+              onChange={e => setUsername(e.target.value)}
+            />
+          </div>
+          <div className="login-field">
+            <label>Senha</label>
+            <input
+              type="password"
+              className="input-full"
+              value={password}
+              onChange={e => setPassword(e.target.value)}
+            />
+          </div>
+          {erro && <p className="login-error">{erro}</p>}
+          <button
+            type="submit"
+            className="login-btn"
+            disabled={loading}
+          >
+            {loading ? 'Entrando...' : 'Entrar'}
+          </button>
+        </form>
+      </div>
+    </div>
+  );
+};
+
+export default Login;
