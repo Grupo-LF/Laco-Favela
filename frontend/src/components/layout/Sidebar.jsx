@@ -25,14 +25,15 @@ const Sidebar = ({ activeView, onNavigate }) => {
       
       <div className="user-profile">
         <div className="user-avatar">NS</div>
-        <div style={{ fontSize: '0.85rem', fontWeight: 'bold' }}>Administrador</div>
-        <div className="badge" style={{ marginTop: '0.5rem', background: 'rgba(255,255,255,0.3)' }}>ADMIN</div>
+        
+        <div className="badge" style={{ marginTop: '0.5rem', background: 'rgba(255,255,255,0.3)' ,position: 'absolute',left:'65%',bottom:'60%'}}>ADMIN</div>
+        <h5 style={{ marginTop: '0.5rem', fontSize: '0.9rem' }}>Nome e Sobrenome</h5>
       </div>
 
       <div className="nav-section">
         <div className="nav-title">Principal</div>
         {menuItems.principal.map(item => (
-          <a
+          <a 
             key={item.id}
             href="#"
             className={`nav-item ${activeView === item.id ? 'active' : ''}`}

@@ -3,7 +3,8 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
   PieChart, Pie, Cell
 } from 'recharts';
-
+import {ReactComponent as BlacktIcon} from '../../assets/Square_black.svg';
+import {ReactComponent as WhiteIcon} from '../../assets/Square_white.svg';
 const Dashboard = () => {
   // Dados do gráfico de barras
   const dadosParticipacoes = [
@@ -41,18 +42,20 @@ const Dashboard = () => {
   ];
 
   return (
-    <div className="view-section active">
-      <div className="header">
+    
+    <div>
+     <div className="header ">
         <div>
           <h2>Dashboard Analítico</h2>
           <p className="text-sm">Ciclo 1 - Mês 6</p>
         </div>
         <div className="flex gap-1">
-          <button className="btn btn-outline">Exportar</button>
-          <button className="btn btn-primary">Novo ciclo</button>
+          <button className="btn btn-outline"><p className='text-lg'>Exportar</p> <BlacktIcon className='ml-1'></BlacktIcon></button>
+          <button className="btn btn-primary"><p className='text-lg'>Novo ciclo </p> <WhiteIcon className='ml-1'></WhiteIcon></button>
         </div>
       </div>
-
+     
+    <div className="view-section active">
       {/* Cards */}
       <div className="grid-4">
         <div className="card">
@@ -178,6 +181,7 @@ const Dashboard = () => {
           ))}
         </div>
       </div>
+    </div>
     </div>
   );
 };

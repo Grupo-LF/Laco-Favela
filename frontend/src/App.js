@@ -31,7 +31,7 @@ function App() {
 
   return (
     <div style={{ display: 'flex', height: '100vh', border: 'solid' }}>
-      <Sidebar activeView={activeView} onNavigate={setActiveView} />
+      <Sidebar activeView={activeView} onNavigate={setActiveView}  />
       <main className="main-content">
         {renderView()}
       </main>
