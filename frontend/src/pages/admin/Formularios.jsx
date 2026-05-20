@@ -28,11 +28,13 @@ const Formularios = ({ onNavigate }) => {
   }
 
   return (
-    <div className="view-section active">
+    <div>
       <div className="header">
         <h2>Formulários</h2>
         <button className="btn btn-primary" onClick={() => setShowVerTodos(true)}>Ver todos</button>
       </div>
+
+    <div className="view-section active">
 
       <div className="grid-3">
         {formularios.map(form => (
@@ -83,6 +85,7 @@ const Formularios = ({ onNavigate }) => {
           </tbody>
         </table>
       </div>
+    </div>
     </div>
   );
 };

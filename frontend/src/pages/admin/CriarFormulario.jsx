@@ -9,10 +9,8 @@ const CriarFormulario = ({ onNavigate }) => {
   };
 
   return (
+    
     <div className="view-section active">
-      <div className="header">
-        <h2>Criar Formulário</h2>
-      </div>
 
       <div className="card">
         <div>
