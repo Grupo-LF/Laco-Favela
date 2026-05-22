@@ -10,6 +10,10 @@ const Presidentes = () => {
 
   const [mostrarForm, setMostrarForm] = useState(false);
 
+  const [carregando, setCarregando] = useState(false);
+
+  const [erros, setErros] = useState({});
+
   const [dadosForm, criarDadosForm] = useState({
     nome: '',
     organizacao: '',
@@ -32,10 +36,20 @@ const Presidentes = () => {
       ...estadoAnterior,
       [name]: type === 'checkbox' ? checked : value
     }));
+
+    if (erros[name]) {
+      setErros((errosAnteriores) => ({
+        ...errosAnteriores,
+        [name]: null
+      }));
+    }
   };
 
   const envioForm = async (event) => {
     event.preventDefault()
+    setCarregando(true);
+    setErros({})
+
     try {
       const resposta = await cadastrarPresidente(dadosForm);
       console.log("Presidente cadastrado com sucesso!", resposta);
@@ -57,8 +71,14 @@ const Presidentes = () => {
       });
 
     } catch (erro) {
-      console.error("Erro ao salvar:", erro);
-      alert("Erro ao cadastrar. Verifique se todos os campos estão corretos.");
+      try {
+        const mensagensErro = JSON.parse(erro.message);
+        setErros(mensagensErro);
+      } catch {
+        alert("Erro inesperado de conexão.");
+      }
+    } finally {
+      setCarregando(false);
     }
   }
 
@@ -86,6 +106,7 @@ const Presidentes = () => {
                 onChange={handleChange}
                 required
               />
+              {erros.nome && <span style={{ color: 'red', fontSize: '12px' }}>{erros.nome}</span>}
             </div>
 
             <div>
@@ -97,6 +118,7 @@ const Presidentes = () => {
                 onChange={handleChange}
                 required
               />
+              {erros.organizacao && <span style={{ color: 'red', fontSize: '12px' }}>{erros.organizacao}</span>}
             </div>
 
             <div>
@@ -106,8 +128,10 @@ const Presidentes = () => {
                 name="cnpj"
                 value={dadosForm.cnpj}
                 onChange={handleChange}
+                maxLength="18"
                 required
               />
+              {erros.cnpj && <span style={{ color: 'red', fontSize: '12px' }}>{erros.cnpj}</span>}
             </div>
 
             <div>
@@ -119,6 +143,7 @@ const Presidentes = () => {
                 onChange={handleChange}
                 required
               />
+              {erros.endereco && <span style={{ color: 'red', fontSize: '12px' }}>{erros.endereco}</span>}
             </div>
 
             <div>
@@ -128,8 +153,10 @@ const Presidentes = () => {
                 name="telefone"
                 value={dadosForm.telefone}
                 onChange={handleChange}
+                maxLength="15"
                 required
               />
+              {erros.telefone && <span style={{ color: 'red', fontSize: '12px' }}>{erros.telefone}</span>}
             </div>
 
             <div>
@@ -141,6 +168,7 @@ const Presidentes = () => {
                 onChange={handleChange}
                 required
               />
+              {erros.redes_sociais && <span style={{ color: 'red', fontSize: '12px' }}>{erros.redes_sociais}</span>}
             </div>
 
             <div>
@@ -152,6 +180,7 @@ const Presidentes = () => {
                 onChange={handleChange}
                 required
               />
+              {erros.comunidade && <span style={{ color: 'red', fontSize: '12px' }}>{erros.comunidade}</span>}
             </div>
 
             <div>
@@ -166,6 +195,7 @@ const Presidentes = () => {
                 <option value="nao">Não</option>
                 <option value="empreendedor">Sou empreendedor</option>
               </select>
+              {erros.situacao_trabalho && <span style={{ color: 'red', fontSize: '12px' }}>{erros.situacao_trabalho}</span>}
             </div>
 
             <div>
@@ -181,6 +211,7 @@ const Presidentes = () => {
                 <option value="um_a_dois">De um a dois salários mínimos</option>
                 <option value="acima_dois">Acima de dois salários mínimos</option>
               </select>
+              {erros.renda_familiar && <span style={{ color: 'red', fontSize: '12px' }}>{erros.renda_familiar}</span>}
             </div>
 
             <div>
@@ -190,7 +221,7 @@ const Presidentes = () => {
                 value={dadosForm.num_membros}
                 onChange={handleChange}
               >
-                <option value="null">Selecione...</option>
+                <option value="">Selecione...</option>
                 <option value="1">1 integrante</option>
                 <option value="2">2 integrantes</option>
                 <option value="3">3 integrantes</option>
@@ -198,6 +229,7 @@ const Presidentes = () => {
                 <option value="5">5 integrantes</option>
                 <option value="6">Acima de 5 integrantes</option>
               </select>
+              {erros.num_membros && <span style={{ color: 'red', fontSize: '12px' }}>{erros.num_membros}</span>}
             </div>
 
             <div>
@@ -209,6 +241,7 @@ const Presidentes = () => {
                 onChange={handleChange}
                 required
               />
+              {erros.cota && <span style={{ color: 'red', fontSize: '12px' }}>{erros.cota}</span>}
             </div>
 
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', gridColumn: 'span 3', marginTop: '0.5rem' }}>
@@ -221,11 +254,12 @@ const Presidentes = () => {
                 onChange={handleChange}
                 required
               />
+              {erros.termo_aceito && <span style={{ color: 'red', fontSize: '12px' }}>{erros.termo_aceito}</span>}
             </div>
           </div>
 
-          <button type="submit" className="btn btn-primary" style={{ marginTop: '1rem' }}>
-            Salvar Presidente
+          <button type="submit" className="btn btn-primary" disabled={carregando}>
+            {carregando ? 'Salvando...' : 'Salvar Presidente'}
           </button>
         </form>
       )}
