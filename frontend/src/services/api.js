@@ -30,3 +30,22 @@ export const enviarRespostaCiclo = async (respostas) => {
   });
   return res.json();
 };
+
+export const cadastrarPresidente = async (respostas) => {
+  const token = localStorage.getItem('token');
+  const res = await fetch(`${API_BASE}/presidentes/`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': `application/json`,
+      'Authorization': `Token ${token}`
+     },
+    body: JSON.stringify(respostas),
+  });
+
+  if (!res.ok) {
+    const errorData = await res.json();
+    throw new Error(JSON.stringify(errorData)); 
+  }
+
+  return res.json();
+};
