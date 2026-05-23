@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { cadastrarPresidente } from '../../services/api'
+import { mascaraTelefone, mascaraCNPJ } from '../../utils/masks';
 
 const Presidentes = () => {
   const presidentes = [
@@ -30,7 +31,14 @@ const Presidentes = () => {
   })
 
   const handleChange = (event) => {
-    const { name, value, type, checked } = event.target;
+    let { name, value, type, checked } = event.target;
+
+    if (name === 'telefone') {
+      value = mascaraTelefone(value);
+    }
+    if (name === 'cnpj') {
+      value = mascaraCNPJ(value);
+    }
 
     criarDadosForm((estadoAnterior) => ({
       ...estadoAnterior,
