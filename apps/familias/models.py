@@ -16,6 +16,12 @@ class Familia(models.Model):
         ('sem_filhos', 'Não tenho filhos'),
     ]
 
+    STATUS_CHOICES = [
+        ('pendente', 'Pendente'),
+        ('aprovada', 'Aprovada'),
+        ('lista_espera', 'Lista de espera'),
+    ]
+
     presidente = models.ForeignKey(
         'presidentes.Presidente',
         on_delete=models.SET_NULL,
@@ -33,8 +39,17 @@ class Familia(models.Model):
     mae_solo = models.CharField(max_length=20, choices=MAE_SOLO_CHOICES)
     num_filhos = models.IntegerField(default=0)
     bolsa_familia = models.BooleanField(default=False)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pendente')
     aprovada = models.BooleanField(default=False)
     criado_em = models.DateTimeField(auto_now_add=True)
+    atualizado_em = models.DateTimeField(auto_now=True)
+
+    def save(self, *args, **kwargs):
+        self.aprovada = self.status == 'aprovada'
+        update_fields = kwargs.get('update_fields')
+        if update_fields is not None:
+            kwargs['update_fields'] = set(update_fields) | {'aprovada'}
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return f"{self.nome_responsavel} - {self.comunidade}"
