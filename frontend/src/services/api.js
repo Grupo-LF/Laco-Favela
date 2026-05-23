@@ -30,3 +30,25 @@ export const enviarRespostaCiclo = async (respostas) => {
   });
   return res.json();
 };
+
+export const cadastrarPresidente = async (respostas) => {
+  const token = localStorage.getItem('token');
+  // Para fins de testes locais, enquanto o login ainda não existe e o admin não é um superuser,
+  // adicione um token de superuser manualmente na linha a seguir e a descomente:
+  // const token = "insira_token_aqui"
+  const res = await fetch(`${API_BASE}/presidentes/`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': `application/json`,
+      'Authorization': `Token ${token}`
+     },
+    body: JSON.stringify(respostas),
+  });
+
+  if (!res.ok) {
+    const errorData = await res.json();
+    throw new Error(JSON.stringify(errorData)); 
+  }
+
+  return res.json();
+};
