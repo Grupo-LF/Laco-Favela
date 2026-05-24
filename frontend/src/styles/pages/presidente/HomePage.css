@@ -1,0 +1,31 @@
+.home-page {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 28px;
+  background: #f0f0f0;
+  min-height: 100vh;
+  box-sizing: border-box;
+}
+
+.home-page__saudacao {
+  font-size: 28px;
+  font-weight: 700;
+  color: #111;
+  margin: 0;
+}
+
+.home-page__topo {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+.home-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  font-size: 16px;
+  color: #888;
+}
