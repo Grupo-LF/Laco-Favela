@@ -18,15 +18,13 @@ const Presidentes = () => {
         setLoading(false);
       });
   }, []);
-
-  if (loading) return <p>Carregando...</p>;
-
+  
   const [mostrarForm, setMostrarForm] = useState(false);
-
+  
   const [carregando, setCarregando] = useState(false);
-
+  
   const [erros, setErros] = useState({});
-
+  
   const [dadosForm, criarDadosForm] = useState({
     nome: '',
     organizacao: '',
@@ -41,10 +39,12 @@ const Presidentes = () => {
     termo_aceito: false,
     cota: '',
   })
-
+  
+  if (loading) return <p>Carregando...</p>;
+  
   const handleChange = (event) => {
     let { name, value, type, checked } = event.target;
-
+    
     if (name === 'telefone') {
       value = mascaraTelefone(value);
     }
