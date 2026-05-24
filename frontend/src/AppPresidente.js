@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import './styles/global.css';
 import SidebarPresidente from './components/layout/SidebarPresidente';
 import HomePage from './pages/presidente/HomePage';
+import FamiliasPage from './pages/presidente/FamiliasPage';
 
 function AppPresidente() {
   const [activeView, setActiveView] = useState('home');
@@ -9,7 +10,7 @@ function AppPresidente() {
   const renderView = () => {
     switch(activeView) {
       case 'home': return <HomePage onNavigate={setActiveView} />;
-      case 'familias': return <div>Famílias (em breve)</div>;
+      case 'familias': return <FamiliasPage />;
       case 'formularios': return <div>Formulários (em breve)</div>;
       case 'registros': return <div>Registros (em breve)</div>;
       case 'meu-indicador': return <div>Meu Indicador (em breve)</div>;
