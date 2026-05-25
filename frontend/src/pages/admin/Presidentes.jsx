@@ -60,9 +60,15 @@ const Presidentes = () => {
   // Estado inicial do formulário limpo
   const estadoInicialForm = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> 157fe02d (add gerenciamento de cotas e lista de presidentes)
 >>>>>>> 7d8d8cc3 (add gerenciamento de cotas e lista de presidentes)
+=======
+>>>>>>> 157fe02d (add gerenciamento de cotas e lista de presidentes)
+=======
+>>>>>>> 1afb53a5 (Remove stray useState from initial state)
+>>>>>>> 9859725d (fix merge conflict in Presidentes)
     nome: '',
     organizacao: '',
     cnpj: '',
