@@ -7,6 +7,53 @@ export const listarFamilias = async () => {
   return res.json();
 };
 
+
+export const listarPresidentes = async () => {
+  const token = localStorage.getItem('token');
+  const res = await fetch(`${API_BASE}/presidentes/`, { // Aponta para a rota de ListCreate
+    headers: {
+      'Authorization': `Token ${token}`
+    }
+  });
+  if (!res.ok) throw new Error('Erro ao listar presidentes');
+  return res.json();
+};
+
+export const cadastrarPresidente = async (dados) => {
+  const token = localStorage.getItem('token');
+  const res = await fetch(`${API_BASE}/presidentes/`, { // POST na mesma rota base
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Token ${token}`
+    },
+    body: JSON.stringify(dados),
+  });
+
+  if (!res.ok) {
+    const errorData = await res.json();
+    throw new Error(JSON.stringify(errorData)); 
+  }
+  return res.json();
+};
+
+export const atualizarCotaPresidente = async (id, novaCota) => {
+  const token = localStorage.getItem('token');
+  const res = await fetch(`${API_BASE}/presidentes/${id}/`, { // Aponta para AtualizarCotaView
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Token ${token}`
+    },
+    body: JSON.stringify({ cota: novaCota })
+  });
+  if (!res.ok) {
+    const erro = await res.json();
+    throw new Error(JSON.stringify(erro));
+  }
+  return res.json();
+};
+
 export const criarFamilia = async (dados) => {
   const res = await fetch(`${API_BASE}/familias/`, {
     method: 'POST',
@@ -31,24 +78,3 @@ export const enviarRespostaCiclo = async (respostas) => {
   return res.json();
 };
 
-export const cadastrarPresidente = async (respostas) => {
-  const token = localStorage.getItem('token');
-  // Para fins de testes locais, enquanto o login ainda não existe e o admin não é um superuser,
-  // adicione um token de superuser manualmente na linha a seguir e a descomente:
-  // const token = "insira_token_aqui"
-  const res = await fetch(`${API_BASE}/presidentes/`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': `application/json`,
-      'Authorization': `Token ${token}`
-     },
-    body: JSON.stringify(respostas),
-  });
-
-  if (!res.ok) {
-    const errorData = await res.json();
-    throw new Error(JSON.stringify(errorData)); 
-  }
-
-  return res.json();
-};

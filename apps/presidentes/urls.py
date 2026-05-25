@@ -1,7 +1,13 @@
+from django.urls import path
+from .views import ListaCreatePresidentesView, AtualizarCotaView
 from rest_framework.routers import DefaultRouter
-from .views import PresidenteViewSet
+from rest_framework import viewsets
 
-router = DefaultRouter()
-router.register(r'presidentes', PresidenteViewSet)
 
-urlpatterns = router.urls
+urlpatterns = [
+
+    path('', ListaCreatePresidentesView.as_view()), 
+    path('<int:pk>/', AtualizarCotaView.as_view()),
+
+
+]

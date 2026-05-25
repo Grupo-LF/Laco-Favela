@@ -20,7 +20,7 @@ function AppAdmin() {
       case 'formularios': return <Formularios onNavigate={setActiveView} />;
       case 'criar-formulario': return <CriarFormulario onNavigate={setActiveView} />;
       case 'ver-formulario': return <VerFormulario onNavigate={setActiveView} />;
-      case 'presidentes': return <Presidentes />;
+      case 'presidentes': return <Presidentes onNavigate={setActiveView} />;
       case 'familias': return <Familias />;
       case 'aprovados': return <Aprovados />;
       case 'feedbacks': return <Feedbacks />;
