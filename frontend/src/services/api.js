@@ -7,10 +7,9 @@ export const listarFamilias = async () => {
   return res.json();
 };
 
-
 export const listarPresidentes = async () => {
   const token = localStorage.getItem('token');
-  const res = await fetch(`${API_BASE}/presidentes/`, { // Aponta para a rota de ListCreate
+  const res = await fetch(`${API_BASE}/presidentes/`, { 
     headers: {
       'Authorization': `Token ${token}`
     }
@@ -21,7 +20,7 @@ export const listarPresidentes = async () => {
 
 export const cadastrarPresidente = async (dados) => {
   const token = localStorage.getItem('token');
-  const res = await fetch(`${API_BASE}/presidentes/`, { // POST na mesma rota base
+  const res = await fetch(`${API_BASE}/presidentes/`, { 
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -39,7 +38,7 @@ export const cadastrarPresidente = async (dados) => {
 
 export const atualizarCotaPresidente = async (id, novaCota) => {
   const token = localStorage.getItem('token');
-  const res = await fetch(`${API_BASE}/presidentes/${id}/`, { // Aponta para AtualizarCotaView
+  const res = await fetch(`${API_BASE}/presidentes/${id}/`, { 
     method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',
@@ -77,4 +76,3 @@ export const enviarRespostaCiclo = async (respostas) => {
   });
   return res.json();
 };
-

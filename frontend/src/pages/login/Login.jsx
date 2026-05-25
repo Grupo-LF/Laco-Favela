@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import api from '../../services/api';
 import '../../styles/pages/login.css';
 
 function Login({ onLogin }) {
@@ -12,9 +11,26 @@ function Login({ onLogin }) {
     e.preventDefault();
     setLoading(true);
     setErro('');
+    
     try {
-      const res = await api.post('/login/', { username, password });
-      onLogin(res.data.tipo, res.data.token);
+      // Usando o fetch nativo ao invés do api.post do Axios
+      const response = await fetch('http://localhost:8000/api/login/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, password }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Usuário ou senha incorretos.');
+      }
+
+      const data = await response.json();
+      
+      // O fetch não tem o '.data' automático do Axios, então acessamos o 'data' diretamente
+      onLogin(data.tipo, data.token); 
+
     } catch (err) {
       setErro('Usuário ou senha incorretos.');
     } finally {
