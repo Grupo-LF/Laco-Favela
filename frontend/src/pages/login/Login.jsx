@@ -1,60 +1,55 @@
-import React from 'react';
+import React, { useState } from 'react';
+import api from '../../services/api';
+import '../../styles/pages/login.css';
 
 function Login({ onLogin }) {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [erro, setErro] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setErro('');
+    try {
+      const res = await api.post('/login/', { username, password });
+      onLogin(res.data.tipo, res.data.token);
+    } catch (err) {
+      setErro('Usuário ou senha incorretos.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-    <div style={{
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      justifyContent: 'center',
-      height: '100vh',
-      background: '#f0f0f0',
-      gap: '20px'
-    }}>
-      <div style={{
-        background: '#fff',
-        padding: '40px',
-        borderRadius: '12px',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        gap: '16px',
-        width: '300px'
-      }}>
-        <div style={{ fontSize: '24px', fontWeight: '700', marginBottom: '8px' }}>Logo</div>
-        <p style={{ color: '#666', marginBottom: '8px' }}>Escolha seu perfil</p>
-        <button
-          onClick={() => onLogin('admin')}
-          style={{
-            width: '100%',
-            padding: '14px',
-            background: '#333',
-            color: '#fff',
-            border: 'none',
-            borderRadius: '8px',
-            fontSize: '14px',
-            fontWeight: '600',
-            cursor: 'pointer'
-          }}
-        >
-          Entrar como Admin
-        </button>
-        <button
-          onClick={() => onLogin('presidente')}
-          style={{
-            width: '100%',
-            padding: '14px',
-            background: '#fff',
-            color: '#333',
-            border: '2px solid #333',
-            borderRadius: '8px',
-            fontSize: '14px',
-            fontWeight: '600',
-            cursor: 'pointer'
-          }}
-        >
-          Entrar como Presidente
-        </button>
+    <div className="login-container">
+      <div className="login-card">
+        <h2 className="login-title">Laço Favela</h2>
+        <form onSubmit={handleSubmit}>
+          <div className="login-field">
+            <label>Usuário</label>
+            <input
+              type="text"
+              className="input-full"
+              value={username}
+              onChange={e => setUsername(e.target.value)}
+            />
+          </div>
+          <div className="login-field">
+            <label>Senha</label>
+            <input
+              type="password"
+              className="input-full"
+              value={password}
+              onChange={e => setPassword(e.target.value)}
+            />
+          </div>
+          {erro && <p className="login-error">{erro}</p>}
+          <button type="submit" className="login-btn" disabled={loading}>
+            {loading ? 'Entrando...' : 'Entrar'}
+          </button>
+        </form>
       </div>
     </div>
   );
