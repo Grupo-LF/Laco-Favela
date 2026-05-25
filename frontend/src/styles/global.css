@@ -26,3 +26,6 @@
 /* 8. Estilos específicos por página */
 @import './pages/dashboard.css';
 @import './pages/feedbacks.css';
+
+/* 9. Estilos para login */
+@import './pages/login.css';

@@ -1,11 +1,28 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useEffect } from 'react';
 import { cadastrarPresidente, listarPresidentes, atualizarCotaPresidente } from '../../services/api';
+import api from '../../services/api';;
 import { mascaraTelefone, mascaraCNPJ } from '../../utils/masks';
 
 const Presidentes = () => {
   const [presidentes, setPresidentes] = useState([]);
-  const [mostrarForm, setMostrarForm] = useState(true); // Deixei como TRUE por padrão para você já ver o formulário na tela!
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    api.get('/presidentes/')
+      .then(res => {
+        setPresidentes(res.data);
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error(err);
+        setLoading(false);
+      });
+  }, []);
+  
+  const [mostrarForm, setMostrarForm] = useState(false);
+  
   const [carregando, setCarregando] = useState(false);
+  
   const [erros, setErros] = useState({});
   
   const [idPresidenteCota, setIdPresidenteCota] = useState('');
@@ -13,6 +30,8 @@ const Presidentes = () => {
 
   // Estado inicial do formulário limpo
   const estadoInicialForm = {
+  
+  const [dadosForm, criarDadosForm] = useState({
     nome: '',
     organizacao: '',
     cnpj: '',
@@ -44,9 +63,13 @@ const Presidentes = () => {
 
   const handleChange = (event) => {
     let { name, value, type, checked } = event.target;
-
-    if (name === 'telefone') value = mascaraTelefone(value);
-    if (name === 'cnpj') value = mascaraCNPJ(value);
+    
+    if (name === 'telefone') {
+      value = mascaraTelefone(value);
+    }
+    if (name === 'cnpj') {
+      value = mascaraCNPJ(value);
+    }
 
     criarDadosForm((estadoAnterior) => ({
       ...estadoAnterior,
