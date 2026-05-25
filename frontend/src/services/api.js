@@ -75,4 +75,10 @@ export const enviarRespostaCiclo = async (respostas) => {
     body: JSON.stringify(respostas),
   });
   return res.json();
+<<<<<<< HEAD
 };
+=======
+};
+
+export default { listarFamilias, listarPresidentes, cadastrarPresidente, atualizarCotaPresidente, criarFamilia, listarCiclos, enviarRespostaCiclo };
+>>>>>>> 21f7778dc09838d86cfa93b39919764d5b0a20f7

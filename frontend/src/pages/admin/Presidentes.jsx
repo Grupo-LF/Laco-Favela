@@ -26,6 +26,7 @@ const Presidentes = () => {
     termo_aceito: false,
     cota: '',
   };
+<<<<<<< HEAD
 
   // CORREÇÃO 1: Criado o estado 'dadosForm' que estava faltando
   const [dadosForm, setDadosForm] = useState(estadoInicialForm);
@@ -38,11 +39,27 @@ const Presidentes = () => {
     } catch (err) {
       console.error("Erro ao carregar presidentes:", err);
     } finally {
+=======
+  
+  const [dadosForm, setDadosForm] = useState(estadoInicialForm);
+
+  // Função para carregar presidentes
+  const carregarPresidentes = async () => {
+    try {
+      const resposta = await listarPresidentes();
+      setPresidentes(resposta.data || resposta);
+      setLoading(false);
+    } catch (err) {
+      console.error(err);
+>>>>>>> 21f7778dc09838d86cfa93b39919764d5b0a20f7
       setLoading(false);
     }
   };
 
+<<<<<<< HEAD
   // CORREÇÃO 3: Usando a função carregarPresidentes no useEffect em vez de api.get
+=======
+>>>>>>> 21f7778dc09838d86cfa93b39919764d5b0a20f7
   useEffect(() => {
     carregarPresidentes();
   }, []);
@@ -59,7 +76,10 @@ const Presidentes = () => {
       value = mascaraCNPJ(value);
     }
 
+<<<<<<< HEAD
     // CORREÇÃO 4: Substituído 'criarDadosForm' por 'setDadosForm'
+=======
+>>>>>>> 21f7778dc09838d86cfa93b39919764d5b0a20f7
     setDadosForm((estadoAnterior) => ({
       ...estadoAnterior,
       [name]: type === 'checkbox' ? checked : value
@@ -80,9 +100,15 @@ const Presidentes = () => {
       console.log("Presidente cadastrado com sucesso!", resposta);
       alert("Presidente cadastrado com sucesso!");
 
+<<<<<<< HEAD
       // CORREÇÃO 4: Substituído 'criarDadosForm' por 'setDadosForm'
       setDadosForm(estadoInicialForm);
 
+=======
+      // Reseta o formulário para o estado inicial limpo
+      setDadosForm(estadoInicialForm);
+      
+>>>>>>> 21f7778dc09838d86cfa93b39919764d5b0a20f7
       // Atualiza a tabela imediatamente após salvar
       carregarPresidentes();
     } catch (erro) {
@@ -107,6 +133,7 @@ const Presidentes = () => {
       alert("Cota atualizada com sucesso!");
       carregarPresidentes();
       setValorCota('');
+      setIdPresidenteCota('');
     } catch (erro) {
       alert("Erro ao atualizar cota.");
     }
