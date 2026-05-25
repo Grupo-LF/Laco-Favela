@@ -30,8 +30,6 @@ const Presidentes = () => {
 
   // Estado inicial do formulário limpo
   const estadoInicialForm = {
-  
-  const [dadosForm, criarDadosForm] = useState({
     nome: '',
     organizacao: '',
     cnpj: '',
