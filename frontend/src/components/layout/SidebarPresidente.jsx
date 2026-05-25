@@ -14,6 +14,13 @@ const SidebarPresidente = ({ activeView, onNavigate }) => {
     ]
   };
 
+  // Função mais simples possível para sair
+  const handleSair = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('tipo');
+    window.location.href = '/';
+  };
+
   return (
     <aside className="sidebar">
       <div className="logo-container">
@@ -43,7 +50,7 @@ const SidebarPresidente = ({ activeView, onNavigate }) => {
         ))}
       </div>
       <div style={{ marginTop: 'auto' }}>
-        <a href="#" className="nav-item">
+        <a href="#" className="nav-item" onClick={(e) => { e.preventDefault(); handleSair(); }}>
           <div className="nav-icon"></div>
           Sair
         </a>

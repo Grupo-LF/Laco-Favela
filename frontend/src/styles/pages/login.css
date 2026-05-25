@@ -26,6 +26,7 @@
 }
 
 .login-field {
+    gap: 0;
     margin-bottom: 1rem;
 }
 

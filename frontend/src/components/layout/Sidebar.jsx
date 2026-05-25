@@ -16,6 +16,13 @@ const Sidebar = ({ activeView, onNavigate }) => {
       { id: 'historico', label: 'Histórico' }
     ]
   };
+   // Função mais simples possível para sair
+  const handleSair = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('tipo');
+    window.location.href = '/';
+  };
+
 
   return (
     <aside className="sidebar">
@@ -85,7 +92,7 @@ const Sidebar = ({ activeView, onNavigate }) => {
       </div>
 
       <div style={{ marginTop: 'auto' }}>
-        <a href="#" className="nav-item">
+        <a href="#" className="nav-item" onClick={(e) => { e.preventDefault(); handleSair(); }}>
           <div className="nav-icon"></div>
           Sair
         </a>
