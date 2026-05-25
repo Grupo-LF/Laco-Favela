@@ -7,21 +7,7 @@ const Presidentes = () => {
   const [presidentes, setPresidentes] = useState([]);
   const [loading, setLoading] = useState(true);
 
-<<<<<<< HEAD
-  useEffect(() => {
-    api.get('/presidentes/')
-      .then(res => {
-        setPresidentes(res.data);
-        setLoading(false);
-      })
-      .catch(err => {
-        console.error(err);
-        setLoading(false);
-      });
-  }, []);
-=======
   
->>>>>>> 6a08a7c1 (feat: implementa login com tipo de usuário e view de autenticação no core)
   
   const [mostrarForm, setMostrarForm] = useState(false);
   
