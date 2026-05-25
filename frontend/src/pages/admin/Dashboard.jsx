@@ -1,12 +1,11 @@
-import React from 'react';
-import {
-  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
-  PieChart, Pie, Cell
-} from 'recharts';
-import {ReactComponent as BlacktIcon} from '../../assets/Square_black.svg';
-import {ReactComponent as WhiteIcon} from '../../assets/Square_white.svg';
+import React, { useEffect, useRef } from 'react';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { ReactComponent as BlacktIcon } from '../../assets/Square_black.svg';
+import { ReactComponent as WhiteIcon } from '../../assets/Square_white.svg';
+import ApexCharts from 'apexcharts';
+
 const Dashboard = () => {
-  // Dados do gráfico de barras
+  // ========== DADOS ==========
   const dadosParticipacoes = [
     { mes: 'Jan', familias: 120, eventos: 45 },
     { mes: 'Fev', familias: 150, eventos: 60 },
@@ -15,77 +14,158 @@ const Dashboard = () => {
     { mes: 'Mai', familias: 260, eventos: 110 },
   ];
 
-  // Dados do gráfico de pizza
-  const dadosPerfis = [
-    { name: 'Mães solo', value: 89, color: '#FF6B6B' },
-    { name: '+3 filhos', value: 67, color: '#4ECDC4' },
-    { name: 'Renda baixa', value: 45, color: '#45B7D1' },
-    { name: 'Idosos', value: 23, color: '#96CEB4' },
-  ];
-
-  // Dados do Ranking de Presidentes (Top 5)
-  const rankingPresidentes = [
-    { posicao: 1, nome: 'Nome 1', visitas: 48 },
-    { posicao: 2, nome: 'Nome 2', visitas: 45 },
-    { posicao: 3, nome: 'Nome 3', visitas: 40 },
-    { posicao: 4, nome: 'Nome 4', visitas: 35 },
-    { posicao: 5, nome: 'Nome 5', visitas: 30 },
-  ];
-
-  // Dados do Status de Cotas
   const statusCotas = [
-    { nome: 'Nome e sobrenome', atual: 48, meta: 50, percentual: 96 },
-    { nome: 'Nome e sobrenome', atual: 45, meta: 50, percentual: 90 },
-    { nome: 'Nome e sobrenome', atual: 50, meta: 50, percentual: 100 },
-    { nome: 'Nome e sobrenome', atual: 31, meta: 50, percentual: 62 },
-    { nome: 'Nome e sobrenome', atual: 22, meta: 50, percentual: 44 },
+    { nome: 'Nome 1', atual: 48, meta: 50, percentual: 96 },
+    { nome: 'Nome 2', atual: 45, meta: 50, percentual: 90 },
+    { nome: 'Nome 3', atual: 50, meta: 50, percentual: 100 },
+    { nome: 'Nome 4', atual: 31, meta: 50, percentual: 62 },
+    { nome: 'Nome 5', atual: 22, meta: 50, percentual: 44 },
   ];
+
+  // ========== CONFIGURAÇÃO DOS GRÁFICOS APEX ==========
+  const donutOptions = {
+    series: [44, 55, 13, 33],
+    chart: {
+      type: 'donut',
+      height: 300
+    },
+    labels: ['Mães solo', '+3 filhos', 'Renda baixa', 'Idosos'],
+    colors: ['#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4'],
+    dataLabels: { enabled: false },
+    legend: {
+      position: 'bottom',
+      fontSize: '12px'
+    },
+    plotOptions: {
+      pie: {
+        donut: {
+          size: '65%',
+          labels: {
+            show: true,
+            total: {
+              show: true,
+              label: 'Total',
+              fontSize: '14px',
+              formatter: (w) => {
+                return w.globals.seriesTotals.reduce((a, b) => a + b, 0)
+              }
+            }
+          }
+        }
+      }
+    }
+  };
+
+  const rankingOptions = {
+    series: [{
+      name: 'Visitas',
+      data: [48, 45, 40, 35, 30]
+    }],
+    chart: {
+      type: 'bar',
+      height: 350,
+      toolbar: { show: false }
+    },
+    plotOptions: {
+      bar: {
+        borderRadius: 4,
+        horizontal: true
+      }
+    },
+    dataLabels: {
+      enabled: true,
+      formatter: (val) => `${val} visitas`,
+      offsetX: 10
+    },
+    xaxis: {
+      categories: ['Presidente 1', 'Presidente 2', 'Presidente 3', 'Presidente 4', 'Presidente 5']
+    },
+    title: {
+      text: 'Ranking de Presidentes',
+      align: 'left',
+      style: { fontSize: '16px', fontWeight: 'bold' }
+    }
+  };
+
+  // ========== REFERÊNCIAS ==========
+  const donutRef = useRef(null);
+  const rankingRef = useRef(null);
+  const donutChartRef = useRef(null);
+  const rankingChartRef = useRef(null);
+
+  // ========== INICIALIZAR GRÁFICOS ==========
+  useEffect(() => {
+    // Donut Chart
+    if (donutRef.current && !donutChartRef.current) {
+      donutChartRef.current = new ApexCharts(donutRef.current, donutOptions);
+      donutChartRef.current.render();
+    }
+
+    // Ranking Chart
+    if (rankingRef.current && !rankingChartRef.current) {
+      rankingChartRef.current = new ApexCharts(rankingRef.current, rankingOptions);
+      rankingChartRef.current.render();
+    }
+
+    // Cleanup
+    return () => {
+      if (donutChartRef.current) {
+        donutChartRef.current.destroy();
+        donutChartRef.current = null;
+      }
+      if (rankingChartRef.current) {
+        rankingChartRef.current.destroy();
+        rankingChartRef.current = null;
+      }
+    };
+  }, []);
 
   return (
-    
     <div>
-     <div className="header ">
+    <div className="header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
         <div>
-          <h2>Dashboard Analítico</h2>
-          <p className="text-sm">Ciclo 1 - Mês 6</p>
+          <h2 style={{ margin: 0 }}>Dashboard Analítico</h2>
+          <p style={{ margin: 0, color: '#666' }}>Ciclo 1 - Mês 6</p>
         </div>
-        <div className="flex gap-1">
-          <button className="btn btn-outline"><p className='text-lg'>Exportar</p> <BlacktIcon className='ml-1'></BlacktIcon></button>
-          <button className="btn btn-primary"><p className='text-lg'>Novo ciclo </p> <WhiteIcon className='ml-1'></WhiteIcon></button>
+        <div style={{ display: 'flex', gap: '8px' }}>
+          <button className="btn btn-outline">Exportar</button>
+          <button className="btn btn-primary">Novo ciclo</button>
         </div>
       </div>
-     
-    <div className="view-section active">
-      {/* Cards */}
-      <div className="grid-4">
+    <div style={{ padding: '20px' }}>
+      {/* HEADER */}
+      
+
+      {/* CARDS */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '16px', marginBottom: '24px' }}>
         <div className="card">
-          <p className="text-sm">FAMÍLIAS CADASTRADAS</p>
-          <h1 style={{ fontSize: '2.5rem' }}>487</h1>
-          <p className="text-sm">+30 famílias neste ciclo</p>
+          <p style={{ margin: 0, fontSize: '12px', color: '#666' }}>FAMÍLIAS CADASTRADAS</p>
+          <h1 style={{ margin: '8px 0', fontSize: '2.5rem' }}>487</h1>
+          <p style={{ margin: 0, fontSize: '12px', color: '#666' }}>+30 famílias neste ciclo</p>
         </div>
         <div className="card">
-          <p className="text-sm">PRESIDENTES ATIVOS</p>
-          <h1 style={{ fontSize: '2.5rem' }}>12</h1>
-          <p className="text-sm">Meta: 12</p>
+          <p style={{ margin: 0, fontSize: '12px', color: '#666' }}>PRESIDENTES ATIVOS</p>
+          <h1 style={{ margin: '8px 0', fontSize: '2.5rem' }}>12</h1>
+          <p style={{ margin: 0, fontSize: '12px', color: '#666' }}>Meta: 12</p>
         </div>
         <div className="card">
-          <p className="text-sm">APROVAÇÕES PENDENTES</p>
-          <h1 style={{ fontSize: '2.5rem' }}>48</h1>
-          <p className="text-sm">10% do total</p>
+          <p style={{ margin: 0, fontSize: '12px', color: '#666' }}>APROVAÇÕES PENDENTES</p>
+          <h1 style={{ margin: '8px 0', fontSize: '2.5rem' }}>48</h1>
+          <p style={{ margin: 0, fontSize: '12px', color: '#666' }}>10% do total</p>
         </div>
         <div className="card">
-          <p className="text-sm">FEEDBACKS PENDENTES</p>
-          <h1 style={{ fontSize: '2.5rem' }}>5</h1>
-          <p className="text-sm">Requer atenção</p>
+          <p style={{ margin: 0, fontSize: '12px', color: '#666' }}>FEEDBACKS PENDENTES</p>
+          <h1 style={{ margin: '8px 0', fontSize: '2.5rem' }}>5</h1>
+          <p style={{ margin: 0, fontSize: '12px', color: '#666' }}>Requer atenção</p>
         </div>
       </div>
 
-      {/* Gráficos */}
-      <div className="grid-2">
+      {/* GRÁFICO DE BARRAS + DONUT */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '16px', marginBottom: '24px' }}>
         {/* Gráfico de Barras */}
         <div className="card">
-          <div className="flex justify-between items-center">
-            <h3>Participações por Mês</h3>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+            <h3 style={{ margin: 0 }}>Participações por Mês</h3>
             <span className="badge">Último ciclo</span>
           </div>
           <ResponsiveContainer width="100%" height={300}>
@@ -101,79 +181,36 @@ const Dashboard = () => {
           </ResponsiveContainer>
         </div>
 
-        {/* Gráfico de Pizza */}
-        <div className="card flex-col items-center">
-          <h3 style={{ alignSelf: 'flex-start' }}>Distribuição por Perfil</h3>
-          <ResponsiveContainer width="100%" height={250}>
-            <PieChart>
-              <Pie
-                data={dadosPerfis}
-                cx="50%"
-                cy="50%"
-                labelLine={false}
-                label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
-                outerRadius={80}
-                fill="#8884d8"
-                dataKey="value"
-              >
-                {dadosPerfis.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={entry.color} />
-                ))}
-              </Pie>
-              <Tooltip />
-            </PieChart>
-          </ResponsiveContainer>
+        {/* Gráfico Donut */}
+        <div className="card">
+          <h3 style={{ marginBottom: '16px' }}>Distribuição por Perfil</h3>
+          <div ref={donutRef}></div>
         </div>
       </div>
 
-      {/* Ranking de Presidentes e Status de Cotas */}
-      <div className="grid-2">
-        {/* Ranking de Presidentes - Top 5 */}
-        <div className="card" >
-          <h3 style={{display: 'flex'} }>Ranking de Presidentes</h3>
-          <div className="ranking-header" style={{ fontWeight: 'bold', marginTop: '1rem', marginBottom: '1rem' }}>
-            Top 5
-          </div>
-          <table style={{ width: '100%' }}>
-            <tbody>
-              {rankingPresidentes.map(presidente => (
-                <tr key={presidente.posicao}>
-                  <td style={{ padding: '8px 0', fontWeight: '500' }}>
-                    {presidente.nome}
-                  </td>
-                  <td style={{ padding: '8px 0', textAlign: 'right' }}>
-                    {presidente.visitas}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+      {/* RANKING + STATUS DE COTAS */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '16px' }}>
+        {/* Ranking */}
+        <div className="card">
+          <div ref={rankingRef}></div>
         </div>
 
         {/* Status de Cotas */}
         <div className="card">
-          <h3>Status de Cotas</h3>
-          <div style={{ fontSize: '12px', color: '#666', marginBottom: '16px' }}>
-            Progresso por presidente
-          </div>
+          <h3 style={{ marginBottom: '8px' }}>Status de Cotas</h3>
+          <p style={{ fontSize: '12px', color: '#666', marginBottom: '16px' }}>Progresso por presidente</p>
           
           {statusCotas.map((item, index) => (
             <div key={index} style={{ marginBottom: '20px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
-                <span style={{ fontWeight: '500' }}>{item.nome}</span>
+                <strong>{item.nome}</strong>
                 <span>{item.atual}/{item.meta}</span>
               </div>
-              <div style={{ 
-                background: '#e0e0e0', 
-                borderRadius: '10px', 
-                height: '8px', 
-                overflow: 'hidden' 
-              }}>
+              <div style={{ background: '#e0e0e0', borderRadius: '10px', height: '8px', overflow: 'hidden' }}>
                 <div style={{ 
                   background: '#2f2f2f', 
                   height: '100%', 
                   width: `${item.percentual}%`,
-                  transition: 'width 0.3s',
                   borderRadius: '10px'
                 }} />
               </div>

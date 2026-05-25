@@ -1,12 +1,45 @@
 import React, { useState } from 'react';
+import { ReactComponent as GrayIcon } from '../../assets/Square_gray.svg';
 
 const Formularios = ({ onNavigate }) => {
   const [showVerTodos, setShowVerTodos] = useState(false);
-  
+  const [formularioAtual, setFormularioAtual] = useState(0);
+
   const formularios = [
-    { id: 1, titulo: 'Questionário (Ciclo 1)', status: 'Ativo', respondidos: 9, pendentes: 3 },
-    { id: 2, titulo: 'Cadastro de Família', status: 'Rascunho', editado: 'Há 2 dias' }
+    { 
+      id: 1, 
+      titulo: 'Questionário (Ciclo 1)', 
+      status: 'Ativo', 
+      respondidos: 9, 
+      pendentes: 3, 
+      respostas: [
+        { presidente: 'João Silva', data: 'Hoje 09:40', familias: 'Quantitativo', eventos: 'Quantitativo', status: 'Completo' },
+        { presidente: 'Maria Santos', data: 'Ontem 14:20', familias: 'Qualitativo', eventos: 'Qualitativo', status: 'Pendente' },
+        { presidente: 'Pedro Costa', data: '15/01/2026', familias: 'Quantitativo', eventos: 'Quantitativo', status: 'Completo' },
+        { presidente: 'Ana Paula', data: '14/01/2026', familias: 'Qualitativo', eventos: 'Qualitativo', status: 'Completo' },
+        { presidente: 'Carlos Mendes', data: '13/01/2026', familias: 'Quantitativo', eventos: 'Quantitativo', status: 'Pendente' },
+        { presidente: 'Fernanda Lima', data: '12/01/2026', familias: 'Qualitativo', eventos: 'Qualitativo', status: 'Completo' }
+      ]
+    },
+    { 
+      id: 2, 
+      titulo: 'Cadastro de Família', 
+      status: 'Rascunho', 
+      editado: 'Há 2 dias', 
+      respostas: [
+        { presidente: 'Ana Oliveira', data: '12/01/2026', familias: 'Quantitativo', eventos: 'Quantitativo', status: 'Completo' },
+        { presidente: 'Roberto Silva', data: '11/01/2026', familias: 'Qualitativo', eventos: 'Qualitativo', status: 'Completo' },
+        { presidente: 'Carla Souza', data: '10/01/2026', familias: 'Quantitativo', eventos: 'Quantitativo', status: 'Pendente' }
+      ]
+    }
   ];
+
+  const atual = formularios[formularioAtual];
+  
+  // Função para pegar iniciais do nome
+  const getIniciais = (nome) => {
+    return nome.split(' ').map(n => n[0]).join('');
+  };
 
   if (showVerTodos) {
     return (
@@ -16,10 +49,10 @@ const Formularios = ({ onNavigate }) => {
           <h2>Todos os formulários</h2>
         </div>
         <div className="card">
-          {formularios.map(form => (
-            <div key={form.id} style={{ padding: '1rem', borderBottom: '1px solid #eee', display: 'flex', justifyContent: 'space-between' }}>
-              <span>{form.titulo}</span>
-              <span className="text-sm">Publicado em 15 Jan 2026</span>
+          {formularios.map((form, idx) => (
+            <div key={form.id} style={{ padding: '1rem', borderBottom: '1px solid #eee', cursor: 'pointer' }} onClick={() => { setFormularioAtual(idx); setShowVerTodos(false); }}>
+              <strong>{form.titulo}</strong>
+              <p className="text-sm" style={{ margin: 0, color: '#666' }}>Publicado em 15 Jan 2026</p>
             </div>
           ))}
         </div>
@@ -34,58 +67,67 @@ const Formularios = ({ onNavigate }) => {
         <button className="btn btn-primary" onClick={() => setShowVerTodos(true)}>Ver todos</button>
       </div>
 
-    <div className="view-section active">
-
-      <div className="grid-3">
-        {formularios.map(form => (
-          <div key={form.id} className="card">
-            <div className="flex justify-between">
-              <h4>{form.titulo}</h4>
-              <span className="badge">{form.status}</span>
+      <div className="view-section active">
+        <div className="grid-3" style={{ gap: 20 }}>
+          {formularios.map((form, idx) => (
+            <div key={form.id} className="card" style={{ position: 'relative', cursor: 'pointer'}} onClick={() => setFormularioAtual(idx)}>
+              <GrayIcon />
+              <span className="badge" style={{ position: 'absolute', top: '10%', right: '10%' }}>{form.status}</span>
+              <h3 className='mt-3' style={{ fontWeight: '700' }}>{form.titulo}</h3>
+              <hr style={{ margin: '24px 0', border: 'none', borderTop: '2px solid #e0e0e0' }} />
+              {form.respondidos && <div className="flex gap-2 text-sm" style={{ marginTop: '1rem', alignItems: 'center' }}>
+                <GrayIcon style={{ width: '1.5rem', height: '1.5rem' }} /> <span>{form.respondidos} respondidos</span>
+                <GrayIcon style={{ width: '1.5rem', height: '1.5rem', marginLeft: '3.5rem' }} /> <span>{form.pendentes} pendentes</span>
+              </div>}
+              {form.editado && <p className="text-sm" style={{ marginTop: '1rem' }}>Última edição: {form.editado}</p>}
             </div>
-            {form.respondidos && (
-              <div className="flex gap-2 text-sm" style={{ marginTop: '1rem' }}>
-                <span>{form.respondidos} respondidos</span>
-                <span>{form.pendentes} pendentes</span>
-              </div>
-            )}
-            {form.editado && (
-              <p className="text-sm" style={{ marginTop: '1rem' }}>Última edição: {form.editado}</p>
-            )}
-            <button className="btn btn-outline" style={{ marginTop: '1rem', width: '100%' }}>Ver detalhes</button>
+          ))}
+          <div className="card" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }} onClick={() => onNavigate('criar-formulario')}>
+            <GrayIcon /><h3 style={{ marginTop: '0.5rem' }}>Novo Formulário</h3>
           </div>
-        ))}
-        <div 
-          className="card" 
-          style={{ justifyContent: 'center', textAlign: 'center', border: '2px dashed #ccc', background: 'transparent', cursor: 'pointer' }}
-          onClick={() => onNavigate('criar-formulario')}
-        >
-          <h4>+ Novo Formulário</h4>
+        </div>
+
+        <div className="card">
+          <h3 style={{ fontWeight: '700' }}>Respostas Recentes</h3>
+          <p className="text-sm" style={{ marginTop: '0.5rem', marginBottom: '1rem' }}>Formulário: {atual.titulo}</p>
+          
+          <table style={{ width: '100%' }}>
+            <thead>
+              <tr style={{ color: '#A1A1A1', fontSize: '12px', fontWeight: 600 }}>
+                <th>Presidente</th>
+                <th>Respondido em</th>
+                <th>Famílias Cadastradas</th>
+                <th>Eventos Realizados</th>
+                <th>Status</th>
+                <th>Ação</th>
+              </tr>
+            </thead>
+            <tbody>
+              {atual.respostas.map((r, i) => (
+                <tr key={i}>
+                  <td>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <div style={{ backgroundColor: '#D9D9D9', borderRadius: '50%', width: '3rem', height: '3rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <strong>{getIniciais(r.presidente)}</strong>
+                      </div>
+                      <strong>{r.presidente}</strong>
+                    </div>
+                   </td>
+                  <td>{r.data}</td>
+                  <td>{r.familias}</td>
+                  <td>{r.eventos}</td>
+                  <td><span className="badge">{r.status}</span></td>
+                  <td style={{transform: 'scale(0.95)', margin: '0'}}>
+                    {r.status === 'Completo' 
+                      ? <button className="btn btn-outline " onClick={() => onNavigate('ver-formulario')}>Ver</button>
+                      : <button className="btn btn-primary " onClick={() => onNavigate('notificar')} >Notificar</button>}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       </div>
-
-      <div className="card">
-        <h4>Respostas Recentes</h4>
-        <p className="text-sm">Formulário: Questionário (Ciclo 1)</p>
-        <table>
-          <thead><tr><th>Presidente</th><th>Respondido em</th><th>Status</th><th>Ação</th></tr></thead>
-          <tbody>
-            <tr>
-              <td><strong>João Silva</strong></td>
-              <td>Hoje 09:40</td>
-              <td><span className="badge">Completo</span></td>
-              <td><button className="btn btn-outline" onClick={() => onNavigate('ver-formulario')}>Ver</button></td>
-            </tr>
-            <tr>
-              <td><strong>Maria Santos</strong></td>
-              <td>Ontem 14:20</td>
-              <td><span className="badge" style={{ background: '#9c9c9c' }}>Pendente</span></td>
-              <td><button className="btn btn-primary">Notificar</button></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
     </div>
   );
 };
