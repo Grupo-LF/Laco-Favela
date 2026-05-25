@@ -7,12 +7,14 @@ import CriarFormulario from './pages/admin/CriarFormulario';
 import VerFormulario from './pages/admin/VerFormulario';
 import Presidentes from './pages/admin/Presidentes';
 import Familias from './pages/admin/Familias';
+import FamiliaDetalhe from './pages/admin/FamiliaDetalhe';
 import Aprovados from './pages/admin/Aprovados';
 import Feedbacks from './pages/admin/Feedbacks';
 import Historico from './pages/admin/Historico';
 
 function App() {
   const [activeView, setActiveView] = useState('dashboard');
+  const [selectedFamiliaId, setSelectedFamiliaId] = useState(null);
 
   const renderView = () => {
     switch(activeView) {
@@ -21,7 +23,17 @@ function App() {
       case 'criar-formulario': return <CriarFormulario onNavigate={setActiveView} />;
       case 'ver-formulario': return <VerFormulario onNavigate={setActiveView} />;
       case 'presidentes': return <Presidentes />;
-      case 'familias': return <Familias />;
+      case 'familias':
+        return (
+          <Familias
+            onSelectFamilia={(id) => {
+              setSelectedFamiliaId(id);
+              setActiveView('familia-detalhe');
+            }}
+          />
+        );
+      case 'familia-detalhe':
+        return <FamiliaDetalhe familiaId={selectedFamiliaId} onNavigate={setActiveView} />;
       case 'aprovados': return <Aprovados />;
       case 'feedbacks': return <Feedbacks />;
       case 'historico': return <Historico />;

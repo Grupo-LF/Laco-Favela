@@ -1,7 +1,8 @@
+from django.conf import settings
 from django.utils import timezone
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
-from rest_framework.permissions import IsAdminUser
+from rest_framework.permissions import AllowAny, IsAdminUser
 from rest_framework.response import Response
 
 from .models import Ciclo, RespostaCiclo
@@ -66,6 +67,11 @@ class CicloViewSet(viewsets.ModelViewSet):
 class RespostaCicloViewSet(viewsets.ModelViewSet):
     queryset = RespostaCiclo.objects.all().select_related('ciclo', 'presidente', 'familia').prefetch_related('itens__opcoes', 'itens__opcao', 'itens__pergunta')
     serializer_class = RespostaCicloReadSerializer
+
+    def get_permissions(self):
+        if settings.DEBUG and self.action in ['list', 'retrieve']:
+            return [AllowAny()]
+        return super().get_permissions()
 
     def get_queryset(self):
         queryset = super().get_queryset()
