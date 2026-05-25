@@ -26,20 +26,6 @@ const Presidentes = () => {
     termo_aceito: false,
     cota: '',
   };
-<<<<<<< HEAD
-
-  // CORREÇÃO 1: Criado o estado 'dadosForm' que estava faltando
-  const [dadosForm, setDadosForm] = useState(estadoInicialForm);
-
-  // CORREÇÃO 2: Criada a função 'carregarPresidentes'
-  const carregarPresidentes = async () => {
-    try {
-      const data = await listarPresidentes();
-      setPresidentes(data);
-    } catch (err) {
-      console.error("Erro ao carregar presidentes:", err);
-    } finally {
-=======
   
   const [dadosForm, setDadosForm] = useState(estadoInicialForm);
 
@@ -51,24 +37,19 @@ const Presidentes = () => {
       setLoading(false);
     } catch (err) {
       console.error(err);
->>>>>>> 21f7778dc09838d86cfa93b39919764d5b0a20f7
       setLoading(false);
     }
   };
 
-<<<<<<< HEAD
-  // CORREÇÃO 3: Usando a função carregarPresidentes no useEffect em vez de api.get
-=======
->>>>>>> 21f7778dc09838d86cfa93b39919764d5b0a20f7
   useEffect(() => {
     carregarPresidentes();
   }, []);
 
   if (loading) return <p>Carregando...</p>;
-
+  
   const handleChange = (event) => {
     let { name, value, type, checked } = event.target;
-
+    
     if (name === 'telefone') {
       value = mascaraTelefone(value);
     }
@@ -76,10 +57,6 @@ const Presidentes = () => {
       value = mascaraCNPJ(value);
     }
 
-<<<<<<< HEAD
-    // CORREÇÃO 4: Substituído 'criarDadosForm' por 'setDadosForm'
-=======
->>>>>>> 21f7778dc09838d86cfa93b39919764d5b0a20f7
     setDadosForm((estadoAnterior) => ({
       ...estadoAnterior,
       [name]: type === 'checkbox' ? checked : value
@@ -100,17 +77,11 @@ const Presidentes = () => {
       console.log("Presidente cadastrado com sucesso!", resposta);
       alert("Presidente cadastrado com sucesso!");
 
-<<<<<<< HEAD
-      // CORREÇÃO 4: Substituído 'criarDadosForm' por 'setDadosForm'
-      setDadosForm(estadoInicialForm);
-
-=======
       // Reseta o formulário para o estado inicial limpo
       setDadosForm(estadoInicialForm);
       
->>>>>>> 21f7778dc09838d86cfa93b39919764d5b0a20f7
       // Atualiza a tabela imediatamente após salvar
-      carregarPresidentes();
+      carregarPresidentes(); 
     } catch (erro) {
       try {
         const mensagensErro = JSON.parse(erro.message);
