@@ -78,3 +78,4 @@ export const enviarRespostaCiclo = async (respostas) => {
   return res.json();
 };
 
+export default { listarFamilias, listarPresidentes, cadastrarPresidente, atualizarCotaPresidente, criarFamilia, listarCiclos, enviarRespostaCiclo };

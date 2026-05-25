@@ -1,20 +1,13 @@
-import React, { useEffect, useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { cadastrarPresidente, listarPresidentes, atualizarCotaPresidente } from '../../services/api';
-import api from '../../services/api';;
 import { mascaraTelefone, mascaraCNPJ } from '../../utils/masks';
 
 const Presidentes = () => {
   const [presidentes, setPresidentes] = useState([]);
   const [loading, setLoading] = useState(true);
-
-  
-  
   const [mostrarForm, setMostrarForm] = useState(false);
-  
   const [carregando, setCarregando] = useState(false);
-  
   const [erros, setErros] = useState({});
-  
   const [idPresidenteCota, setIdPresidenteCota] = useState('');
   const [valorCota, setValorCota] = useState('');
 
@@ -32,18 +25,24 @@ const Presidentes = () => {
     num_membros: '',
     termo_aceito: false,
     cota: '',
-  }
+  };
   
-  useEffect(() => {
-    api.get('/presidentes/')
-    .then(res => {
-      setPresidentes(res.data);
+  const [dadosForm, setDadosForm] = useState(estadoInicialForm);
+
+  // Função para carregar presidentes
+  const carregarPresidentes = async () => {
+    try {
+      const resposta = await listarPresidentes();
+      setPresidentes(resposta.data || resposta);
       setLoading(false);
-    })
-    .catch(err => {
+    } catch (err) {
       console.error(err);
       setLoading(false);
-    });
+    }
+  };
+
+  useEffect(() => {
+    carregarPresidentes();
   }, []);
 
   if (loading) return <p>Carregando...</p>;
@@ -58,7 +57,7 @@ const Presidentes = () => {
       value = mascaraCNPJ(value);
     }
 
-    criarDadosForm((estadoAnterior) => ({
+    setDadosForm((estadoAnterior) => ({
       ...estadoAnterior,
       [name]: type === 'checkbox' ? checked : value
     }));
@@ -79,7 +78,7 @@ const Presidentes = () => {
       alert("Presidente cadastrado com sucesso!");
 
       // Reseta o formulário para o estado inicial limpo
-      criarDadosForm(estadoInicialForm);
+      setDadosForm(estadoInicialForm);
       
       // Atualiza a tabela imediatamente após salvar
       carregarPresidentes(); 
@@ -105,6 +104,7 @@ const Presidentes = () => {
       alert("Cota atualizada com sucesso!");
       carregarPresidentes();
       setValorCota('');
+      setIdPresidenteCota('');
     } catch (erro) {
       alert("Erro ao atualizar cota.");
     }
