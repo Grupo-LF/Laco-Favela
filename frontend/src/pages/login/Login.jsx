@@ -33,7 +33,7 @@ function Login({ onLogin }) {
               className="input-full"
               value={username}
               onChange={e => setUsername(e.target.value)}
-              placeholder="Digite qualquer nome"
+              placeholder="'admin' ou 'presidente' (modo teste)"
               required
             />
           </div>

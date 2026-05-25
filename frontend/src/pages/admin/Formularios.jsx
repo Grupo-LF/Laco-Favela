@@ -1,17 +1,17 @@
 import React, { useState } from 'react';
 import { ReactComponent as GrayIcon } from '../../assets/Square_gray.svg';
-
+import { ReactComponent as BlacktIcon } from '../../assets/Square_black.svg';
 const Formularios = ({ onNavigate }) => {
   const [showVerTodos, setShowVerTodos] = useState(false);
   const [formularioAtual, setFormularioAtual] = useState(0);
 
   const formularios = [
-    { 
-      id: 1, 
-      titulo: 'Questionário (Ciclo 1)', 
-      status: 'Ativo', 
-      respondidos: 9, 
-      pendentes: 3, 
+    {
+      id: 1,
+      titulo: 'Questionário (Ciclo 1)',
+      status: 'Ativo',
+      respondidos: 9,
+      pendentes: 3,
       respostas: [
         { presidente: 'João Silva', data: 'Hoje 09:40', familias: 'Quantitativo', eventos: 'Quantitativo', status: 'Completo' },
         { presidente: 'Maria Santos', data: 'Ontem 14:20', familias: 'Qualitativo', eventos: 'Qualitativo', status: 'Pendente' },
@@ -21,11 +21,11 @@ const Formularios = ({ onNavigate }) => {
         { presidente: 'Fernanda Lima', data: '12/01/2026', familias: 'Qualitativo', eventos: 'Qualitativo', status: 'Completo' }
       ]
     },
-    { 
-      id: 2, 
-      titulo: 'Cadastro de Família', 
-      status: 'Rascunho', 
-      editado: 'Há 2 dias', 
+    {
+      id: 2,
+      titulo: 'Cadastro de Família',
+      status: 'Rascunho',
+      editado: 'Há 2 dias',
       respostas: [
         { presidente: 'Ana Oliveira', data: '12/01/2026', familias: 'Quantitativo', eventos: 'Quantitativo', status: 'Completo' },
         { presidente: 'Roberto Silva', data: '11/01/2026', familias: 'Qualitativo', eventos: 'Qualitativo', status: 'Completo' },
@@ -35,7 +35,7 @@ const Formularios = ({ onNavigate }) => {
   ];
 
   const atual = formularios[formularioAtual];
-  
+
   // Função para pegar iniciais do nome
   const getIniciais = (nome) => {
     return nome.split(' ').map(n => n[0]).join('');
@@ -43,18 +43,25 @@ const Formularios = ({ onNavigate }) => {
 
   if (showVerTodos) {
     return (
-      <div className="view-section active">
+      <div>
         <div className="header">
+          <div className="flex">
+            <BlacktIcon style={{ width: '1.5rem', height: '1.5rem', marginRight: '0.5rem' }} />
+            <h2>Todos os formulários</h2>
+
+          </div>
           <button className="btn btn-outline" onClick={() => setShowVerTodos(false)}>← Voltar</button>
-          <h2>Todos os formulários</h2>
         </div>
-        <div className="card">
-          {formularios.map((form, idx) => (
-            <div key={form.id} style={{ padding: '1rem', borderBottom: '1px solid #eee', cursor: 'pointer' }} onClick={() => { setFormularioAtual(idx); setShowVerTodos(false); }}>
-              <strong>{form.titulo}</strong>
-              <p className="text-sm" style={{ margin: 0, color: '#666' }}>Publicado em 15 Jan 2026</p>
-            </div>
-          ))}
+
+        <div className="view-section active">
+          <div >
+            {formularios.map((form, idx) => (
+              <div className="card" key={form.id} style={{ padding: '1.5rem', borderBottom: '1px solid #eee', cursor: 'pointer', marginBottom: '1rem ', display: 'flex', justifyContent: 'space-between' }} onClick={() => { setFormularioAtual(idx); setShowVerTodos(false); }}>
+                <strong>{form.titulo}</strong>
+                <p className="text-sm" style={{ margin: 0, color: '#666' }}>Publicado em 15 Jan 2026</p>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     );
@@ -70,7 +77,7 @@ const Formularios = ({ onNavigate }) => {
       <div className="view-section active">
         <div className="grid-3" style={{ gap: 20 }}>
           {formularios.map((form, idx) => (
-            <div key={form.id} className="card" style={{ position: 'relative', cursor: 'pointer'}} onClick={() => setFormularioAtual(idx)}>
+            <div key={form.id} className="card" style={{ position: 'relative', cursor: 'pointer' }} onClick={() => setFormularioAtual(idx)}>
               <GrayIcon />
               <span className="badge" style={{ position: 'absolute', top: '10%', right: '10%' }}>{form.status}</span>
               <h3 className='mt-3' style={{ fontWeight: '700' }}>{form.titulo}</h3>
@@ -90,7 +97,7 @@ const Formularios = ({ onNavigate }) => {
         <div className="card">
           <h3 style={{ fontWeight: '700' }}>Respostas Recentes</h3>
           <p className="text-sm" style={{ marginTop: '0.5rem', marginBottom: '1rem' }}>Formulário: {atual.titulo}</p>
-          
+
           <table style={{ width: '100%' }}>
             <thead>
               <tr style={{ color: '#A1A1A1', fontSize: '12px', fontWeight: 600 }}>
@@ -112,13 +119,13 @@ const Formularios = ({ onNavigate }) => {
                       </div>
                       <strong>{r.presidente}</strong>
                     </div>
-                   </td>
+                  </td>
                   <td>{r.data}</td>
                   <td>{r.familias}</td>
                   <td>{r.eventos}</td>
                   <td><span className="badge">{r.status}</span></td>
-                  <td style={{transform: 'scale(0.95)', margin: '0'}}>
-                    {r.status === 'Completo' 
+                  <td style={{ transform: 'scale(0.95)', margin: '0' }}>
+                    {r.status === 'Completo'
                       ? <button className="btn btn-outline " onClick={() => onNavigate('ver-formulario')}>Ver</button>
                       : <button className="btn btn-primary " onClick={() => onNavigate('notificar')} >Notificar</button>}
                   </td>
