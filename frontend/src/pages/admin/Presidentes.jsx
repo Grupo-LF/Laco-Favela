@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import api, { cadastrarPresidente, listarPresidentes, atualizarCotaPresidente } from '../../services/api';
+import { cadastrarPresidente, listarPresidentes, atualizarCotaPresidente } from '../../services/api';
 import { mascaraTelefone, mascaraCNPJ } from '../../utils/masks';
 
 const Presidentes = () => {
@@ -31,17 +31,18 @@ const Presidentes = () => {
 
 const carregarPresidentes = () => {
     setLoading(true);
-    api.get('/presidentes/')
+    listarPresidentes() // <-- Usando a função importada
       .then(res => {
-        setPresidentes(res.data);
+        // Dependendo de como sua api.js está configurada, 
+        // pode ser necessário usar apenas 'res' em vez de 'res.data'
+        setPresidentes(res.data || res); 
         setLoading(false);
       })
       .catch(err => {
         console.error(err);
         setLoading(false);
       });
-  };
-
+};
   // Executa ao carregar a página pela primeira vez
   useEffect(() => {
     carregarPresidentes();
