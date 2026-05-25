@@ -1,10 +1,22 @@
+<<<<<<< HEAD
 import React, { useEffect, useState, useEffect } from 'react';
 import { cadastrarPresidente, listarPresidentes, atualizarCotaPresidente } from '../../services/api';
 import api from '../../services/api';;
+=======
+<<<<<<< HEAD
+import React, { useState, useEffect } from 'react';
+import { cadastrarPresidente } from '../../services/api';
+import api from '../../services/api';
+=======
+import React, { useEffect, useState } from 'react';
+import { cadastrarPresidente, listarPresidentes, atualizarCotaPresidente } from '../../services/api';
+>>>>>>> 157fe02d (add gerenciamento de cotas e lista de presidentes)
+>>>>>>> 7d8d8cc3 (add gerenciamento de cotas e lista de presidentes)
 import { mascaraTelefone, mascaraCNPJ } from '../../utils/masks';
 
 const Presidentes = () => {
   const [presidentes, setPresidentes] = useState([]);
+<<<<<<< HEAD
   const [loading, setLoading] = useState(true);
 
 <<<<<<< HEAD
@@ -33,11 +45,24 @@ const Presidentes = () => {
   
   const [erros, setErros] = useState({});
   
+<<<<<<< HEAD
+=======
+  const [dadosForm, criarDadosForm] = useState({
+=======
+  const [mostrarForm, setMostrarForm] = useState(true); // Deixei como TRUE por padrão para você já ver o formulário na tela!
+  const [carregando, setCarregando] = useState(false);
+  const [erros, setErros] = useState({});
+  
+>>>>>>> 7d8d8cc3 (add gerenciamento de cotas e lista de presidentes)
   const [idPresidenteCota, setIdPresidenteCota] = useState('');
   const [valorCota, setValorCota] = useState('');
 
   // Estado inicial do formulário limpo
   const estadoInicialForm = {
+<<<<<<< HEAD
+=======
+>>>>>>> 157fe02d (add gerenciamento de cotas e lista de presidentes)
+>>>>>>> 7d8d8cc3 (add gerenciamento de cotas e lista de presidentes)
     nome: '',
     organizacao: '',
     cnpj: '',
@@ -50,7 +75,12 @@ const Presidentes = () => {
     num_membros: '',
     termo_aceito: false,
     cota: '',
+<<<<<<< HEAD
   }
+=======
+<<<<<<< HEAD
+  })
+>>>>>>> 7d8d8cc3 (add gerenciamento de cotas e lista de presidentes)
   
   useEffect(() => {
     api.get('/presidentes/')
@@ -62,12 +92,30 @@ const Presidentes = () => {
       console.error(err);
       setLoading(false);
     });
+=======
+  };
+
+  const [dadosForm, criarDadosForm] = useState(estadoInicialForm);
+
+  const carregarPresidentes = async () => {
+    try {
+      const dados = await listarPresidentes();
+      setPresidentes(dados);
+    } catch (erro) {
+      console.error("Erro ao carregar lista:", erro);
+    }
+  };
+
+  useEffect(() => {
+    carregarPresidentes();
+>>>>>>> 157fe02d (add gerenciamento de cotas e lista de presidentes)
   }, []);
 
   if (loading) return <p>Carregando...</p>;
   
   const handleChange = (event) => {
     let { name, value, type, checked } = event.target;
+<<<<<<< HEAD
     
     if (name === 'telefone') {
       value = mascaraTelefone(value);
@@ -75,6 +123,11 @@ const Presidentes = () => {
     if (name === 'cnpj') {
       value = mascaraCNPJ(value);
     }
+=======
+
+    if (name === 'telefone') value = mascaraTelefone(value);
+    if (name === 'cnpj') value = mascaraCNPJ(value);
+>>>>>>> 157fe02d (add gerenciamento de cotas e lista de presidentes)
 
     criarDadosForm((estadoAnterior) => ({
       ...estadoAnterior,
@@ -247,6 +300,38 @@ const Presidentes = () => {
         </form>
       )}
 
+<<<<<<< HEAD
+      {/* TABELA DE VISUALIZAÇÃO */}
+      <div className="card" style={{ padding: '1.5rem', backgroundColor: '#fff', borderRadius: '8px', boxShadow: '0 2px 4px rgba(0,0,0,0.1)', marginBottom: '2rem' }}>
+        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+=======
+<<<<<<< HEAD
+      <div className="card">
+        <table>
+>>>>>>> 7d8d8cc3 (add gerenciamento de cotas e lista de presidentes)
+          <thead>
+            <tr style={{ borderBottom: '2px solid #eee', textAlign: 'left' }}>
+              <th style={{ padding: '0.75rem' }}>ID</th>
+              <th style={{ padding: '0.75rem' }}>PRESIDENTE</th>
+              <th style={{ padding: '0.75rem' }}>COMUNIDADE</th>
+              <th style={{ padding: '0.75rem' }}>COTA</th>
+              <th style={{ padding: '0.75rem' }}>AÇÃO</th>
+            </tr>
+          </thead>
+          <tbody>
+<<<<<<< HEAD
+            {presidentes.length === 0 ? (
+              <tr>
+                <td colSpan="5" style={{ textAlign: 'center', padding: '2rem', color: '#888' }}>Nenhum presidente cadastrado ainda.</td>
+=======
+            {presidentes.map(p => (
+              <tr key={p.id}>
+                <td><strong>{p.nome}</strong></td>
+                <td>{p.comunidade}</td>
+                <td>{p.cota}</td>
+                <td><span className="badge">{p.ativo ? 'Ativo' : 'Inativo'}</span></td>
+                <td><button className="btn btn-outline">Editar</button></td>
+=======
       {/* TABELA DE VISUALIZAÇÃO */}
       <div className="card" style={{ padding: '1.5rem', backgroundColor: '#fff', borderRadius: '8px', boxShadow: '0 2px 4px rgba(0,0,0,0.1)', marginBottom: '2rem' }}>
         <table style={{ width: '100%', borderCollapse: 'collapse' }}>
@@ -263,6 +348,8 @@ const Presidentes = () => {
             {presidentes.length === 0 ? (
               <tr>
                 <td colSpan="5" style={{ textAlign: 'center', padding: '2rem', color: '#888' }}>Nenhum presidente cadastrado ainda.</td>
+>>>>>>> 157fe02d (add gerenciamento de cotas e lista de presidentes)
+>>>>>>> 7d8d8cc3 (add gerenciamento de cotas e lista de presidentes)
               </tr>
             ) : (
               presidentes.map(p => (
@@ -277,6 +364,7 @@ const Presidentes = () => {
             )}
           </tbody>
         </table>
+<<<<<<< HEAD
 <<<<<<< HEAD
       </div>
 
@@ -313,6 +401,43 @@ const Presidentes = () => {
 =======
   </div>
 >>>>>>> 43a74fd0 (feat: implementa login com tipo de usuário e view de autenticação no core)
+=======
+  </div>
+=======
+      </div>
+
+      {/* FORMULÁRIO DE EDITAR COTA */}
+      <div className="card" style={{ padding: '1.5rem', backgroundColor: '#f5f5f5', borderRadius: '8px' }}>
+        <h4>Editar Cota do Presidente</h4>
+        <p className="text-sm mb-2" style={{ color: '#666', fontSize: '14px' }}>Defina a meta de famílias para cada presidente</p>
+        <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem', flexWrap: 'wrap' }}>
+          
+          <select 
+            value={idPresidenteCota} 
+            onChange={(e) => setIdPresidenteCota(e.target.value)}
+            style={{ padding: '0.5rem', border: '1px solid #ccc', borderRadius: '4px', flex: '1', minWidth: '200px' }}
+          >
+            <option value="">Selecione um presidente...</option>
+            {presidentes.map(p => (
+              <option key={p.id} value={p.id}>{p.nome}</option>
+            ))}
+          </select>
+
+          <input 
+            type="number" 
+            value={valorCota} 
+            onChange={(e) => setValorCota(e.target.value)}
+            placeholder="Ex: 50" 
+            style={{ padding: '0.5rem', border: '1px solid #ccc', borderRadius: '4px', width: '150px' }} 
+          />
+          
+          <button className="btn btn-primary" onClick={handleSalvarCota} style={{ padding: '0.5rem 1.5rem', backgroundColor: '#4A4A4A', color: '#fff', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
+            Salvar cota
+          </button>
+        </div>
+      </div>
+>>>>>>> 157fe02d (add gerenciamento de cotas e lista de presidentes)
+>>>>>>> 7d8d8cc3 (add gerenciamento de cotas e lista de presidentes)
     </div>
   );
 };
