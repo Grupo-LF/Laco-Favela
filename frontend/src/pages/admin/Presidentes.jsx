@@ -1,20 +1,13 @@
-import React, { useEffect, useState, useEffect } from 'react';
-import { cadastrarPresidente, listarPresidentes, atualizarCotaPresidente } from '../../services/api';
-import api from '../../services/api';;
+import React, { useState, useEffect } from 'react';
+import api, { cadastrarPresidente, listarPresidentes, atualizarCotaPresidente } from '../../services/api';
 import { mascaraTelefone, mascaraCNPJ } from '../../utils/masks';
 
 const Presidentes = () => {
   const [presidentes, setPresidentes] = useState([]);
   const [loading, setLoading] = useState(true);
-
-  
-  
   const [mostrarForm, setMostrarForm] = useState(false);
-  
   const [carregando, setCarregando] = useState(false);
-  
   const [erros, setErros] = useState({});
-  
   const [idPresidenteCota, setIdPresidenteCota] = useState('');
   const [valorCota, setValorCota] = useState('');
 
@@ -33,17 +26,25 @@ const Presidentes = () => {
     termo_aceito: false,
     cota: '',
   }
-  
-  useEffect(() => {
+  // Declaração do estado que estava faltando e causava o erro de "not defined"
+  const [dadosForm, criarDadosForm] = useState(estadoInicialForm);
+
+const carregarPresidentes = () => {
+    setLoading(true);
     api.get('/presidentes/')
-    .then(res => {
-      setPresidentes(res.data);
-      setLoading(false);
-    })
-    .catch(err => {
-      console.error(err);
-      setLoading(false);
-    });
+      .then(res => {
+        setPresidentes(res.data);
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error(err);
+        setLoading(false);
+      });
+  };
+
+  // Executa ao carregar a página pela primeira vez
+  useEffect(() => {
+    carregarPresidentes();
   }, []);
 
   if (loading) return <p>Carregando...</p>;
