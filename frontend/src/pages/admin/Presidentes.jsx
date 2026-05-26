@@ -239,7 +239,7 @@ const Presidentes = () => {
 
   // Função para definir a cor do status
   const getStatusColor = (status) => {
-    return status === 'Ativo' ? { color: '#4CAF50', fontWeight: 'bold' } : { color: '#f44336', fontWeight: 'bold' };
+    return status === 'Ativo' ? { backgroundColor: '#D9D9D9', fontWeight: 'bold' } : { backgroundColor: '#f44336', fontWeight: 'bold' };
   };
 
   // Função para definir a cor da penalização
@@ -385,7 +385,7 @@ const Presidentes = () => {
                     <td style={{ padding: '0.75rem', textAlign: 'center' }}>{p.eventos}</td>
                     <td style={{ padding: '0.75rem', textAlign: 'center', ...getPenalizacaoColor(p.penalizacao) }}>{p.penalizacao}</td>
                     <td style={{ padding: '0.75rem', fontWeight: 'bold', textAlign: 'center' }}>{p.score}</td>
-                    <td style={{ padding: '0.75rem', textAlign: 'center', ...getStatusColor(p.status) }}>{p.status}</td>
+                    <td  style={{ textAlign: 'center', ...getStatusColor(p.status) }}>{p.status}</td>
                   </tr>
                 ))
               )}
