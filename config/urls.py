@@ -25,5 +25,6 @@ urlpatterns = [
     path('api/', include('apps.familias.urls')),
     path('api/', include('apps.feedbacks.urls')),
     path('api/', include('apps.formularios.urls')),
+    path('api/', include('apps.dadosGerais.urls')),
     path('api/login/', login_view),
 ]
