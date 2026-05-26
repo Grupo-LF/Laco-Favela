@@ -246,7 +246,7 @@ const Presidentes = () => {
 
   // Função para definir a cor do status
   const getStatusColor = (status) => {
-
+    return status === 'Ativo' ? { color: '#4CAF50', fontWeight: 'bold' } : { color: '#f44336', fontWeight: 'bold' };
   };
 
   // Função para definir a cor da penalização
@@ -383,13 +383,17 @@ const Presidentes = () => {
                   <td colSpan="9" style={{ textAlign: 'center', padding: '2rem', color: '#888' }}>Nenhum presidente cadastrado ainda.</td>
                 </tr>
               ) : (
-               presidentes.map(p => (
-                  <tr key={p.id} style={{ borderBottom: '1px solid #eee' }}>
-                    <td style={{ padding: '0.75rem' }}>{p.id}</td>
-                    <td style={{ padding: '0.75rem' }}><strong>{p.nome}</strong></td>
-                    <td style={{ padding: '0.75rem' }}>{p.comunidade}</td>
-                    <td style={{ padding: '0.75rem' }}>{p.cota}</td>
-                    <td style={{ padding: '0.75rem' }}><button className="btn btn-outline" style={{ padding: '0.25rem 0.5rem', cursor: 'pointer' }}>Editar</button></td>
+                presidentesRender.map(p => (
+                  <tr key={p.id} style={{ borderBottom: '1px solid #eee', transition: 'background-color 0.3s', textAlign: 'center' }}>
+                    <td style={{ padding: '0.75rem', fontWeight: 'bold', textAlign: 'center' }}>#{p.ranking}</td>
+                    <td style={{ padding: '0.75rem', textAlign: 'center' }}><strong>{p.nome}</strong></td>
+                    <td style={{ padding: '0.75rem', textAlign: 'center' }}>{p.comunidade}</td>
+                    <td style={{ padding: '0.75rem', fontWeight: 'bold', color: '#2196F3', textAlign: 'center' }}>{p.cota}</td>
+                    <td style={{ padding: '0.75rem', textAlign: 'center' }}>{p.visitas}</td>
+                    <td style={{ padding: '0.75rem', textAlign: 'center' }}>{p.eventos}</td>
+                    <td style={{ padding: '0.75rem', textAlign: 'center', ...getPenalizacaoColor(p.penalizacao) }}>{p.penalizacao}</td>
+                    <td style={{ padding: '0.75rem', fontWeight: 'bold', textAlign: 'center' }}>{p.score}</td>
+                    <td  style={{ textAlign: 'center', ...getStatusColor(p.status) }}>{p.status}</td>
                   </tr>
                 ))
               )}
