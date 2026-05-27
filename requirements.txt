@@ -10,6 +10,7 @@ django-cloudinary-storage==0.3.0
 django-cors-headers==4.9.0
 django-filter==25.2
 djangorestframework==3.17.1
+gunicorn==26.0.0
 h11==0.16.0
 idna==3.13
 outcome==1.3.0.post0
