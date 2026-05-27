@@ -1,25 +1,69 @@
-export const mascaraTelefone = (valor) => {
-  if (!valor) return '';
-  let v = valor.replace(/\D/g, '');
-  
-  if (v.length <= 10){
-    v = v.replace(/^(\d{2})(\d)/g, '($1) $2');
-    v = v.replace(/(\d{4})(\d)/, '$1-$2');
-  } else{
-    v = v.replace(/^(\d{2})(\d)/g, '($1) $2');
-    v = v.replace(/(\d{5})(\d)/, '$1-$2');
+export function maskPhone(value) {
+  if (!value) return '';
+  value = value.replace(/\D/g, '');
+  if (value.length > 11) value = value.slice(0, 11);
+  if (value.length > 2) {
+    value = `(${value.slice(0, 2)}) ${value.slice(2)}`;
   }
+  if (value.length > 9) {
+    value = value.slice(0, 9) + '-' + value.slice(9);
+  }
+  return value;
+}
 
-  return v.substring(0, 15);
-};
+export function maskCEP(value) {
+  if (!value) return '';
+  value = value.replace(/\D/g, '');
+  if (value.length > 8) value = value.slice(0, 8);
+  if (value.length > 5) {
+    value = value.slice(0, 5) + '-' + value.slice(5);
+  }
+  return value;
+}
 
-export const mascaraCNPJ = (valor) => {
-  if (!valor) return '';
-  return valor
-    .replace(/\D/g, '') 
-    .replace(/^(\d{2})(\d)/, '$1.$2')
-    .replace(/^(\d{2})\.(\d{3})(\d)/, '$1.$2.$3')
-    .replace(/\.(\d{3})(\d)/, '.$1/$2')
-    .replace(/(\d{4})(\d)/, '$1-$2')
-    .substring(0, 18);
-};
+export function maskCPF(value) {
+  if (!value) return '';
+  value = value.replace(/\D/g, '');
+  if (value.length > 11) value = value.slice(0, 11);
+  if (value.length > 9) {
+    value = value.slice(0, 9) + '-' + value.slice(9);
+  }
+  if (value.length > 6) {
+    value = value.slice(0, 6) + '.' + value.slice(6);
+  }
+  if (value.length > 3) {
+    value = value.slice(0, 3) + '.' + value.slice(3);
+  }
+  return value;
+}
+
+export function maskCNPJ(value) {
+  if (!value) return '';
+  value = value.replace(/\D/g, '');
+  if (value.length > 14) value = value.slice(0, 14);
+  if (value.length > 12) {
+    value = value.slice(0, 12) + '-' + value.slice(12);
+  }
+  if (value.length > 9) {
+    value = value.slice(0, 9) + '/' + value.slice(9);
+  }
+  if (value.length > 6) {
+    value = value.slice(0, 6) + '.' + value.slice(6);
+  }
+  if (value.length > 3) {
+    value = value.slice(0, 3) + '.' + value.slice(3);
+  }
+  return value;
+}
+
+export function maskMoney(value) {
+  if (!value) return '';
+  value = value.replace(/\D/g, '');
+  value = (parseInt(value, 10) / 100).toFixed(2);
+  value = value.replace('.', ',');
+  value = value.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+  return 'R$ ' + value;
+}
+
+export const mascaraTelefone = maskPhone;
+export const mascaraCNPJ = maskCNPJ;
