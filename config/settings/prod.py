@@ -9,7 +9,7 @@ DATABASES = {
     )
 }
 
-ALLOWED_HOSTS = ['lacofavela-grdzfab6b0bqhygj.brazilsouth-01.azurewebsites.net']
+ALLOWED_HOSTS = ['*']
 
 # 1. CSRF trusted origins – necessário para o POST do admin
 CSRF_TRUSTED_ORIGINS = [
