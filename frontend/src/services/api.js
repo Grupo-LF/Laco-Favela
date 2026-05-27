@@ -1,4 +1,20 @@
+
 // frontend/src/services/api.js
+import axios from 'axios';
+
+const api = axios.create({
+  baseURL: process.env.REACT_APP_API_URL || 'http://localhost:8000/api',
+});
+
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem('access_token');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
+// ... resto do código
 const API_BASE = process.env.REACT_APP_API_URL || 'http://localhost:8000/api';
 
 // Função auxiliar para pegar o token (evita repetição)

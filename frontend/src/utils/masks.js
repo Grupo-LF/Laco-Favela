@@ -1,31 +1,69 @@
-// src/utils/masks.js
-// >>> INÍCIO DO CÓDIGO NOVO (substitui o arquivo inteiro) <<<
+export function maskPhone(value) {
+  if (!value) return '';
+  value = value.replace(/\D/g, '');
+  if (value.length > 11) value = value.slice(0, 11);
+  if (value.length > 2) {
+    value = `(${value.slice(0, 2)}) ${value.slice(2)}`;
+  }
+  if (value.length > 9) {
+    value = value.slice(0, 9) + '-' + value.slice(9);
+  }
+  return value;
+}
 
-export const maskPhone = (value) => {
-  const digits = value.replace(/\D/g, '').slice(0, 11);
-  if (digits.length <= 2) return `(${digits}`;
-  if (digits.length <= 7) return `(${digits.slice(0, 2)}) ${digits.slice(2)}`;
-  return `(${digits.slice(0, 2)}) ${digits.slice(2, 7)}-${digits.slice(7)}`;
-};
+export function maskCEP(value) {
+  if (!value) return '';
+  value = value.replace(/\D/g, '');
+  if (value.length > 8) value = value.slice(0, 8);
+  if (value.length > 5) {
+    value = value.slice(0, 5) + '-' + value.slice(5);
+  }
+  return value;
+}
 
-export const maskCEP = (value) => {
-  const digits = value.replace(/\D/g, '').slice(0, 8);
-  if (digits.length <= 5) return digits;
-  return `${digits.slice(0, 5)}-${digits.slice(5)}`;
-};
+export function maskCPF(value) {
+  if (!value) return '';
+  value = value.replace(/\D/g, '');
+  if (value.length > 11) value = value.slice(0, 11);
+  if (value.length > 9) {
+    value = value.slice(0, 9) + '-' + value.slice(9);
+  }
+  if (value.length > 6) {
+    value = value.slice(0, 6) + '.' + value.slice(6);
+  }
+  if (value.length > 3) {
+    value = value.slice(0, 3) + '.' + value.slice(3);
+  }
+  return value;
+}
 
-export const maskCPF = (value) => {
-  const digits = value.replace(/\D/g, '').slice(0, 11);
-  if (digits.length <= 3) return digits;
-  if (digits.length <= 6) return `${digits.slice(0, 3)}.${digits.slice(3)}`;
-  if (digits.length <= 9) return `${digits.slice(0, 3)}.${digits.slice(3, 6)}.${digits.slice(6)}`;
-  return `${digits.slice(0, 3)}.${digits.slice(3, 6)}.${digits.slice(6, 9)}-${digits.slice(9)}`;
-};
+export function maskCNPJ(value) {
+  if (!value) return '';
+  value = value.replace(/\D/g, '');
+  if (value.length > 14) value = value.slice(0, 14);
+  if (value.length > 12) {
+    value = value.slice(0, 12) + '-' + value.slice(12);
+  }
+  if (value.length > 9) {
+    value = value.slice(0, 9) + '/' + value.slice(9);
+  }
+  if (value.length > 6) {
+    value = value.slice(0, 6) + '.' + value.slice(6);
+  }
+  if (value.length > 3) {
+    value = value.slice(0, 3) + '.' + value.slice(3);
+  }
+  return value;
+}
 
-export const maskMoney = (value) => {
-  const digits = value.replace(/\D/g, '');
-  const amount = (parseInt(digits, 10) / 100).toFixed(2);
-  return amount.replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-};
+export function maskMoney(value) {
+  if (!value) return '';
+  value = value.replace(/\D/g, '');
+  value = (parseInt(value, 10) / 100).toFixed(2);
+  value = value.replace('.', ',');
+  value = value.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+  return 'R$ ' + value;
+}
 
-// >>> FIM DO CÓDIGO NOVO <<<
+export const mascaraTelefone = maskPhone;
+export const mascaraCNPJ = maskCNPJ;
