@@ -1,12 +1,24 @@
 from .base import *
 from decouple import config
 import dj_database_url
+import os
 
 DATABASES = {
     'default': dj_database_url.config(
         default=config('DATABASE_URL')
     )
 }
+
+ALLOWED_HOSTS = ['lacofavela-grdzfab6b0bqhygj.brazilsouth-01.azurewebsites.net']
+
+# 1. CSRF trusted origins – necessário para o POST do admin
+CSRF_TRUSTED_ORIGINS = [
+    'https://lacofavela-grdzfab6b0bqhygj.brazilsouth-01.azurewebsites.net'
+]
+
+# 2. Configurações de proxy reverso (Azure App Service usa front-end)
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+USE_X_FORWARDED_HOST = True
 
 INSTALLED_APPS += ['cloudinary', 'cloudinary_storage']
 
