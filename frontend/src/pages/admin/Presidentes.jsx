@@ -1,38 +1,208 @@
 import React, { useState } from 'react';
-import { cadastrarPresidente } from '../../services/api'
 import { mascaraTelefone, mascaraCNPJ } from '../../utils/masks';
+import { usePresidentes } from '../../hooks/usePresidentes';
+import { ESTADO_INICIAL_FORM, OPCOES_TRABALHO, OPCOES_RENDA, OPCOES_MEMBROS } from '../../utils/constants/presidentes';
+
+// Dados fictícios simplificados apenas com os campos necessários
+const dadosFicticios = [
+  {
+    id: 1,
+    nome: "João Silva",
+    comunidade: "Vila Nova Esperança",
+    cota: 150,
+    ranking: 3,
+    visitas: 45,
+    eventos: 12,
+    penalizacao: 0,
+    score: 85,
+    status: "Ativo"
+  },
+  {
+    id: 2,
+    nome: "Maria Santos",
+    comunidade: "Jardim das Flores",
+    cota: 89,
+    ranking: 5,
+    visitas: 32,
+    eventos: 8,
+    penalizacao: 2,
+    score: 72,
+    status: "Ativo"
+  },
+  {
+    id: 3,
+    nome: "Pedro Oliveira",
+    comunidade: "Sol Nascente",
+    cota: 45,
+    ranking: 8,
+    visitas: 18,
+    eventos: 5,
+    penalizacao: 5,
+    score: 45,
+    status: "Inativo"
+  },
+  {
+    id: 4,
+    nome: "Ana Costa",
+    comunidade: "Centro",
+    cota: 234,
+    ranking: 1,
+    visitas: 89,
+    eventos: 25,
+    penalizacao: 0,
+    score: 98,
+    status: "Ativo"
+  },
+  {
+    id: 5,
+    nome: "Carlos Ferreira",
+    comunidade: "Vila Verde",
+    cota: 178,
+    ranking: 2,
+    visitas: 67,
+    eventos: 18,
+    penalizacao: 1,
+    score: 90,
+    status: "Ativo"
+  },
+  {
+    id: 6,
+    nome: "Fernanda Lima",
+    comunidade: "Morro Alto",
+    cota: 92,
+    ranking: 6,
+    visitas: 28,
+    eventos: 7,
+    penalizacao: 3,
+    score: 65,
+    status: "Ativo"
+  },
+  {
+    id: 7,
+    nome: "Ricardo Alves",
+    comunidade: "Industrial",
+    cota: 123,
+    ranking: 4,
+    visitas: 53,
+    eventos: 14,
+    penalizacao: 1,
+    score: 78,
+    status: "Ativo"
+  },
+  {
+    id: 8,
+    nome: "Patrícia Souza",
+    comunidade: "Jardim América",
+    cota: 34,
+    ranking: 9,
+    visitas: 12,
+    eventos: 3,
+    penalizacao: 8,
+    score: 35,
+    status: "Inativo"
+  },
+  {
+    id: 9,
+    nome: "Luciana Martins",
+    comunidade: "Nova Conquista",
+    cota: 67,
+    ranking: 7,
+    visitas: 23,
+    eventos: 6,
+    penalizacao: 4,
+    score: 55,
+    status: "Ativo"
+  },
+  {
+    id: 10,
+    nome: "Roberto Nunes",
+    comunidade: "Novo Horizonte",
+    cota: 145,
+    ranking: 10,
+    visitas: 9,
+    eventos: 2,
+    penalizacao: 10,
+    score: 25,
+    status: "Inativo"
+  }
+];
 
 const Presidentes = () => {
-  const presidentes = [
-    { rank: 1, nome: 'João Silva', setor: 'Norte', visitas: 50, meta: 50, score: 98, status: 'Ativo' },
-    { rank: 2, nome: 'Maria Santos', setor: 'Sul', visitas: 45, meta: 50, score: 90, status: 'Ativo' },
-    { rank: 3, nome: 'Pedro Costa', setor: 'Leste', visitas: 31, meta: 50, score: 61, status: 'Alerta' }
-  ];
-
   const [mostrarForm, setMostrarForm] = useState(false);
+  const [form, setForm] = useState(ESTADO_INICIAL_FORM);
+  const [cota, setCota] = useState({ id: '', valor: '' });
+  const [ordenacao, setOrdenacao] = useState({ tipo: 'ranking', ordem: 'desc' });
 
-  const [carregando, setCarregando] = useState(false);
+  // Usando dados fictícios para teste - DEPOIS VOLTAR PARA O ORIGINAL
+  const presidentes = dadosFicticios;
+  const loading = false;
+  const carregando = false;
+  const erros = {};
+  const cadastrar = async (formData, callback) => {
+    console.log("Cadastrar presidente:", formData);
+    if (callback) callback();
+    alert("Cadastro simulado com sucesso!");
+    return true;
+  };
+  const atualizarCota = async (id, valor) => {
+    console.log(`Atualizando cota do presidente ${id} para ${valor}`);
+    alert(`Cota atualizada simulada para ${valor}`);
+    return true;
+  };
 
-  const [erros, setErros] = useState({});
+  // PARA VOLTAR PARA API ORIGINAL, DESCOMENTE A LINHA ABAIXO E COMENTE AS DE CIMA
+  // const { presidentes, loading, carregando, erros, cadastrar, atualizarCota } = usePresidentes();
 
-  const [dadosForm, criarDadosForm] = useState({
-    nome: '',
-    organizacao: '',
-    cnpj: '',
-    endereco: '',
-    telefone: '',
-    redes_sociais: '',
-    comunidade: '',
-    situacao_trabalho: '',
-    renda_familiar: '',
-    num_membros: '',
-    termo_aceito: false,
-    cota: '',
-  })
+  if (loading) return <p>Carregando...</p>;
+
+  // Função para ordenar os presidentes
+  const presidentesOrdenados = () => {
+    const ordenados = [...presidentes];
+    
+    return ordenados.sort((a, b) => {
+      let valorA, valorB;
+      
+      switch(ordenacao.tipo) {
+        case 'ranking':
+          valorA = b.ranking || 0;
+          valorB = a.ranking || 0;
+          break;
+        case 'visitas':
+          valorA = a.visitas || 0;
+          valorB = b.visitas || 0;
+          break;
+        case 'participacao':
+          valorA = a.eventos || 0;
+          valorB = b.eventos || 0;
+          break;
+        case 'cotas':
+          valorA = a.cota || 0;
+          valorB = b.cota || 0;
+          break;
+        default:
+          valorA = a.id;
+          valorB = b.id;
+      }
+      
+      if (ordenacao.ordem === 'desc') {
+        return valorB - valorA;
+      } else {
+        return valorA - valorB;
+      }
+    });
+  };
+
+  // Função para alterar ordenação
+  const handleOrdenar = (tipo) => {
+    setOrdenacao(prev => ({
+      tipo,
+      ordem: prev.tipo === tipo && prev.ordem === 'desc' ? 'asc' : 'desc'
+    }));
+  };
 
   const handleChange = (event) => {
     let { name, value, type, checked } = event.target;
-
+    
     if (name === 'telefone') {
       value = mascaraTelefone(value);
     }
@@ -40,285 +210,221 @@ const Presidentes = () => {
       value = mascaraCNPJ(value);
     }
 
-    criarDadosForm((estadoAnterior) => ({
-      ...estadoAnterior,
+    setForm((prev) => ({
+      ...prev,
       [name]: type === 'checkbox' ? checked : value
     }));
-
-    if (erros[name]) {
-      setErros((errosAnteriores) => ({
-        ...errosAnteriores,
-        [name]: null
-      }));
-    }
   };
 
   const envioForm = async (event) => {
-    event.preventDefault()
-    setCarregando(true);
-    setErros({})
-
-    try {
-      const resposta = await cadastrarPresidente(dadosForm);
-      console.log("Presidente cadastrado com sucesso!", resposta);
-      alert("Presidente cadastrado com sucesso!");
-
-      criarDadosForm({
-        nome: '',
-        organizacao: '',
-        cnpj: '',
-        endereco: '',
-        telefone: '',
-        redes_sociais: '',
-        comunidade: '',
-        situacao_trabalho: '',
-        renda_familiar: '',
-        num_membros: '',
-        termo_aceito: false,
-        cota: '',
-      });
-
-    } catch (erro) {
-      try {
-        const mensagensErro = JSON.parse(erro.message);
-        setErros(mensagensErro);
-      } catch {
-        alert("Erro inesperado de conexão.");
-      }
-    } finally {
-      setCarregando(false);
+    event.preventDefault();
+    const sucesso = await cadastrar(form, () => setForm(ESTADO_INICIAL_FORM));
+    if (sucesso) {
+      // Opcional: fechar form após sucesso
     }
-  }
+  };
+
+  const handleSalvarCota = async () => {
+    if (!cota.id || !cota.valor) {
+      alert("Selecione um presidente e digite a nova cota.");
+      return;
+    }
+    const sucesso = await atualizarCota(cota.id, cota.valor);
+    if (sucesso) {
+      setCota({ id: '', valor: '' });
+    }
+  };
+
+  const presidentesRender = presidentesOrdenados();
+
+  // Função para definir a cor do status
+  const getStatusColor = (status) => {
+    return status === 'Ativo' ? { backgroundColor: '#D9D9D9', fontWeight: 'bold' } : { backgroundColor: '#f44336', fontWeight: 'bold' };
+  };
+
+  // Função para definir a cor da penalização
+  const getPenalizacaoColor = (penalizacao) => {
+    if (penalizacao === 0) return { color: '#4CAF50' };
+    if (penalizacao <= 3) return { color: '#FF9800' };
+    return { color: '#f44336' };
+  };
 
   return (
-    <div className="view-section active">
-      <div className="header">
-        <h2>Presidentes</h2>
-        <div className="flex gap-1">
-          <button className="btn btn-outline">Exportar lista</button>
-          <button className="btn btn-primary" onClick={() => setMostrarForm(!mostrarForm)}>Novo presidente</button>
+    <div className="presi">
+      <div className="header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
+        <h2 style={{ margin: 0 }}>Gestão de Presidentes</h2>
+        <div style={{ display: 'flex', gap: '1rem' }}>
+          <button className="btn btn-outline" style={{ padding: '0.5rem 1rem', cursor: 'pointer' }}>Exportar lista</button>
+          <button 
+            className="btn btn-primary" 
+            onClick={() => setMostrarForm(!mostrarForm)}
+            style={{ padding: '0.5rem 1rem', backgroundColor: '#4A4A4A', color: '#fff', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
+          >
+            {mostrarForm ? 'Fechar Formulário' : 'Novo Presidente'}
+          </button>
         </div>
       </div>
-
-      {mostrarForm && (
-        <form onSubmit={envioForm} className="card" style={{ marginTop: '1rem' }}>
-          <h4>Cadastrar Novo Presidente</h4>
-
-          <div className="grid-3">
-            <div>
-              <label>Nome:</label>
-              <input
-                type="text"
-                name="nome"
-                value={dadosForm.nome}
-                onChange={handleChange}
-                required
-              />
-              {erros.nome && <span style={{ color: 'red', fontSize: '12px' }}>{erros.nome}</span>}
+    
+      <div className="view-section active" style={{ padding: '2rem' }}>
+        {mostrarForm && (
+          <form onSubmit={envioForm} className="card" style={{ marginTop: '1rem', padding: '1.5rem', backgroundColor: '#fff', borderRadius: '8px', boxShadow: '0 2px 4px rgba(0,0,0,0.1)', marginBottom: '2rem' }}>
+            <h4 style={{ marginTop: 0, marginBottom: '1.5rem' }}>Cadastrar Novo Presidente</h4>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1.5rem', marginBottom: '1.5rem' }}>
+              <div>
+                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>Nome:</label>
+                <input type="text" name="nome" value={form.nome} onChange={handleChange} required style={{ width: '100%', padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc' }} />
+              </div>
+              <div>
+                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>Comunidade:</label>
+                <input type="text" name="comunidade" value={form.comunidade} onChange={handleChange} required style={{ width: '100%', padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc' }} />
+              </div>
+              <div>
+                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>Cota Inicial:</label>
+                <input type="number" name="cota" value={form.cota} onChange={handleChange} required style={{ width: '100%', padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc' }} />
+              </div>
             </div>
-
-            <div>
-              <label>Organização:</label>
-              <input
-                type="text"
-                name="organizacao"
-                value={dadosForm.organizacao}
-                onChange={handleChange}
-                required
-              />
-              {erros.organizacao && <span style={{ color: 'red', fontSize: '12px' }}>{erros.organizacao}</span>}
-            </div>
-
-            <div>
-              <label>CNPJ:</label>
-              <input
-                type="text"
-                name="cnpj"
-                value={dadosForm.cnpj}
-                onChange={handleChange}
-                maxLength="18"
-                required
-              />
-              {erros.cnpj && <span style={{ color: 'red', fontSize: '12px' }}>{erros.cnpj}</span>}
-            </div>
-
-            <div>
-              <label>Endereço:</label>
-              <input
-                type="text"
-                name="endereco"
-                value={dadosForm.endereco}
-                onChange={handleChange}
-                required
-              />
-              {erros.endereco && <span style={{ color: 'red', fontSize: '12px' }}>{erros.endereco}</span>}
-            </div>
-
-            <div>
-              <label>Telefone:</label>
-              <input
-                type="text"
-                name="telefone"
-                value={dadosForm.telefone}
-                onChange={handleChange}
-                maxLength="15"
-                required
-              />
-              {erros.telefone && <span style={{ color: 'red', fontSize: '12px' }}>{erros.telefone}</span>}
-            </div>
-
-            <div>
-              <label>Redes Sociais:</label>
-              <input
-                type="text"
-                name="redes_sociais"
-                value={dadosForm.redes_sociais}
-                onChange={handleChange}
-                required
-              />
-              {erros.redes_sociais && <span style={{ color: 'red', fontSize: '12px' }}>{erros.redes_sociais}</span>}
-            </div>
-
-            <div>
-              <label>Comunidade:</label>
-              <input
-                type="text"
-                name="comunidade"
-                value={dadosForm.comunidade}
-                onChange={handleChange}
-                required
-              />
-              {erros.comunidade && <span style={{ color: 'red', fontSize: '12px' }}>{erros.comunidade}</span>}
-            </div>
-
-            <div>
-              <label>Possui emprego atualmente?</label>
-              <select
-                name="situacao_trabalho"
-                value={dadosForm.situacao_trabalho}
-                onChange={handleChange}
-              >
-                <option value="">Selecione...</option>
-                <option value="sim">Sim</option>
-                <option value="nao">Não</option>
-                <option value="empreendedor">Sou empreendedor</option>
-              </select>
-              {erros.situacao_trabalho && <span style={{ color: 'red', fontSize: '12px' }}>{erros.situacao_trabalho}</span>}
-            </div>
-
-            <div>
-              <label>Renda Familiar:</label>
-              <select
-                name="renda_familiar"
-                value={dadosForm.renda_familiar}
-                onChange={handleChange}
-              >
-                <option value="">Selecione...</option>
-                <option value="menos_um">Menos de um salário mínimo</option>
-                <option value="um">Um salário mínimo</option>
-                <option value="um_a_dois">De um a dois salários mínimos</option>
-                <option value="acima_dois">Acima de dois salários mínimos</option>
-              </select>
-              {erros.renda_familiar && <span style={{ color: 'red', fontSize: '12px' }}>{erros.renda_familiar}</span>}
-            </div>
-
-            <div>
-              <label>Número de membros da família:</label>
-              <select
-                name="num_membros"
-                value={dadosForm.num_membros}
-                onChange={handleChange}
-              >
-                <option value="">Selecione...</option>
-                <option value="1">1 integrante</option>
-                <option value="2">2 integrantes</option>
-                <option value="3">3 integrantes</option>
-                <option value="4">4 integrantes</option>
-                <option value="5">5 integrantes</option>
-                <option value="6">Acima de 5 integrantes</option>
-              </select>
-              {erros.num_membros && <span style={{ color: 'red', fontSize: '12px' }}>{erros.num_membros}</span>}
-            </div>
-
-            <div>
-              <label>Cota:</label>
-              <input
-                type="number"
-                name="cota"
-                value={dadosForm.cota}
-                onChange={handleChange}
-                required
-              />
-              {erros.cota && <span style={{ color: 'red', fontSize: '12px' }}>{erros.cota}</span>}
-            </div>
-
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', gridColumn: 'span 3', marginTop: '0.5rem' }}>
-              <label >Confirmo que o presidente aceitou os termos</label>
-              <input
-                type="checkbox"
-                id="termo_aceito"
-                name="termo_aceito"
-                checked={dadosForm.termo_aceito}
-                onChange={handleChange}
-                required
-              />
-              {erros.termo_aceito && <span style={{ color: 'red', fontSize: '12px' }}>{erros.termo_aceito}</span>}
+            <button type="submit" className="btn btn-primary" disabled={carregando} style={{ padding: '0.75rem 1.5rem', backgroundColor: '#333', color: '#fff', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
+              {carregando ? 'Salvando...' : 'Salvar Presidente'}
+            </button>
+          </form>
+        )}
+        
+        {/* Botões de Ordenação */}
+        <div className="card" style={{ padding: '1rem', backgroundColor: '#fff', borderRadius: '8px', boxShadow: '0 2px 4px rgba(0,0,0,0.1)', marginBottom: '2rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
+            <h3 style={{ margin: 0 }}>Ordenar por:</h3>
+            
+            <button 
+              className="badge"
+              onClick={() => handleOrdenar('ranking')}
+              style={{ 
+                backgroundColor: ordenacao.tipo === 'ranking' ? '#333' : '#DFDFDF',
+                color: ordenacao.tipo === 'ranking' ? '#fff' : '#333',
+                cursor: 'pointer',
+                border: 'none'
+              }}
+            >
+              Ranking {ordenacao.tipo === 'ranking' && (ordenacao.ordem === 'desc' ? '↓' : '↑')}
+            </button>
+            
+            <button 
+              className="badge"
+              onClick={() => handleOrdenar('visitas')}
+              style={{ 
+                backgroundColor: ordenacao.tipo === 'visitas' ? '#333' : '#DFDFDF',
+                color: ordenacao.tipo === 'visitas' ? '#fff' : '#333',
+                cursor: 'pointer',
+                border: 'none'
+                
+              }}
+            >
+              Visitas {ordenacao.tipo === 'visitas' && (ordenacao.ordem === 'desc' ? '↓' : '↑')}
+            </button>
+            
+            <button 
+              className="badge"
+              onClick={() => handleOrdenar('participacao')}
+              style={{ 
+                backgroundColor: ordenacao.tipo === 'participacao' ? '#333' : '#DFDFDF',
+                color: ordenacao.tipo === 'participacao' ? '#fff' : '#333',
+                cursor: 'pointer',
+                border: 'none'
+              }}
+            >
+              Eventos {ordenacao.tipo === 'participacao' && (ordenacao.ordem === 'desc' ? '↓' : '↑')}
+            </button>
+            
+            <button 
+              className="badge"
+              onClick={() => handleOrdenar('cotas')}
+              style={{ 
+                backgroundColor: ordenacao.tipo === 'cotas' ? '#333' : '#DFDFDF',
+                color: ordenacao.tipo === 'cotas' ? '#fff' : '#333',
+                cursor: 'pointer',
+                border: 'none'
+              }}
+            >
+              Cotas {ordenacao.tipo === 'cotas' && (ordenacao.ordem === 'desc' ? '↓' : '↑')}
+            </button>
+            
+            <div style={{ marginLeft: 'auto', fontSize: '12px', color: '#888' }}>
+              {ordenacao.ordem === 'desc' ? 'Maior primeiro' : 'Menor primeiro'}
             </div>
           </div>
-
-          <button type="submit" className="btn btn-primary" disabled={carregando}>
-            {carregando ? 'Salvando...' : 'Salvar Presidente'}
-          </button>
-        </form>
-      )}
-
-      <div className="card">
-        <div className="filter-group">
-          <span className="text-sm" style={{ lineHeight: '2' }}>Ordenar:</span>
-          <span className="filter-chip active">Ranking Geral</span>
-          <span className="filter-chip">Visitas</span>
-          <span className="filter-chip">Cotas</span>
         </div>
-        <table>
-          <thead>
-            <tr><th>Rank</th><th>Presidente</th><th>Setor</th><th>Cota</th><th>Score</th><th>Status</th><th>Ação</th></tr>
-          </thead>
-          <tbody>
-            {presidentes.map(p => (
-              <tr key={p.rank}>
-                <td>{p.rank}</td>
-                <td><strong>{p.nome}</strong></td>
-                <td>{p.setor}</td>
-                <td>
-                  {p.visitas}/{p.meta}
-                  <div className="progress-container"><div className="progress-bar" style={{ width: `${(p.visitas / p.meta) * 100}%` }}></div></div>
-                </td>
-                <td>{p.score}</td>
-                <td><span className="badge" style={p.status === 'Alerta' ? { background: '#ffcc80' } : {}}>{p.status}</span></td>
-                <td><button className="btn btn-outline">Editar</button></td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
 
-      <div className="card" style={{ background: '#e9e9e9' }}>
-        <h4>Editar Cota do Presidente</h4>
-        <p className="text-sm mb-2">Defina a meta de famílias para cada presidente</p>
-        <div className="grid-3" style={{ marginTop: '1rem' }}>
-          <select style={{ padding: '0.5rem', border: '1px solid #ccc', borderRadius: '4px' }}>
-            <option>João Silva</option>
-            <option>Maria Santos</option>
-            <option>Pedro Costa</option>
-          </select>
-          <input type="number" value="50" style={{ padding: '0.5rem', border: '1px solid #ccc', borderRadius: '4px' }} />
-          <button className="btn btn-primary">Salvar cota</button>
+        {/* Tabela de Presidentes */}
+        <div className="card" style={{ padding: '1.5rem', backgroundColor: '#fff', borderRadius: '8px', boxShadow: '0 2px 4px rgba(0,0,0,0.1)', marginBottom: '2rem', overflowX: 'auto' }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: '800px' }}>
+            <thead>
+              <tr style={{ borderBottom: '2px solid #eee', textAlign: 'center', backgroundColor: '#f9f9f9' }}>
+                <th style={{ padding: '0.75rem', textAlign: 'center' }}>RANKING</th>
+                <th style={{ padding: '0.75rem', textAlign: 'center' }}>PRESIDENTE</th>
+                <th style={{ padding: '0.75rem', textAlign: 'center' }}>SETOR</th>
+                <th style={{ padding: '0.75rem', textAlign: 'center' }}>COTAS</th>
+                <th style={{ padding: '0.75rem', textAlign: 'center' }}>VISITAS</th>
+                <th style={{ padding: '0.75rem', textAlign: 'center' }}>EVENTOS</th>
+                <th style={{ padding: '0.75rem', textAlign: 'center' }}>PENALIZAÇÃO</th>
+                <th style={{ padding: '0.75rem', textAlign: 'center' }}>SCORE</th>
+                <th style={{ padding: '0.75rem', textAlign: 'center' }}>STATUS</th>
+              </tr>
+            </thead>
+            <tbody>
+              {presidentesRender.length === 0 ? (
+                <tr>
+                  <td colSpan="9" style={{ textAlign: 'center', padding: '2rem', color: '#888' }}>Nenhum presidente cadastrado ainda.</td>
+                </tr>
+              ) : (
+                presidentesRender.map(p => (
+                  <tr key={p.id} style={{ borderBottom: '1px solid #eee', transition: 'background-color 0.3s', textAlign: 'center' }}>
+                    <td style={{ padding: '0.75rem', fontWeight: 'bold', textAlign: 'center' }}>#{p.ranking}</td>
+                    <td style={{ padding: '0.75rem', textAlign: 'center' }}><strong>{p.nome}</strong></td>
+                    <td style={{ padding: '0.75rem', textAlign: 'center' }}>{p.comunidade}</td>
+                    <td style={{ padding: '0.75rem', fontWeight: 'bold', color: '#2196F3', textAlign: 'center' }}>{p.cota}</td>
+                    <td style={{ padding: '0.75rem', textAlign: 'center' }}>{p.visitas}</td>
+                    <td style={{ padding: '0.75rem', textAlign: 'center' }}>{p.eventos}</td>
+                    <td style={{ padding: '0.75rem', textAlign: 'center', ...getPenalizacaoColor(p.penalizacao) }}>{p.penalizacao}</td>
+                    <td style={{ padding: '0.75rem', fontWeight: 'bold', textAlign: 'center' }}>{p.score}</td>
+                    <td  style={{ textAlign: 'center', ...getStatusColor(p.status) }}>{p.status}</td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Editar Cota */}
+        <div className="card" style={{ padding: '1.5rem', backgroundColor: '#f5f5f5', borderRadius: '8px' }}>
+          <h4>Editar Cota do Presidente</h4>
+          <p style={{ color: '#666', fontSize: '14px', marginBottom: '1rem' }}>Defina a meta de famílias para cada presidente</p>
+          <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+            <select 
+              value={cota.id} 
+              onChange={(e) => setCota({ ...cota, id: e.target.value })}
+              style={{ padding: '0.5rem', border: '1px solid #ccc', borderRadius: '4px', flex: '1', minWidth: '200px' }}
+            >
+              <option value="">Selecione um presidente...</option>
+              {presidentes.map(p => (
+                <option key={p.id} value={p.id}>{p.nome}</option>
+              ))}
+            </select>
+
+            <input 
+              type="number" 
+              value={cota.valor} 
+              onChange={(e) => setCota({ ...cota, valor: e.target.value })}
+              placeholder="Ex: 50" 
+              style={{ padding: '0.5rem', border: '1px solid #ccc', borderRadius: '4px', width: '150px' }} 
+            />
+            
+            <button className="btn btn-primary" onClick={handleSalvarCota} style={{ padding: '0.5rem 1.5rem', backgroundColor: '#4A4A4A', color: '#fff', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
+              Salvar cota
+            </button>
+          </div>
         </div>
       </div>
     </div>
-
   );
 };
-
 
 export default Presidentes;

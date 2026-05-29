@@ -5,3 +5,43 @@ class PresidenteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Presidente
         fields = '__all__'
+
+class CotaSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Presidente
+        fields = ['cota']
+
+class PresidenteRankingSerializer(serializers.ModelSerializer):
+    # Campos dinâmicos calculados na hora do GET
+    pontuacao_engajamento = serializers.SerializerMethodField()
+    renda_familiar_display = serializers.CharField(source='get_renda_familiar_display', read_only=True)
+    situacao_trabalho_display = serializers.CharField(source='get_situacao_trabalho_display', read_only=True)
+
+    class Meta:
+        model = Presidente
+        fields = [
+            'id', 'nome', 'organizacao', 'comunidade', 'endereco', 'telefone',
+            'redes_sociais',
+            'situacao_trabalho', 'situacao_trabalho_display',
+            'renda_familiar', 'renda_familiar_display',
+            'num_membros', 'termo_aceito', 'cota', 'ativo', 
+            'pontuacao_engajamento'
+        ]
+
+    def get_pontuacao_engajamento(self, obj):
+        pontos = 0
+
+        # 1. Comprometimento: Aceitou o termo de liderança?
+        if obj.termo_aceito:
+            pontos += 40
+
+        # 2. Volume de Trabalho: Multiplica a cota de famílias por 10
+        if obj.cota > 0:
+            pontos += (obj.cota * 10)
+
+        # 3. Comunicação: Se preencheu as redes sociais ganha bônus
+        if obj.redes_sociais and obj.redes_sociais.strip():
+            pontos += 20
+
+        return pontos

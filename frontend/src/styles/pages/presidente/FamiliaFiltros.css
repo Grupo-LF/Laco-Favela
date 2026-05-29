@@ -1,0 +1,43 @@
+.familia-filtros {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.familia-filtros__busca {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  background: #f5f5f5;
+  border-radius: 8px;
+  padding: 10px 14px;
+}
+
+.familia-filtros__icone {
+  width: 16px;
+  height: 16px;
+  background: #ccc;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.familia-filtros__input {
+  border: none;
+  background: transparent;
+  font-size: 13px;
+  color: #333;
+  width: 100%;
+  outline: none;
+}
+
+.familia-filtros__select {
+  background: #f5f5f5;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 13px;
+  color: #333;
+  cursor: pointer;
+  outline: none;
+}

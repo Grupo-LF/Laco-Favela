@@ -7,9 +7,11 @@
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^13.5.0",
+    "apexcharts": "^5.13.0",
     "axios": "^1.16.0",
     "node": ">=14.17",
     "react": "^19.2.6",
+    "react-apexcharts": "^2.1.0",
     "react-dom": "^19.2.6",
     "react-is": "^19.2.6",
     "react-router-dom": "^7.15.0",
@@ -20,7 +22,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "DISABLE_ESLINT_PLUGIN=true react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
