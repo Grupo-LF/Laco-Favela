@@ -26,10 +26,43 @@ const getHeaders = () => {
   };
 };
 
-// ==================== FAMÍLIAS ====================
-export const listarFamilias = async () => {
-  const res = await fetch(`${API_BASE}/familias/`);
-  if (!res.ok) throw new Error('Erro ao listar famílias');
+// Exemplo para o app "familias"
+export const listarFamilias = async (params = {}) => {
+  const queryParams = new URLSearchParams();
+  Object.entries(params).forEach(([key, value]) => {
+    if (value !== undefined && value !== null && value !== '') {
+      queryParams.set(key, value);
+    }
+  });
+  const query = queryParams.toString();
+  const url = query ? `${API_BASE}/familias/?${query}` : `${API_BASE}/familias/`;
+  const res = await fetch(url);
+  if (!res.ok) {
+    const errorData = await res.json().catch(() => ({}));
+    throw new Error(JSON.stringify(errorData));
+  }
+  return res.json();
+};
+
+export const obterFamilia = async (id) => {
+  const res = await fetch(`${API_BASE}/familias/${id}/`);
+  if (!res.ok) {
+    const errorData = await res.json().catch(() => ({}));
+    throw new Error(JSON.stringify(errorData));
+  }
+  return res.json();
+};
+
+export const atualizarStatusFamilia = async (id, statusValue) => {
+  const res = await fetch(`${API_BASE}/familias/${id}/set-status/`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ status: statusValue }),
+  });
+  if (!res.ok) {
+    const errorData = await res.json().catch(() => ({}));
+    throw new Error(JSON.stringify(errorData));
+  }
   return res.json();
 };
 
@@ -79,7 +112,16 @@ export const atualizarCotaPresidente = async (id, novaCota) => {
   return res.json();
 };
 
-// ==================== CICLOS (FORMULÁRIOS) ====================
+export const listarRespostasPorFamilia = async (familiaId) => {
+  const res = await fetch(`${API_BASE}/respostas/?familia=${familiaId}`);
+  if (!res.ok) {
+    const errorData = await res.json().catch(() => ({}));
+    throw new Error(JSON.stringify(errorData));
+  }
+  return res.json();
+};
+
+// Exemplo para o app "formularios" (Ciclo de coleta)
 export const listarCiclos = async () => {
   const res = await fetch(`${API_BASE}/ciclos/`);
   if (!res.ok) throw new Error('Erro ao listar ciclos');
