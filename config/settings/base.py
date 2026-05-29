@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'rest_framework.authtoken',
     'apps.core',
+    'apps.dadosGerais',
     'apps.familias',
     'apps.feedbacks',
     'apps.formularios',

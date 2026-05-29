@@ -6,6 +6,7 @@ import FamiliasPage from './pages/presidente/FamiliasPage';
 import MeuIndicadorPage from './pages/presidente/MeuIndicadorPage';
 import RankingPage from './pages/presidente/RankingPage';
 import PerfilPage from './pages/presidente/PerfilPage';
+import FormularioPage from './pages/presidente/FormularioPage';
 
 function AppPresidente() {
   const [activeView, setActiveView] = useState('home');
