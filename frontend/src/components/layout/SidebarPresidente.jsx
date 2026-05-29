@@ -26,7 +26,10 @@ const SidebarPresidente = ({ activeView, onNavigate }) => {
       <div className="logo-container">
         <div className="logo">Logo</div>
       </div>
-      <div className="user-profile">
+      {/* Adicione o estilo de cursor pointer e o evento de clique na div do perfil */}
+      <div className={`user-profile ${activeView === 'perfil' ? 'active' : ''}`} 
+        style={{ cursor: 'pointer' }}
+        onClick={() => onNavigate('perfil')}>
         <div className="user-avatar">NS</div>
         <h5 style={{ marginTop: '0.5rem', fontSize: '0.9rem' }}>Nome e Sobrenome</h5>
         <span style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.7)' }}>Presidente</span>
