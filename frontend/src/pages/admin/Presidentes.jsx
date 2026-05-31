@@ -210,9 +210,6 @@ const Presidentes = () => {
     if (name === 'cnpj') {
       value = mascaraCNPJ(value);
     }
-
-    setForm((prev) => ({
-      ...prev,
     setForm((prev) => ({
       ...prev,
       [name]: type === 'checkbox' ? checked : value
@@ -229,6 +226,7 @@ const Presidentes = () => {
       // Opcional: fechar form após sucesso
     }
   };
+}
 
   const handleSalvarCota = async () => {
     if (!cota.id || !cota.valor) {
@@ -446,5 +444,6 @@ const Presidentes = () => {
     </div>
   );
 };
-
+}
+  
 export default Presidentes;
