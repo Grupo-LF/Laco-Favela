@@ -6,10 +6,11 @@ from rest_framework import viewsets
 
 urlpatterns = [
 
-    path('', ListaCreatePresidentesView.as_view()), 
-    path('<int:pk>/', AtualizarCotaView.as_view()),
+    path('presidentes/', ListaCreatePresidentesView.as_view()), 
+    path('presidentes/ranking/', RankingPresidentesView.as_view()),
+    path('presidentes/<int:pk>/', AtualizarCotaView.as_view()),
 
-    path('ranking/', RankingPresidentesView.as_view()),
+
 
 
 ]
