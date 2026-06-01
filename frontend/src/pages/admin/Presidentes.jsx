@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import React, { useState } from 'react';
 import { mascaraTelefone, mascaraCNPJ } from '../../utils/masks';
 import { usePresidentes } from '../../hooks/usePresidentes';
 import { ESTADO_INICIAL_FORM, OPCOES_TRABALHO, OPCOES_RENDA, OPCOES_MEMBROS } from '../../utils/constants/presidentes';

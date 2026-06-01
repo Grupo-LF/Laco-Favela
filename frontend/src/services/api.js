@@ -6,10 +6,14 @@ const api = axios.create({
   baseURL: process.env.REACT_APP_API_URL || 'http://localhost:8000/api',
 });
 
+// frontend/src/services/api.js - Versão compatível
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('access_token');
+  // Tenta pegar pelos dois nomes
+  const token = localStorage.getItem('token') || localStorage.getItem('access_token');
   if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
+    // Detecta o tipo de token (Bearer ou Token)
+    const tokenType = localStorage.getItem('token') ? 'Token' : 'Bearer';
+    config.headers.Authorization = `${tokenType} ${token}`;
   }
   return config;
 });
@@ -197,3 +201,4 @@ export default {
 
 };
 //Novos endpoints para ciclos e respostas
+export {api}
