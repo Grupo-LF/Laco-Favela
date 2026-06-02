@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { listarFamilias } from '../../services/api';
+import { listarFamilias } from '../../services/familias';
 
 const STATUS_LABELS = {
   pendente: 'Pendente',

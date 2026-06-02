@@ -2,130 +2,7 @@ import React, { useState } from 'react';
 import { mascaraTelefone, mascaraCNPJ } from '../../utils/masks';
 import { usePresidentes } from '../../hooks/usePresidentes';
 import { ESTADO_INICIAL_FORM, OPCOES_TRABALHO, OPCOES_RENDA, OPCOES_MEMBROS } from '../../utils/constants/presidentes';
-
-// Dados fictícios simplificados apenas com os campos necessários
-const dadosFicticios = [
-  {
-    id: 1,
-    nome: "João Silva",
-    comunidade: "Vila Nova Esperança",
-    cota: 150,
-    ranking: 3,
-    visitas: 45,
-    eventos: 12,
-    penalizacao: 0,
-    score: 85,
-    status: "Ativo"
-  },
-  {
-    id: 2,
-    nome: "Maria Santos",
-    comunidade: "Jardim das Flores",
-    cota: 89,
-    ranking: 5,
-    visitas: 32,
-    eventos: 8,
-    penalizacao: 2,
-    score: 72,
-    status: "Ativo"
-  },
-  {
-    id: 3,
-    nome: "Pedro Oliveira",
-    comunidade: "Sol Nascente",
-    cota: 45,
-    ranking: 8,
-    visitas: 18,
-    eventos: 5,
-    penalizacao: 5,
-    score: 45,
-    status: "Inativo"
-  },
-  {
-    id: 4,
-    nome: "Ana Costa",
-    comunidade: "Centro",
-    cota: 234,
-    ranking: 1,
-    visitas: 89,
-    eventos: 25,
-    penalizacao: 0,
-    score: 98,
-    status: "Ativo"
-  },
-  {
-    id: 5,
-    nome: "Carlos Ferreira",
-    comunidade: "Vila Verde",
-    cota: 178,
-    ranking: 2,
-    visitas: 67,
-    eventos: 18,
-    penalizacao: 1,
-    score: 90,
-    status: "Ativo"
-  },
-  {
-    id: 6,
-    nome: "Fernanda Lima",
-    comunidade: "Morro Alto",
-    cota: 92,
-    ranking: 6,
-    visitas: 28,
-    eventos: 7,
-    penalizacao: 3,
-    score: 65,
-    status: "Ativo"
-  },
-  {
-    id: 7,
-    nome: "Ricardo Alves",
-    comunidade: "Industrial",
-    cota: 123,
-    ranking: 4,
-    visitas: 53,
-    eventos: 14,
-    penalizacao: 1,
-    score: 78,
-    status: "Ativo"
-  },
-  {
-    id: 8,
-    nome: "Patrícia Souza",
-    comunidade: "Jardim América",
-    cota: 34,
-    ranking: 9,
-    visitas: 12,
-    eventos: 3,
-    penalizacao: 8,
-    score: 35,
-    status: "Inativo"
-  },
-  {
-    id: 9,
-    nome: "Luciana Martins",
-    comunidade: "Nova Conquista",
-    cota: 67,
-    ranking: 7,
-    visitas: 23,
-    eventos: 6,
-    penalizacao: 4,
-    score: 55,
-    status: "Ativo"
-  },
-  {
-    id: 10,
-    nome: "Roberto Nunes",
-    comunidade: "Novo Horizonte",
-    cota: 145,
-    ranking: 10,
-    visitas: 9,
-    eventos: 2,
-    penalizacao: 10,
-    score: 25,
-    status: "Inativo"
-  }
-];
+import api from '../../services/api';
 
 const Presidentes = () => {
   const [mostrarForm, setMostrarForm] = useState(false);
@@ -133,25 +10,8 @@ const Presidentes = () => {
   const [cota, setCota] = useState({ id: '', valor: '' });
   const [ordenacao, setOrdenacao] = useState({ tipo: 'ranking', ordem: 'desc' });
 
-  // Usando dados fictícios para teste - DEPOIS VOLTAR PARA O ORIGINAL
-  const presidentes = dadosFicticios;
-  const loading = false;
-  const carregando = false;
-  const erros = {};
-  const cadastrar = async (formData, callback) => {
-    console.log("Cadastrar presidente:", formData);
-    if (callback) callback();
-    alert("Cadastro simulado com sucesso!");
-    return true;
-  };
-  const atualizarCota = async (id, valor) => {
-    console.log(`Atualizando cota do presidente ${id} para ${valor}`);
-    alert(`Cota atualizada simulada para ${valor}`);
-    return true;
-  };
-
-  // PARA VOLTAR PARA API ORIGINAL, DESCOMENTE A LINHA ABAIXO E COMENTE AS DE CIMA
-  // const { presidentes, loading, carregando, erros, cadastrar, atualizarCota } = usePresidentes();
+  // Usando a API real
+  const { presidentes, loading, carregando, erros, cadastrar, atualizarCota } = usePresidentes();
 
   if (loading) return <p>Carregando...</p>;
 
@@ -219,16 +79,11 @@ const Presidentes = () => {
     event.preventDefault();
     const sucesso = await cadastrar(form, () => setForm(ESTADO_INICIAL_FORM));
     if (sucesso) {
-      // Opcional: fechar form após sucesso
-    const sucesso = await cadastrar(form, () => setForm(ESTADO_INICIAL_FORM));
-    if (sucesso) {
-      // Opcional: fechar form após sucesso
+      setMostrarForm(false);
     }
   };
-}
 
   const handleSalvarCota = async () => {
-    if (!cota.id || !cota.valor) {
     if (!cota.id || !cota.valor) {
       alert("Selecione um presidente e digite a nova cota.");
       return;
@@ -254,7 +109,6 @@ const Presidentes = () => {
   };
 
   return (
-    <div className="presi">
     <div className="presi">
       <div className="header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
         <h2 style={{ margin: 0 }}>Gestão de Presidentes</h2>
@@ -320,7 +174,6 @@ const Presidentes = () => {
                 color: ordenacao.tipo === 'visitas' ? '#fff' : '#333',
                 cursor: 'pointer',
                 border: 'none'
-                
               }}
             >
               Visitas {ordenacao.tipo === 'visitas' && (ordenacao.ordem === 'desc' ? '↓' : '↑')}
@@ -390,7 +243,7 @@ const Presidentes = () => {
                     <td style={{ padding: '0.75rem', textAlign: 'center' }}>{p.eventos}</td>
                     <td style={{ padding: '0.75rem', textAlign: 'center', ...getPenalizacaoColor(p.penalizacao) }}>{p.penalizacao}</td>
                     <td style={{ padding: '0.75rem', fontWeight: 'bold', textAlign: 'center' }}>{p.score}</td>
-                    <td  style={{ textAlign: 'center', ...getStatusColor(p.status) }}>{p.status}</td>
+                    <td style={{ textAlign: 'center', ...getStatusColor(p.status) }}>{p.status}</td>
                   </tr>
                 ))
               )}
@@ -426,23 +279,10 @@ const Presidentes = () => {
               Salvar cota
             </button>
           </div>
-            <input 
-              type="number" 
-              value={cota.valor} 
-              onChange={(e) => setCota({ ...cota, valor: e.target.value })}
-              placeholder="Ex: 50" 
-              style={{ padding: '0.5rem', border: '1px solid #ccc', borderRadius: '4px', width: '150px' }} 
-            />
-            
-            <button className="btn btn-primary" onClick={handleSalvarCota} style={{ padding: '0.5rem 1.5rem', backgroundColor: '#4A4A4A', color: '#fff', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
-              Salvar cota
-            </button>
-          </div>
         </div>
       </div>
     </div>
   );
 };
-}
   
 export default Presidentes;

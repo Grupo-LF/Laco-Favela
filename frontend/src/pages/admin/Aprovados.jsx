@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { listarFamilias } from '../../services/api';
+import { listarFamilias } from '../../services/familias';
 
 const Aprovados = () => {
   const [aprovados, setAprovados] = useState([]);
