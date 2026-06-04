@@ -1,52 +1,35 @@
-import React, { useEffect, useState } from 'react';
-import { cadastrarPresidente, listarPresidentes, atualizarCotaPresidente } from '../../services/api';
+import React, { useState, useEffect } from 'react';
 import { mascaraTelefone, mascaraCNPJ } from '../../utils/masks';
+import { ESTADO_INICIAL_FORM, OPCOES_TRABALHO, OPCOES_RENDA, OPCOES_MEMBROS } from '../../utils/constants/presidentes';
+import api from '../../services/api';
 
 const Presidentes = () => {
+  const [mostrarForm, setMostrarForm] = useState(false);
+  const [form, setForm] = useState(ESTADO_INICIAL_FORM);
+  const [cota, setCota] = useState({ id: '', valor: '' });
+  const [ordenacao, setOrdenacao] = useState({ tipo: 'ranking', ordem: 'desc' });
   const [presidentes, setPresidentes] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [mostrarForm, setMostrarForm] = useState(false);
   const [carregando, setCarregando] = useState(false);
   const [erros, setErros] = useState({});
-  const [idPresidenteCota, setIdPresidenteCota] = useState('');
-  const [valorCota, setValorCota] = useState('');
 
-  // Estado inicial do formulário limpo
-  const estadoInicialForm = {
-    nome: '',
-    organizacao: '',
-    cnpj: '',
-    endereco: '',
-    telefone: '',
-    redes_sociais: '',
-    comunidade: '',
-    situacao_trabalho: '',
-    renda_familiar: '',
-    num_membros: '',
-    termo_aceito: false,
-    cota: '',
-  };
-  
-  const [dadosForm, setDadosForm] = useState(estadoInicialForm);
-
-  // Função para carregar presidentes
-  const carregarPresidentes = async () => {
-    try {
-      const resposta = await listarPresidentes();
-      setPresidentes(resposta.data || resposta);
-      setLoading(false);
-    } catch (err) {
-      console.error(err);
-      setLoading(false);
-    }
-  };
-
+  // Carregar presidentes ao montar
   useEffect(() => {
     carregarPresidentes();
   }, []);
 
-  if (loading) return <p>Carregando...</p>;
-  
+  const carregarPresidentes = async () => {
+    try {
+      setLoading(true);
+      const response = await api.get('/presidentes/');
+      setPresidentes(response.data);
+    } catch (error) {
+      console.error('Erro ao carregar presidentes:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleChange = (event) => {
     let { name, value, type, checked } = event.target;
     
@@ -56,64 +39,136 @@ const Presidentes = () => {
     if (name === 'cnpj') {
       value = mascaraCNPJ(value);
     }
-
-    setDadosForm((estadoAnterior) => ({
-      ...estadoAnterior,
+    setForm((prev) => ({
+      ...prev,
       [name]: type === 'checkbox' ? checked : value
     }));
-
+    
+    // Limpar erro do campo ao digitar
     if (erros[name]) {
-      setErros((errosAnteriores) => ({ ...errosAnteriores, [name]: null }));
+      setErros(prev => ({ ...prev, [name]: null }));
     }
   };
 
   const envioForm = async (event) => {
     event.preventDefault();
-    setCarregando(true);
-    setErros({});
-
+    
+    // Converter num_membros para número inteiro
+    const dadosParaEnviar = {
+      ...form,
+      num_membros: form.num_membros ? parseInt(form.num_membros) : 1,
+      cota: form.cota ? parseInt(form.cota) : 0
+    };
+    
     try {
-      const resposta = await cadastrarPresidente(dadosForm);
-      console.log("Presidente cadastrado com sucesso!", resposta);
-      alert("Presidente cadastrado com sucesso!");
-
-      // Reseta o formulário para o estado inicial limpo
-      setDadosForm(estadoInicialForm);
+      setCarregando(true);
+      setErros({});
       
-      // Atualiza a tabela imediatamente após salvar
-      carregarPresidentes(); 
-    } catch (erro) {
-      try {
-        const mensagensErro = JSON.parse(erro.message);
-        setErros(mensagensErro);
-      } catch {
-        alert("Erro inesperado de conexão ao cadastrar.");
+      const response = await api.post('/presidentes/', dadosParaEnviar);
+      
+      if (response.status === 201 || response.status === 200) {
+        alert('Presidente cadastrado com sucesso!');
+        carregarPresidentes();
+        setForm(ESTADO_INICIAL_FORM);
+        setMostrarForm(false);
+      }
+    } catch (error) {
+      console.error('Erro ao cadastrar:', error);
+      
+      if (error.response?.data) {
+        setErros(error.response.data);
+        const mensagens = Object.entries(error.response.data)
+          .map(([campo, msg]) => `${campo}: ${msg}`)
+          .join('\n');
+        alert(`Erro ao cadastrar:\n${mensagens}`);
+      } else {
+        alert('Erro ao cadastrar presidente. Tente novamente.');
       }
     } finally {
       setCarregando(false);
     }
   };
 
-  const handleSalvarCota = async () => {
-    if (!idPresidenteCota || !valorCota) {
-      alert("Selecione um presidente e digite a nova cota.");
-      return;
-    }
+  const atualizarCota = async (id, valor) => {
     try {
-      await atualizarCotaPresidente(idPresidenteCota, valorCota);
-      alert("Cota atualizada com sucesso!");
-      carregarPresidentes();
-      setValorCota('');
-      setIdPresidenteCota('');
-    } catch (erro) {
-      alert("Erro ao atualizar cota.");
+      setCarregando(true);
+      
+      const response = await api.patch(`/presidentes/${id}/`, {
+        cota: parseInt(valor)
+      });
+      
+      if (response.status === 200) {
+        alert('Cota atualizada com sucesso!');
+        carregarPresidentes();
+        return true;
+      }
+    } catch (error) {
+      console.error('Erro ao atualizar cota:', error);
+      alert('Erro ao atualizar cota. Tente novamente.');
+      return false;
+    } finally {
+      setCarregando(false);
     }
   };
 
-  return (
-    <div className="view-section active" style={{ padding: '2rem' }}>
+  const handleSalvarCota = async () => {
+    if (!cota.id || !cota.valor) {
+      alert("Selecione um presidente e digite a nova cota.");
+      return;
+    }
+    const sucesso = await atualizarCota(cota.id, cota.valor);
+    if (sucesso) {
+      setCota({ id: '', valor: '' });
+    }
+  };
+
+  const handleOrdenar = (tipo) => {
+    setOrdenacao(prev => ({
+      tipo,
+      ordem: prev.tipo === tipo && prev.ordem === 'desc' ? 'asc' : 'desc'
+    }));
+  };
+
+  const presidentesOrdenados = () => {
+    const ordenados = [...presidentes];
+    
+    return ordenados.sort((a, b) => {
+      let valorA, valorB;
       
-      {/* SEÇÃO DO TOPO COM BOTÃO DE EXIBIR/OCULTAR */}
+      switch(ordenacao.tipo) {
+        case 'ranking':
+          valorA = a.posicao_ranking || 999;
+          valorB = b.posicao_ranking || 999;
+          break;
+        case 'cotas':
+          valorA = a.cota || 0;
+          valorB = b.cota || 0;
+          break;
+        default:
+          valorA = a.score || 0;
+          valorB = b.score || 0;
+      }
+      
+      return ordenacao.ordem === 'desc' ? valorB - valorA : valorA - valorB;
+    });
+  };
+
+  const getStatusColor = (status) => {
+    return status === 'Ativo' || status === 'ativo' 
+      ? { color: '#4CAF50', fontWeight: 'bold' } 
+      : { color: '#f44336', fontWeight: 'bold' };
+  };
+
+  const getPenalizacaoColor = (penalizacao) => {
+    if (penalizacao === 0) return { color: '#4CAF50' };
+    if (penalizacao <= 3) return { color: '#FF9800' };
+    return { color: '#f44336' };
+  };
+
+  if (loading) return <p>Carregando presidentes...</p>;
+
+  return (
+    <div className="presi">
       <div className="header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
         <h2 style={{ margin: 0 }}>Gestão de Presidentes</h2>
         <div style={{ display: 'flex', gap: '1rem' }}>
@@ -127,168 +182,236 @@ const Presidentes = () => {
           </button>
         </div>
       </div>
-
-      {/* FORMULÁRIO DE CADASTRO */}
-      {mostrarForm && (
-        <form onSubmit={envioForm} className="card" style={{ marginTop: '1rem', padding: '1.5rem', backgroundColor: '#fff', borderRadius: '8px', boxShadow: '0 2px 4px rgba(0,0,0,0.1)', marginBottom: '2rem' }}>
-          <h4 style={{ marginTop: 0, marginBottom: '1.5rem' }}>Cadastrar Novo Presidente</h4>
-
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1.5rem', marginBottom: '1.5rem' }}>
-            <div>
-              <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>Nome:</label>
-              <input type="text" name="nome" value={dadosForm.nome} onChange={handleChange} required style={{ width: '100%', padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc' }} />
-              {erros.nome && <span style={{ color: 'red', fontSize: '12px' }}>{erros.nome}</span>}
+    
+      <div className="view-section active" style={{ padding: '2rem' }}>
+        {mostrarForm && (
+          <form onSubmit={envioForm} className="card" style={{ marginTop: '1rem', padding: '1.5rem', backgroundColor: '#fff', borderRadius: '8px', boxShadow: '0 2px 4px rgba(0,0,0,0.1)', marginBottom: '2rem' }}>
+            <h4 style={{ marginTop: 0, marginBottom: '1.5rem' }}>Cadastrar Novo Presidente</h4>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1.5rem', marginBottom: '1.5rem' }}>
+              <div>
+                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>Nome:</label>
+                <input type="text" name="nome" value={form.nome} onChange={handleChange} required style={{ width: '100%', padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc' }} />
+                {erros.nome && <small style={{ color: 'red' }}>{erros.nome}</small>}
+              </div>
+              
+              <div>
+                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>Organização:</label>
+                <input type="text" name="organizacao" value={form.organizacao} onChange={handleChange} required style={{ width: '100%', padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc' }} />
+                {erros.organizacao && <small style={{ color: 'red' }}>{erros.organizacao}</small>}
+              </div>
+              
+              <div>
+                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>CNPJ:</label>
+                <input type="text" name="cnpj" value={form.cnpj} onChange={handleChange} style={{ width: '100%', padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc' }} />
+              </div>
+              
+              <div>
+                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>Endereço:</label>
+                <input type="text" name="endereco" value={form.endereco} onChange={handleChange} required style={{ width: '100%', padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc' }} />
+                {erros.endereco && <small style={{ color: 'red' }}>{erros.endereco}</small>}
+              </div>
+              
+              <div>
+                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>Telefone:</label>
+                <input type="text" name="telefone" value={form.telefone} onChange={handleChange} required style={{ width: '100%', padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc' }} />
+                {erros.telefone && <small style={{ color: 'red' }}>{erros.telefone}</small>}
+              </div>
+              
+              <div>
+                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>Redes Sociais:</label>
+                <input type="text" name="redes_sociais" value={form.redes_sociais} onChange={handleChange} required style={{ width: '100%', padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc' }} />
+                {erros.redes_sociais && <small style={{ color: 'red' }}>{erros.redes_sociais}</small>}
+              </div>
+              
+              <div>
+                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>Comunidade:</label>
+                <input type="text" name="comunidade" value={form.comunidade} onChange={handleChange} required style={{ width: '100%', padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc' }} />
+                {erros.comunidade && <small style={{ color: 'red' }}>{erros.comunidade}</small>}
+              </div>
+              
+              <div>
+                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>Situação de Trabalho:</label>
+                <select name="situacao_trabalho" value={form.situacao_trabalho} onChange={handleChange} required style={{ width: '100%', padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc' }}>
+                  <option value="">Selecione...</option>
+                  {OPCOES_TRABALHO.map(op => (
+                    <option key={op.value} value={op.value}>{op.label}</option>
+                  ))}
+                </select>
+                {erros.situacao_trabalho && <small style={{ color: 'red' }}>{erros.situacao_trabalho}</small>}
+              </div>
+              
+              <div>
+                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>Renda Familiar:</label>
+                <select name="renda_familiar" value={form.renda_familiar} onChange={handleChange} required style={{ width: '100%', padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc' }}>
+                  <option value="">Selecione...</option>
+                  {OPCOES_RENDA.map(op => (
+                    <option key={op.value} value={op.value}>{op.label}</option>
+                  ))}
+                </select>
+                {erros.renda_familiar && <small style={{ color: 'red' }}>{erros.renda_familiar}</small>}
+              </div>
+              
+              <div>
+                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>Número de Membros:</label>
+                <select name="num_membros" value={form.num_membros} onChange={handleChange} required style={{ width: '100%', padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc' }}>
+                  <option value="">Selecione...</option>
+                  {OPCOES_MEMBROS.map(op => (
+                    <option key={op.value} value={op.value}>{op.label}</option>
+                  ))}
+                </select>
+                {erros.num_membros && <small style={{ color: 'red' }}>{erros.num_membros}</small>}
+              </div>
+              
+              <div>
+                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>Cota Inicial:</label>
+                <input type="number" name="cota" value={form.cota} onChange={handleChange} style={{ width: '100%', padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc' }} />
+              </div>
+              
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <input type="checkbox" name="termo_aceito" checked={form.termo_aceito} onChange={handleChange} />
+                  <span>Li e aceito os termos</span>
+                </label>
+              </div>
             </div>
-
-            <div>
-              <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>Organização:</label>
-              <input type="text" name="organizacao" value={dadosForm.organizacao} onChange={handleChange} required style={{ width: '100%', padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc' }} />
-              {erros.organizacao && <span style={{ color: 'red', fontSize: '12px' }}>{erros.organizacao}</span>}
-            </div>
-
-            <div>
-              <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>CNPJ:</label>
-              <input type="text" name="cnpj" value={dadosForm.cnpj} onChange={handleChange} maxLength="18" required style={{ width: '100%', padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc' }} />
-              {erros.cnpj && <span style={{ color: 'red', fontSize: '12px' }}>{erros.cnpj}</span>}
-            </div>
-
-            <div>
-              <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>Endereço:</label>
-              <input type="text" name="endereco" value={dadosForm.endereco} onChange={handleChange} required style={{ width: '100%', padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc' }} />
-              {erros.endereco && <span style={{ color: 'red', fontSize: '12px' }}>{erros.endereco}</span>}
-            </div>
-
-            <div>
-              <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>Telefone:</label>
-              <input type="text" name="telefone" value={dadosForm.telefone} onChange={handleChange} maxLength="15" required style={{ width: '100%', padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc' }} />
-              {erros.telefone && <span style={{ color: 'red', fontSize: '12px' }}>{erros.telefone}</span>}
-            </div>
-
-            <div>
-              <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>Redes Sociais:</label>
-              <input type="text" name="redes_sociais" value={dadosForm.redes_sociais} onChange={handleChange} required style={{ width: '100%', padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc' }} />
-              {erros.redes_sociais && <span style={{ color: 'red', fontSize: '12px' }}>{erros.redes_sociais}</span>}
-            </div>
-
-            <div>
-              <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>Comunidade:</label>
-              <input type="text" name="comunidade" value={dadosForm.comunidade} onChange={handleChange} required style={{ width: '100%', padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc' }} />
-              {erros.comunidade && <span style={{ color: 'red', fontSize: '12px' }}>{erros.comunidade}</span>}
-            </div>
-
-            <div>
-              <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>Possui emprego atualmente?</label>
-              <select name="situacao_trabalho" value={dadosForm.situacao_trabalho} onChange={handleChange} style={{ width: '100%', padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc' }}>
-                <option value="">Selecione...</option>
-                <option value="sim">Sim</option>
-                <option value="nao">Não</option>
-                <option value="empreendedor">Sou empreendedor</option>
-              </select>
-            </div>
-
-            <div>
-              <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>Renda Familiar:</label>
-              <select name="renda_familiar" value={dadosForm.renda_familiar} onChange={handleChange} style={{ width: '100%', padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc' }}>
-                <option value="">Selecione...</option>
-                <option value="menos_um">Menos de um salário mínimo</option>
-                <option value="um">Um salário mínimo</option>
-                <option value="um_a_dois">De um a dois salários mínimos</option>
-                <option value="acima_dois">Acima de dois salários mínimos</option>
-              </select>
-            </div>
-
-            <div>
-              <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>Membros da família:</label>
-              <select name="num_membros" value={dadosForm.num_membros} onChange={handleChange} style={{ width: '100%', padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc' }}>
-                <option value="">Selecione...</option>
-                <option value="1">1 integrante</option>
-                <option value="2">2 integrantes</option>
-                <option value="3">3 integrantes</option>
-                <option value="4">4 integrantes</option>
-                <option value="5">5 integrantes</option>
-                <option value="6">Acima de 5 integrantes</option>
-              </select>
-            </div>
-
-            <div>
-              <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>Cota Inicial:</label>
-              <input type="number" name="cota" value={dadosForm.cota} onChange={handleChange} required style={{ width: '100%', padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc' }} />
-              {erros.cota && <span style={{ color: 'red', fontSize: '12px' }}>{erros.cota}</span>}
+            
+            <button type="submit" className="btn btn-primary" disabled={carregando} style={{ padding: '0.75rem 1.5rem', backgroundColor: '#333', color: '#fff', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
+              {carregando ? 'Salvando...' : 'Salvar Presidente'}
+            </button>
+          </form>
+        )}
+        
+        {/* Botões de Ordenação */}
+        <div className="card" style={{ padding: '1rem', backgroundColor: '#fff', borderRadius: '8px', boxShadow: '0 2px 4px rgba(0,0,0,0.1)', marginBottom: '2rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
+            <h3 style={{ margin: 0 }}>Ordenar por:</h3>
+            
+            <button 
+              className="badge"
+              onClick={() => handleOrdenar('ranking')}
+              style={{ 
+                backgroundColor: ordenacao.tipo === 'ranking' ? '#333' : '#DFDFDF',
+                color: ordenacao.tipo === 'ranking' ? '#fff' : '#333',
+                cursor: 'pointer',
+                border: 'none'
+              }}
+            >
+              Ranking {ordenacao.tipo === 'ranking' && (ordenacao.ordem === 'desc' ? '↓' : '↑')}
+            </button>
+            
+            <button 
+              className="badge"
+              onClick={() => handleOrdenar('visitas')}
+              style={{ 
+                backgroundColor: ordenacao.tipo === 'visitas' ? '#333' : '#DFDFDF',
+                color: ordenacao.tipo === 'visitas' ? '#fff' : '#333',
+                cursor: 'pointer',
+                border: 'none'
+              }}
+            >
+              Visitas {ordenacao.tipo === 'visitas' && (ordenacao.ordem === 'desc' ? '↓' : '↑')}
+            </button>
+            
+            <button 
+              className="badge"
+              onClick={() => handleOrdenar('participacao')}
+              style={{ 
+                backgroundColor: ordenacao.tipo === 'participacao' ? '#333' : '#DFDFDF',
+                color: ordenacao.tipo === 'participacao' ? '#fff' : '#333',
+                cursor: 'pointer',
+                border: 'none'
+              }}
+            >
+              Eventos {ordenacao.tipo === 'participacao' && (ordenacao.ordem === 'desc' ? '↓' : '↑')}
+            </button>
+            
+            <button 
+              className="badge"
+              onClick={() => handleOrdenar('cotas')}
+              style={{ 
+                backgroundColor: ordenacao.tipo === 'cotas' ? '#333' : '#DFDFDF',
+                color: ordenacao.tipo === 'cotas' ? '#fff' : '#333',
+                cursor: 'pointer',
+                border: 'none'
+              }}
+            >
+              Cotas {ordenacao.tipo === 'cotas' && (ordenacao.ordem === 'desc' ? '↓' : '↑')}
+            </button>
+            
+            <div style={{ marginLeft: 'auto', fontSize: '12px', color: '#888' }}>
+              {ordenacao.ordem === 'desc' ? 'Maior primeiro' : 'Menor primeiro'}
             </div>
           </div>
+        </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1.5rem' }}>
-            <input type="checkbox" id="termo_aceito" name="termo_aceito" checked={dadosForm.termo_aceito} onChange={handleChange} required />
-            <label htmlFor="termo_aceito">Confirmo que o presidente aceitou os termos</label>
-            {erros.termo_aceito && <span style={{ color: 'red', fontSize: '12px' }}>{erros.termo_aceito}</span>}
-          </div>
-
-          <button type="submit" className="btn btn-primary" disabled={carregando} style={{ padding: '0.75rem 1.5rem', backgroundColor: '#333', color: '#fff', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
-            {carregando ? 'Salvando...' : 'Salvar Presidente'}
-          </button>
-        </form>
-      )}
-
-      {/* TABELA DE VISUALIZAÇÃO */}
-      <div className="card" style={{ padding: '1.5rem', backgroundColor: '#fff', borderRadius: '8px', boxShadow: '0 2px 4px rgba(0,0,0,0.1)', marginBottom: '2rem' }}>
-        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-          <thead>
-            <tr style={{ borderBottom: '2px solid #eee', textAlign: 'left' }}>
-              <th style={{ padding: '0.75rem' }}>ID</th>
-              <th style={{ padding: '0.75rem' }}>PRESIDENTE</th>
-              <th style={{ padding: '0.75rem' }}>COMUNIDADE</th>
-              <th style={{ padding: '0.75rem' }}>COTA</th>
-              <th style={{ padding: '0.75rem' }}>AÇÃO</th>
-            </tr>
-          </thead>
-          <tbody>
-            {presidentes.length === 0 ? (
-              <tr>
-                <td colSpan="5" style={{ textAlign: 'center', padding: '2rem', color: '#888' }}>Nenhum presidente cadastrado ainda.</td>
+        {/* Tabela de Presidentes */}
+        <div className="card" style={{ padding: '1.5rem', backgroundColor: '#fff', borderRadius: '8px', boxShadow: '0 2px 4px rgba(0,0,0,0.1)', marginBottom: '2rem', overflowX: 'auto' }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: '800px' }}>
+            <thead>
+              <tr style={{ borderBottom: '2px solid #eee', textAlign: 'center', backgroundColor: '#f9f9f9' }}>
+                <th style={{ padding: '0.75rem', textAlign: 'center' }}>RANKING</th>
+                <th style={{ padding: '0.75rem', textAlign: 'center' }}>PRESIDENTE</th>
+                <th style={{ padding: '0.75rem', textAlign: 'center' }}>SETOR</th>
+                <th style={{ padding: '0.75rem', textAlign: 'center' }}>COTAS</th>
+                <th style={{ padding: '0.75rem', textAlign: 'center' }}>VISITAS</th>
+                <th style={{ padding: '0.75rem', textAlign: 'center' }}>EVENTOS</th>
+                <th style={{ padding: '0.75rem', textAlign: 'center' }}>PENALIZAÇÃO</th>
+                <th style={{ padding: '0.75rem', textAlign: 'center' }}>SCORE</th>
+                <th style={{ padding: '0.75rem', textAlign: 'center' }}>STATUS</th>
               </tr>
-            ) : (
-              presidentes.map(p => (
-                <tr key={p.id} style={{ borderBottom: '1px solid #eee' }}>
-                  <td style={{ padding: '0.75rem' }}>{p.id}</td>
-                  <td style={{ padding: '0.75rem' }}><strong>{p.nome}</strong></td>
-                  <td style={{ padding: '0.75rem' }}>{p.comunidade}</td>
-                  <td style={{ padding: '0.75rem' }}>{p.cota}</td>
-                  <td style={{ padding: '0.75rem' }}><button className="btn btn-outline" style={{ padding: '0.25rem 0.5rem', cursor: 'pointer' }}>Editar</button></td>
+            </thead>
+            <tbody>
+              {presidentesOrdenados().length === 0 ? (
+                <tr>
+                  <td colSpan="9" style={{ textAlign: 'center', padding: '2rem', color: '#888' }}>Nenhum presidente cadastrado ainda.</td>
                 </tr>
-              ))
-            )}
-          </tbody>
-        </table>
-      </div>
+              ) : (
+                presidentesOrdenados().map(p => (
+                  <tr key={p.id} style={{ borderBottom: '1px solid #eee', transition: 'background-color 0.3s', textAlign: 'center' }}>
+                    <td style={{ padding: '0.75rem', fontWeight: 'bold', textAlign: 'center' }}>#{p.ranking || p.posicao_ranking || '-'}</td>
+                    <td style={{ padding: '0.75rem', textAlign: 'center' }}><strong>{p.nome}</strong></td>
+                    <td style={{ padding: '0.75rem', textAlign: 'center' }}>{p.setor || p.comunidade}</td>
+                    <td style={{ padding: '0.75rem', fontWeight: 'bold', color: '#2196F3', textAlign: 'center' }}>{p.cota}</td>
+                    <td style={{ padding: '0.75rem', textAlign: 'center' }}>{p.visitas || 0}</td>
+                    <td style={{ padding: '0.75rem', textAlign: 'center' }}>{p.eventos_realizados || p.eventos || 0}</td>
+                    <td style={{ padding: '0.75rem', textAlign: 'center', ...getPenalizacaoColor(p.penalizacao) }}>{p.penalizacao || 0}</td>
+                    <td style={{ padding: '0.75rem', fontWeight: 'bold', textAlign: 'center' }}>{p.score || 0}</td>
+                    <td style={{ textAlign: 'center', ...getStatusColor(p.status) }}>{p.status === 'ativo' ? 'Ativo' : p.status}</td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
 
-      {/* FORMULÁRIO DE EDITAR COTA */}
-      <div className="card" style={{ padding: '1.5rem', backgroundColor: '#f5f5f5', borderRadius: '8px' }}>
-        <h4>Editar Cota do Presidente</h4>
-        <p className="text-sm mb-2" style={{ color: '#666', fontSize: '14px' }}>Defina a meta de famílias para cada presidente</p>
-        <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem', flexWrap: 'wrap' }}>
-          
-          <select 
-            value={idPresidenteCota} 
-            onChange={(e) => setIdPresidenteCota(e.target.value)}
-            style={{ padding: '0.5rem', border: '1px solid #ccc', borderRadius: '4px', flex: '1', minWidth: '200px' }}
-          >
-            <option value="">Selecione um presidente...</option>
-            {presidentes.map(p => (
-              <option key={p.id} value={p.id}>{p.nome}</option>
-            ))}
-          </select>
+        {/* Editar Cota */}
+        <div className="card" style={{ padding: '1.5rem', backgroundColor: '#f5f5f5', borderRadius: '8px' }}>
+          <h4>Editar Cota do Presidente</h4>
+          <p style={{ color: '#666', fontSize: '14px', marginBottom: '1rem' }}>Defina a meta de famílias para cada presidente</p>
+          <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+            <select 
+              value={cota.id} 
+              onChange={(e) => setCota({ ...cota, id: e.target.value })}
+              style={{ padding: '0.5rem', border: '1px solid #ccc', borderRadius: '4px', flex: '1', minWidth: '200px' }}
+            >
+              <option value="">Selecione um presidente...</option>
+              {presidentes.map(p => (
+                <option key={p.id} value={p.id}>{p.nome}</option>
+              ))}
+            </select>
 
-          <input 
-            type="number" 
-            value={valorCota} 
-            onChange={(e) => setValorCota(e.target.value)}
-            placeholder="Ex: 50" 
-            style={{ padding: '0.5rem', border: '1px solid #ccc', borderRadius: '4px', width: '150px' }} 
-          />
-          
-          <button className="btn btn-primary" onClick={handleSalvarCota} style={{ padding: '0.5rem 1.5rem', backgroundColor: '#4A4A4A', color: '#fff', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
-            Salvar cota
-          </button>
+            <input 
+              type="number" 
+              value={cota.valor} 
+              onChange={(e) => setCota({ ...cota, valor: e.target.value })}
+              placeholder="Ex: 50" 
+              style={{ padding: '0.5rem', border: '1px solid #ccc', borderRadius: '4px', width: '150px' }} 
+            />
+            
+            <button className="btn btn-primary" onClick={handleSalvarCota} style={{ padding: '0.5rem 1.5rem', backgroundColor: '#4A4A4A', color: '#fff', border: 'none', borderRadius: '4px', cursor: 'pointer' }} disabled={carregando}>
+              {carregando ? 'Salvando...' : 'Salvar cota'}
+            </button>
+          </div>
         </div>
       </div>
     </div>
