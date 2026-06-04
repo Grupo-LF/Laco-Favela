@@ -18,7 +18,7 @@ function AppPresidente() {
       case 'familias': 
         return <FamiliasPage />;
       case 'formularios': 
-        return <div>Formulários (em breve)</div>;
+        return <FormularioPage onNavigate={}/>
       case 'registros': 
         return <div>Registros (em breve)</div>;
       
