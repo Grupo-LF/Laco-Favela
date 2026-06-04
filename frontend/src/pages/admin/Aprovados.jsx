@@ -1,54 +1,88 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { listarFamilias } from '../../services/familias';
 
 const Aprovados = () => {
-  const aprovados = [
-    { id: '001', familia: 'Família Santos', pontuacao: 97, criterio: 'Mãe solo', publicado: true },
-    { id: '002', familia: 'Família Oliveira', pontuacao: 93, criterio: '+3 filhos', publicado: true },
-    { id: '003', familia: 'Família Rodrigues', pontuacao: 88, criterio: 'Renda baixa', publicado: false }
-  ];
+  const [aprovados, setAprovados] = useState([]);
+  const [search, setSearch] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+
+  const carregarAprovados = async () => {
+    setLoading(true);
+    setError('');
+    try {
+      const data = await listarFamilias({
+        status: 'aprovada',
+        search: search.trim() || undefined,
+      });
+      setAprovados(Array.isArray(data) ? data : []);
+    } catch (err) {
+      setError('Nao foi possivel carregar as familias aprovadas.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    carregarAprovados();
+  }, [search]);
 
   return (
     <div className="view-section active">
       <div className="header">
         <h2>Aprovados</h2>
         <div className="flex gap-1">
-          <button className="btn btn-outline">Exportar lista</button>
-          <button className="btn btn-primary">Publicar aprovados</button>
+          <button className="btn btn-outline" disabled title="Funcionalidade em breve">
+            Exportar lista
+          </button>
+          <button className="btn btn-primary" disabled title="Funcionalidade em breve">
+            Publicar aprovados
+          </button>
         </div>
       </div>
 
       <div className="card flex justify-between items-center" style={{ background: '#e9e9e9' }}>
         <div>
-          <h4>Seleção do Ciclo 3 finalizada</h4>
-          <p className="text-sm">Revisão completa</p>
+          <h4>Familias aprovadas</h4>
+          <p className="text-sm">Lista atual de aprovados</p>
         </div>
         <div className="flex gap-4">
-          <div className="text-center"><h2>38</h2><span className="text-sm">Aprovadas</span></div>
-          <div className="text-center"><h2>487</h2><span className="text-sm">Avaliadas</span></div>
-          <div className="text-center"><h2>7,8%</h2><span className="text-sm">Taxa</span></div>
+          <div className="text-center"><h2>{aprovados.length}</h2><span className="text-sm">Aprovadas</span></div>
         </div>
       </div>
 
       <div className="card">
         <div className="flex justify-between mb-2">
-          <h4>Famílias Aprovadas - Ciclo 3</h4>
-          <input type="text" placeholder="Buscar família..." style={{ padding: '0.4rem', border: '1px solid #ccc', borderRadius: '4px' }} />
+          <h4>Familias Aprovadas</h4>
+          <input
+            type="text"
+            placeholder="Buscar familia..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            style={{ padding: '0.4rem', border: '1px solid #ccc', borderRadius: '4px' }}
+          />
         </div>
+        {error && <div className="text-sm" style={{ color: '#b00020' }}>{error}</div>}
         <table>
           <thead>
-            <tr><th>#</th><th>Família</th><th>Pontuação</th><th>Critério Principal</th><th>Publicado</th><th>Ação</th></tr>
+            <tr><th>ID</th><th>Responsavel</th><th>Comunidade</th><th>Municipio</th><th>Status</th></tr>
           </thead>
           <tbody>
-            {aprovados.map(a => (
-              <tr key={a.id}>
-                <td>{a.id}</td>
-                <td>{a.familia}</td>
-                <td>{a.pontuacao}</td>
-                <td><span className="badge">{a.criterio}</span></td>
-                <td><span className="badge" style={!a.publicado ? { background: '#ffd54f' } : {}}>{a.publicado ? 'Publicado' : 'Pendente'}</span></td>
-                <td><button className={a.publicado ? 'btn btn-outline' : 'btn btn-primary'}>{a.publicado ? 'Detalhes' : 'Publicar'}</button></td>
-              </tr>
-            ))}
+            {loading ? (
+              <tr><td colSpan="5">Carregando familias...</td></tr>
+            ) : aprovados.length === 0 ? (
+              <tr><td colSpan="5">Nenhuma familia aprovada encontrada.</td></tr>
+            ) : (
+              aprovados.map((familia) => (
+                <tr key={familia.id}>
+                  <td>{familia.id}</td>
+                  <td>{familia.nome_responsavel}</td>
+                  <td>{familia.comunidade}</td>
+                  <td>{familia.municipio}</td>
+                  <td><span className="badge">Aprovada</span></td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
       </div>
