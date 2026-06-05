@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
-import Sidebar from './Sidebar';
-import './NotificationsPage.css';
 import Sidebar from '../../components/layout/Sidebar';
-import '../../styles/pages/morador/NotificationsPage.css';
+import '../../styles/pages/morador/NotificationPage.css';
 function ProtoIcon({ size = 33 }) {
   return (
     <svg width={size} height={size} viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">

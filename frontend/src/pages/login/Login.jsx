@@ -29,9 +29,13 @@ function Login({ onLogin, handleLoginTest }) {
         handleLoginTest('admin');
         return;
       }
+      if (username.toLowerCase() === 'morador') {
+        handleLoginTest('morador');
+        return;
+      }
       
       // Se não for presidente nem admin, mostra erro
-      setError('Acesso negado. Apenas "presidente" ou "admin" têm permissão no modo teste.');
+      setError('Acesso negado. Apenas "presidente" ou "admin" ou "morador" têm permissão no modo teste.');
       setLoading(false);
       return;
     }
@@ -159,7 +163,7 @@ function Login({ onLogin, handleLoginTest }) {
         {/* Mensagem indicando como usar o modo teste */}
         {testMode && (
           <p style={{ fontSize: '12px', color: '#f97316', textAlign: 'center', marginTop: '15px' }}>
-            💡 Modo teste: digite "presidente" ou "admin" no campo USUÁRIO
+            💡 Modo teste: digite "presidente" ou "admin" ou "morador" no campo USUÁRIO
           </p>
         )}
       </div>

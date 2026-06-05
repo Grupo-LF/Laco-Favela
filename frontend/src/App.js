@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import AppAdmin from './AppAdmin';
 import AppPresidente from './AppPresidente';
+import AppMorador from './AppMorador';
 import Login from './pages/login/Login';
 
 function App(onLogin) {
@@ -23,6 +24,7 @@ function App(onLogin) {
   if (!tipoUsuario) return <Login onLogin={handleLogin} handleLoginTest={handleLoginTest} />;
 
   // Se tem tipo, mostra app correspondente
+  if (tipoUsuario === 'morador') return <AppMorador />;
   if (tipoUsuario === 'admin') return <AppAdmin />;
   if (tipoUsuario === 'presidente') return <AppPresidente />;
 }

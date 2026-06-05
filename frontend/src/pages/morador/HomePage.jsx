@@ -35,8 +35,13 @@ function HomePage() {
   }, []);
 
   if (loading) return <div className="home-loading">Carregando...</div>;
-
   
-}
+  return (
+    <div className="home-page">
+      <h1>Bem-vindo!</h1>
+    </div>
+
+    
+   );}
 
 export default HomePage;
