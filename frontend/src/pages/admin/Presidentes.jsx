@@ -333,6 +333,7 @@ const Presidentes = () => {
     setFiltroStatus(status);
   };
 
+  // Filtra os presidentes pelo status calculado (usando presidentesComRank)
   const presidentesFiltrados = () => {
     if (filtroStatus === 'todos') {
       return presidentesComRank;
