@@ -56,9 +56,11 @@ function Login({ onLogin, handleLoginTest }) {
       
       // Salva o token no localStorage (seu interceptor já vai pegar automaticamente)
       localStorage.setItem('token', token);
+      localStorage.setItem('nome', nome);
       console.log(response.data);
+      console.log(nome)
       // Chama o callback do App passando o tipo e token
-      onLogin(tipo, token);
+      onLogin(tipo, token,nome);
       
     } catch (err) {
       // Trata erro da requisição
