@@ -10,7 +10,7 @@ DATABASES = {
 }
 
 ALLOWED_HOSTS = ['*']
-DEBUG = True
+DEBUG = False
 
 # 1. CSRF trusted origins – necessário para o POST do admin
 CSRF_TRUSTED_ORIGINS = [
