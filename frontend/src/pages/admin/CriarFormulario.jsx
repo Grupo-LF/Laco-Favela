@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { criarCiclo, publicarCiclo, associarRespostasAosPresidentes, listarPresidentes } from '../../services/formularios';
+import { criarCiclo, publicarCiclo, listarPresidentes, listarPresidentesNaoAssociados } from '../../services/formularios';
 
 const CriarFormulario = ({ onNavigate }) => {
-  // ========== DECLARAÇÕES DE ESTADO ==========
   const [titulo, setTitulo] = useState('');
   const [descricao, setDescricao] = useState('');
   const [perguntas, setPerguntas] = useState([]);
@@ -12,7 +11,6 @@ const CriarFormulario = ({ onNavigate }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  // ========== CARREGAR PRESIDENTES ==========
   useEffect(() => {
     carregarPresidentes();
   }, []);
@@ -31,7 +29,6 @@ const CriarFormulario = ({ onNavigate }) => {
     }
   };
 
-  // ========== FUNÇÕES DE PERGUNTAS ==========
   const adicionarPergunta = (tipo) => {
     if (novaPergunta.trim() === '') {
       alert('Digite uma pergunta');
@@ -53,7 +50,6 @@ const CriarFormulario = ({ onNavigate }) => {
     }
   };
 
-  // ========== FUNÇÕES PARA EDITAR OPÇÕES ==========
   const adicionarOpcao = useCallback((perguntaId) => {
     setPerguntas(prevPerguntas => 
       prevPerguntas.map(p => {
@@ -95,7 +91,6 @@ const CriarFormulario = ({ onNavigate }) => {
     );
   }, []);
 
-  // ========== FUNÇÕES DE PRESIDENTES ==========
   const togglePresidente = (presidenteId) => {
     if (presidentesSelecionados.includes(presidenteId)) {
       setPresidentesSelecionados(presidentesSelecionados.filter(id => id !== presidenteId));
@@ -112,7 +107,6 @@ const CriarFormulario = ({ onNavigate }) => {
     }
   };
 
-  // ========== FUNÇÃO SALVAR RASCUNHO ==========
   const handleSalvar = async () => {
     if (!titulo) {
       alert('Digite o título do formulário');
@@ -123,8 +117,7 @@ const CriarFormulario = ({ onNavigate }) => {
       alert('Adicione pelo menos uma pergunta ao formulário');
       return;
     }
-    console.log('Salvando rascunho com perguntas:', perguntas);
-    console.log(perguntas);
+
     setLoading(true);
     setError('');
 
@@ -133,7 +126,7 @@ const CriarFormulario = ({ onNavigate }) => {
         titulo: titulo,
         descricao: descricao,
         perguntas: perguntas,
-        status: 'rascunho'
+        presidentes_ids: presidentesSelecionados
       });
 
       console.log('Rascunho salvo:', ciclo);
@@ -147,7 +140,6 @@ const CriarFormulario = ({ onNavigate }) => {
     }
   };
 
-  // ========== FUNÇÃO PUBLICAR ==========
   const handlePublicar = async () => {
     if (!titulo) {
       alert('Digite o título do formulário');
@@ -163,31 +155,25 @@ const CriarFormulario = ({ onNavigate }) => {
       alert('Selecione pelo menos um presidente para responder o formulário');
       return;
     }
-    console.log('Publicando formulário com perguntas:', perguntas);
+
     setLoading(true);
     setError('');
 
     try {
-      // 1. Criar o ciclo (rascunho)
-      console.log('1. Criando ciclo...');
+      // Cria o ciclo JÁ COM OS PRESIDENTES ASSOCIADOS
       const ciclo = await criarCiclo({
         titulo: titulo,
         descricao: descricao,
         perguntas: perguntas,
-        status: 'rascunho'
+        presidentes_ids: presidentesSelecionados
       });
-      console.log('Ciclo criado ID:', ciclo.id);
+      
+      console.log('Ciclo criado com presidentes:', ciclo);
+      console.log('Presidentes associados:', presidentesSelecionados);
 
-      // 2. Publicar o ciclo (muda status para 'ativo')
-      console.log('2. Publicando ciclo...');
-      await publicarCiclo(ciclo.id);
-      console.log('Ciclo publicado com sucesso!');
-
-      // 3. Associar respostas aos presidentes selecionados
-      console.log('3. Associando presidentes:', presidentesSelecionados);
-      await associarRespostasAosPresidentes(ciclo.id, presidentesSelecionados);
-      console.log('Presidentes associados com sucesso!');
-
+      // Publica o ciclo
+      await publicarCiclo(ciclo.id); // Atualiza a lista de presidentes não associados para refletir as mudanças
+      
       alert('Formulário publicado com sucesso!');
       onNavigate('formularios');
     } catch (err) {
@@ -198,7 +184,6 @@ const CriarFormulario = ({ onNavigate }) => {
     }
   };
 
-  // ========== COMPONENTE CAMPO RESPOSTA ==========
   const CampoResposta = React.memo(({ tipo, opcoes = [], perguntaId }) => {
     if (tipo === 'Resposta Aberta') {
       return <input style={{ marginTop: '30px', width: '100%' }} type="text" placeholder="Digite sua resposta aqui..." className="input-underline" />;
@@ -304,7 +289,6 @@ const CriarFormulario = ({ onNavigate }) => {
     return null;
   });
 
-  // ========== RENDER ==========
   return (
     <div>
       <div className="header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
@@ -346,7 +330,6 @@ const CriarFormulario = ({ onNavigate }) => {
           </div>
         </div>
 
-        {/* LISTA DE PERGUNTAS ADICIONADAS */}
         {perguntas.map((pergunta, idx) => (
           <div key={pergunta.id} className="form-question-box" style={{ position: 'relative' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -381,7 +364,6 @@ const CriarFormulario = ({ onNavigate }) => {
           </div>
         ))}
 
-        {/* NOVA PERGUNTA */}
         <div className="form-question-box">
           <label className="text-sm">Insira a nova pergunta aqui</label>
           <input
@@ -465,9 +447,9 @@ const CriarFormulario = ({ onNavigate }) => {
                       onClick={(e) => e.stopPropagation()}
                     />
                     <div>
-                      <strong>{presidente.nome} {presidente.sobrenome}</strong>
+                      <strong>{presidente.nome}</strong>
                       <p style={{ fontSize: '12px', color: '#666', margin: '5px 0 0 0' }}>
-                        {presidente.email} | {presidente.comunidade}
+                        {presidente.email || 'Sem email'} | {presidente.comunidade || 'Sem comunidade'}
                       </p>
                     </div>
                   </div>
@@ -477,7 +459,7 @@ const CriarFormulario = ({ onNavigate }) => {
               {presidentes.length === 0 && !loading && (
                 <div style={{ textAlign: 'center', padding: '1rem' }}>
                   <p>Nenhum presidente cadastrado ainda.</p>
-                  <button className="btn btn-primary" style={{ marginTop: '0.5rem' }}>
+                  <button className="btn btn-primary" style={{ marginTop: '0.5rem' }} onClick={() => onNavigate('presidentes')}>
                     Cadastrar Presidente
                   </button>
                 </div>
