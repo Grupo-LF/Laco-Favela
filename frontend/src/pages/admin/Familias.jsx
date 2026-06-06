@@ -9,6 +9,7 @@ const STATUS_LABELS = {
 
 const Familias = ({ onSelectFamilia }) => {
   const [familias, setFamilias] = useState([]);
+  const [familiasComRank, setFamiliasComRank] = useState([]);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [loading, setLoading] = useState(true);
@@ -24,9 +25,25 @@ const Familias = ({ onSelectFamilia }) => {
         search: search.trim() || undefined,
         status: statusFilter || undefined,
       });
-      setFamilias(Array.isArray(data) ? data : []);
+      const familiasData = Array.isArray(data) ? data : [];
+      setFamilias(familiasData);
+      
+      // Ordena por score para definir o rank fixo
+      const ordenadasPorScore = [...familiasData].sort((a, b) => {
+        const scoreA = a.score || 0;
+        const scoreB = b.score || 0;
+        return scoreB - scoreA;
+      });
+      
+      // Adiciona o rank fixo baseado no score
+      const comRank = ordenadasPorScore.map((item, idx) => ({
+        ...item,
+        rank_fixo: idx + 1
+      }));
+      setFamiliasComRank(comRank);
     } catch (err) {
-      setError('Nao foi possivel carregar as familias.');
+      setError('Não foi possível carregar as famílias.');
+      console.error('Erro ao carregar famílias:', err);
     } finally {
       setLoading(false);
     }
@@ -46,9 +63,9 @@ const Familias = ({ onSelectFamilia }) => {
     }, base);
   }, [familias]);
 
-  // Aplicar todos os filtros
+  // Aplicar todos os filtros usando familiasComRank
   const familiasFiltradas = () => {
-    let filtradas = [...familias];
+    let filtradas = [...familiasComRank];
 
     // Filtro por categoria
     if (filtroCategoria !== 'todos') {
@@ -72,20 +89,33 @@ const Familias = ({ onSelectFamilia }) => {
 
     // Filtro por presidente
     if (filtroPresidente !== 'todos') {
-      switch (filtroPresidente) {
-        case 'presidente_1':
-          filtradas = filtradas.filter(f => f.presidente_id === 1 || f.presidente_nome === 'João Silva');
-          break;
-        case 'presidente_2':
-          filtradas = filtradas.filter(f => f.presidente_id === 2 || f.presidente_nome === 'Maria Oliveira');
-          break;
-        default:
-          break;
-      }
+      filtradas = filtradas.filter(f => {
+        if (filtroPresidente === 'presidente_1') {
+          return f.presidente_id === 1 || f.presidente_nome === 'João Silva';
+        }
+        if (filtroPresidente === 'presidente_2') {
+          return f.presidente_id === 2 || f.presidente_nome === 'Maria Oliveira';
+        }
+        return true;
+      });
     }
 
     return filtradas;
   };
+
+  const getParticipacaoColor = (porcentagem) => {
+    if (porcentagem >= 70) return { color: '#4B4B4B', fontWeight: 'bold' };
+    if (porcentagem >= 40) return { color: '#6B6B6B', fontWeight: 'bold' };
+    return { color: '#8A8A8A' };
+  };
+
+  const getScoreColor = (score) => {
+    if (score >= 70) return { color: '#4B4B4B', fontWeight: 'bold' };
+    if (score >= 40) return { color: '#6B6B6B', fontWeight: 'bold' };
+    return { color: '#8A8A8A' };
+  };
+
+  if (loading) return <p>Carregando famílias...</p>;
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -133,9 +163,7 @@ const Familias = ({ onSelectFamilia }) => {
                 border: 'none',
                 padding: '6px 12px',
                 borderRadius: '20px',
-                flex: '1 0 auto',
                 minWidth: '70px',
-                maxWidth: '120px',
                 whiteSpace: 'nowrap'
               }}
             >
@@ -152,9 +180,7 @@ const Familias = ({ onSelectFamilia }) => {
                 border: 'none',
                 padding: '6px 12px',
                 borderRadius: '20px',
-                flex: '1 0 auto',
                 minWidth: '70px',
-                maxWidth: '120px',
                 whiteSpace: 'nowrap'
               }}
             >
@@ -171,9 +197,7 @@ const Familias = ({ onSelectFamilia }) => {
                 border: 'none',
                 padding: '6px 12px',
                 borderRadius: '20px',
-                flex: '1 0 auto',
                 minWidth: '70px',
-                maxWidth: '120px',
                 whiteSpace: 'nowrap'
               }}
             >
@@ -190,9 +214,7 @@ const Familias = ({ onSelectFamilia }) => {
                 border: 'none',
                 padding: '6px 12px',
                 borderRadius: '20px',
-                flex: '1 0 auto',
                 minWidth: '70px',
-                maxWidth: '120px',
                 whiteSpace: 'nowrap'
               }}
             >
@@ -209,9 +231,7 @@ const Familias = ({ onSelectFamilia }) => {
                 border: 'none',
                 padding: '6px 12px',
                 borderRadius: '20px',
-                flex: '1 0 auto',
                 minWidth: '70px',
-                maxWidth: '120px',
                 whiteSpace: 'nowrap'
               }}
             >
@@ -239,9 +259,7 @@ const Familias = ({ onSelectFamilia }) => {
                 border: 'none',
                 padding: '6px 12px',
                 borderRadius: '20px',
-                flex: '1 0 auto',
                 minWidth: '70px',
-                maxWidth: '120px',
                 whiteSpace: 'nowrap'
               }}
             >
@@ -258,9 +276,7 @@ const Familias = ({ onSelectFamilia }) => {
                 border: 'none',
                 padding: '6px 12px',
                 borderRadius: '20px',
-                flex: '1 0 auto',
                 minWidth: '70px',
-                maxWidth: '120px',
                 whiteSpace: 'nowrap'
               }}
             >
@@ -277,9 +293,7 @@ const Familias = ({ onSelectFamilia }) => {
                 border: 'none',
                 padding: '6px 12px',
                 borderRadius: '20px',
-                flex: '1 0 auto',
                 minWidth: '70px',
-                maxWidth: '120px',
                 whiteSpace: 'nowrap'
               }}
             >
@@ -289,29 +303,31 @@ const Familias = ({ onSelectFamilia }) => {
           </div>
         </div>
 
+        {/* Cards de estatísticas */}
         <div className="grid-4" style={{ marginBottom: '1rem' }}>
           <div className="card">
-            <h3 className="text-sm" style={{ color: '#A1A1A1', marginBottom: '0.5rem', fontSize: '1rem' }}>Total de Familias</h3>
-            <h2>{familiasFiltradas().length}</h2>
+            <h3 className="text-sm" style={{ color: '#A1A1A1', marginBottom: '0.5rem', fontSize: '1rem' }}>Total de Famílias</h3>
+            <h2 style={{ color: '#333' }}>{familiasFiltradas().length}</h2>
           </div>
           <div className="card">
             <h3 className="text-sm" style={{ color: '#A1A1A1', marginBottom: '0.5rem', fontSize: '1rem' }}>Alta Participação</h3>
-            <h2>{familiasFiltradas().filter(f => (f.eventos_participados || 0) >= 5).length}</h2>
+            <h2 style={{ color: '#333' }}>{familiasFiltradas().filter(f => (f.eventos_participados || 0) >= 5).length}</h2>
           </div>
           <div className="card">
             <h3 className="text-sm" style={{ color: '#A1A1A1', marginBottom: '0.5rem', fontSize: '1rem' }}>Mães Solo</h3>
-            <h2>{familiasFiltradas().filter(f => f.mae_solo === true || f.mae_solo === 'sim').length}</h2>
+            <h2 style={{ color: '#333' }}>{familiasFiltradas().filter(f => f.mae_solo === true || f.mae_solo === 'sim').length}</h2>
           </div>
           <div className="card">
             <h3 className="text-sm" style={{ color: '#A1A1A1', marginBottom: '0.5rem', fontSize: '1rem' }}>Sem Participação</h3>
-            <h2>{familiasFiltradas().filter(f => (f.eventos_participados || 0) === 0).length}</h2>
+            <h2 style={{ color: '#333' }}>{familiasFiltradas().filter(f => (f.eventos_participados || 0) === 0).length}</h2>
           </div>
         </div>
 
-        <div className="card">
+        {/* Tabela de Ranking */}
+        <div className="card" style={{ padding: '1.5rem', backgroundColor: '#fff', borderRadius: '8px', boxShadow: '0 2px 4px rgba(0,0,0,0.1)', marginBottom: '2rem', overflowX: 'auto' }}>
           <div className="flex justify-between items-center" style={{ marginBottom: '0.75rem' }}>
             <div className="title_rank" style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-              <h4>Ranking de Familias</h4>
+              <h4 style={{ color: '#333' }}>Ranking de Famílias</h4>
               <p style={{ color: '#666', fontSize: '0.9rem' }}>Ordenado por pontuação de engajamento</p>
             </div>
             <div className="flex gap-1">
@@ -323,25 +339,28 @@ const Familias = ({ onSelectFamilia }) => {
                   border: '1px solid #ccc',
                   backgroundColor: '#fff',
                   color: '#696969',
-                  fontSize: '0.9rem'
+                  fontSize: '0.9rem',
+                  cursor: 'pointer'
                 }}
                 value={statusFilter} 
                 onChange={(e) => setStatusFilter(e.target.value)}
               >
-                <option value="">Maior aprovação</option>
+                <option value="">Todos os status</option>
                 <option value="pendente">Pendente</option>
                 <option value="aprovada">Aprovada</option>
                 <option value="lista_espera">Lista de espera</option>
               </select>
             </div>
           </div>
+          
           {error && <div className="text-sm" style={{ color: '#b00020' }}>{error}</div>}
-          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+          
+          <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: '800px' }}>
             <thead>
               <tr style={{ borderBottom: '2px solid #eee', backgroundColor: '#f9f9f9' }}>
                 <th style={{ padding: '0.75rem', textAlign: 'left' }}>RANK</th>
-                <th style={{ padding: '0.75rem', textAlign: 'left' }}>FAMILIAS</th>
-                <th style={{ padding: '0.75rem', textAlign: 'left' }}>PRESIDENTES RESP.</th>
+                <th style={{ padding: '0.75rem', textAlign: 'left' }}>FAMÍLIA</th>
+                <th style={{ padding: '0.75rem', textAlign: 'left' }}>PRESIDENTE RESP.</th>
                 <th style={{ padding: '0.75rem', textAlign: 'left' }}>PERFIL</th>
                 <th style={{ padding: '0.75rem', textAlign: 'left' }}>EVENTOS</th>
                 <th style={{ padding: '0.75rem', textAlign: 'left' }}>PART.(%)</th>
@@ -350,37 +369,55 @@ const Familias = ({ onSelectFamilia }) => {
               </tr>
             </thead>
             <tbody>
-              {loading ? (
+              {familiasFiltradas().length === 0 ? (
                 <tr>
-                  <td colSpan="8" style={{ padding: '2rem', textAlign: 'center' }}>Carregando familias...</td>
-                </tr>
-              ) : familiasFiltradas().length === 0 ? (
-                <tr>
-                  <td colSpan="8" style={{ padding: '2rem', textAlign: 'center' }}>Nenhuma familia encontrada.</td>
+                  <td colSpan="8" style={{ padding: '2rem', textAlign: 'center', color: '#888' }}>
+                    Nenhuma família encontrada.
+                  </td>
                 </tr>
               ) : (
-                familiasFiltradas().map((familia, index) => (
-                  <tr key={familia.id} style={{ borderBottom: '1px solid #eee' }}>
-                    <td style={{ padding: '0.75rem' }}>{index + 1}</td>
-                    <td style={{ padding: '0.75rem' }}>{familia.nome_responsavel}</td>
-                    <td style={{ padding: '0.75rem' }}>{familia.presidente_nome || 'Não atribuído'}</td>
-                    <td style={{ padding: '0.75rem' }}>
-                      {familia.mae_solo ? 'Mãe Solo' : familia.numero_filhos >= 3 ? '+3 Filhos' : 'Padrão'}
-                    </td>
-                    <td style={{ padding: '0.75rem' }}>{familia.eventos_participados || 0}</td>
-                    <td style={{ padding: '0.75rem' }}>{((familia.eventos_participados || 0) / (familia.total_eventos || 1) * 100).toFixed(0)}%</td>
-                    <td style={{ padding: '0.75rem' }}>{familia.score || 0}</td>
-                    <td style={{ padding: '0.75rem' }}>
-                      <button
-                        className="btn btn-outline"
-                        onClick={() => onSelectFamilia && onSelectFamilia(familia.id)}
-                        style={{ padding: '0.25rem 0.5rem', cursor: 'pointer' }}
-                      >
-                        Ver
-                      </button>
-                    </td>
-                  </tr>
-                ))
+                familiasFiltradas().map((familia) => {
+                  const participacao = ((familia.eventos_participados || 0) / (familia.total_eventos || 1) * 100).toFixed(0);
+                  const score = familia.score || 0;
+                  
+                  return (
+                    <tr key={familia.id} style={{ borderBottom: '1px solid #eee', transition: 'background-color 0.3s' }}>
+                      <td style={{ padding: '0.75rem', fontWeight: 'bold' }}>#{familia.rank_fixo}</td>
+                      <td style={{ padding: '0.75rem' }}><strong>{familia.nome_responsavel}</strong></td>
+                      <td style={{ padding: '0.75rem' }}>{familia.presidente_nome || 'Não atribuído'}</td>
+                      <td style={{ padding: '0.75rem' }}>
+                        <span className="badge" style={{
+                          backgroundColor: familia.mae_solo ? '#4B4B4B' : (familia.numero_filhos >= 3 ? '#6B6B6B' : '#8A8A8A'),
+                          color: 'white',
+                          padding: '4px 8px',
+                          borderRadius: '4px',
+                          fontSize: '0.7rem'
+                        }}>
+                          {familia.mae_solo ? 'Mãe Solo' : familia.numero_filhos >= 3 ? '+3 Filhos' : 'Padrão'}
+                        </span>
+                      </td>
+                      <td style={{ padding: '0.75rem' }}>{familia.eventos_participados || 0}</td>
+                      <td style={{ padding: '0.75rem', ...getParticipacaoColor(participacao) }}>{participacao}%</td>
+                      <td style={{ padding: '0.75rem', ...getScoreColor(score) }}>{score}</td>
+                      <td style={{ padding: '0.75rem' }}>
+                        <button
+                          className="btn btn-outline"
+                          onClick={() => onSelectFamilia && onSelectFamilia(familia.id)}
+                          style={{ 
+                            padding: '0.25rem 0.75rem', 
+                            cursor: 'pointer',
+                            backgroundColor: '#AAAAAA',
+                            color: '#fff',
+                            border: 'none',
+                            borderRadius: '4px'
+                          }}
+                        >
+                          Ver
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })
               )}
             </tbody>
           </table>
