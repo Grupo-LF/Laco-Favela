@@ -104,7 +104,7 @@ const Dashboard = () => {
     series: [44, 55, 13, 33],
     chart: {
       type: 'donut',
-      height: 250,
+      height: 300,
       responsive: [{
         breakpoint: 768,
         options: { chart: { height: 250 } }
@@ -142,16 +142,11 @@ const Dashboard = () => {
     chart: {
       type: 'bar',
       height: 350,
-      toolbar: {
-        show: false
-      },
-      zoom: {
-        enabled: false
-      },
-      animations: {
-        enabled: true
-      },
-      background: 'transparent'
+      toolbar: { show: false },
+      responsive: [{
+        breakpoint: 768,
+        options: { chart: { height: 280 } }
+      }]
     },
     tooltip: {
       enabled: false
@@ -169,7 +164,10 @@ const Dashboard = () => {
       }
     },
     dataLabels: {
-      enabled: false,
+      enabled: true,
+      formatter: (val) => `${val}`,
+      offsetX: 10,
+      style: { fontSize: '12px', fontWeight: 'bold' }
     },
     legend: {
       show: false
@@ -216,7 +214,12 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchStatusCotas = async () => {
       try {
-        const response = await axios.get('/api/admin/dashboard/cotas/');
+        setLoading(true);
+        const token = localStorage.getItem('token');
+        const response = await axios.get('/api/admin/dashboard/cotas/', {
+          headers: token ? { 'Authorization': `Token ${token}` } : {}
+        });
+        
         setStatusCotas(response.data.cotas || []);
         setCicloTitulo(response.data.ciclo || 'Ciclo Atual');
       } catch (error) {
