@@ -1,13 +1,14 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.permissions import AllowAny # Mudar quando sair do desenvolvimento
+from rest_framework.permissions import IsAuthenticated# Mudar quando sair do desenvolvimento
 from django.db.models import Sum, Count
 from apps.familias.models import Familia
 from apps.presidentes.models import Presidente
+from .serializers import DadosGeraisONGSerializer
 
 
 class dadosGeraisONGVIEW(APIView):
-    permission_classes = [AllowAny] # Permite qualuqer um entrar na url, mudar quando sair do desenvolvimento
+    permission_classes = [IsAuthenticated] # Permite qualuqer um entrar na url, mudar quando sair do desenvolvimento
 
     def get(self, request):
         # Total de pessoas
@@ -49,10 +50,12 @@ class dadosGeraisONGVIEW(APIView):
             .order_by('-total')
         )
 
-        return Response({
+        dados = {
             'total_pessoas': total_pessoas,
             'total_familias': total_familias,
             'familias_por_presidente': list(familias_por_presidente),
             'pessoas_por_comunidade': list(pessoas_por_comunidade),
             'familias_por_comunidade': list(familias_por_comunidade),
-        })
+        }
+        serializer = DadosGeraisONGSerializer(dados)
+        return Response(serializer.data)
