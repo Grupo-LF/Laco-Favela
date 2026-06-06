@@ -12,9 +12,6 @@ DATABASES = {
 ALLOWED_HOSTS = ['*']
 DEBUG = False
 
-STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-
 CSRF_TRUSTED_ORIGINS = [
     'https://lacofavela-grdzfab6b0bqhygj.brazilsouth-01.azurewebsites.net'
 ]
