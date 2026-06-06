@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ReactComponent as GrayIcon } from '../../assets/Square_gray.svg';
 import { ReactComponent as BlacktIcon } from '../../assets/Square_black.svg';
-import { listarCiclos, getFormulariosDoCiclo } from '../../services/formularios';
+import { getCiclos,getFormulariosDoCiclo,criarCiclo, publicarCiclo, associarRespostasAosPresidentes, listarPresidentes } from '../../services/formularios';
 
 const Formularios = ({ onNavigate }) => {
   const [showVerTodos, setShowVerTodos] = useState(false);
@@ -18,7 +18,7 @@ const Formularios = ({ onNavigate }) => {
   const carregarCiclos = async () => {
     try {
       setLoading(true);
-      const data = await listarCiclos();
+      const data = await getCiclos();
       setCiclos(data);
       
       // Selecionar o primeiro ciclo como atual se existir
@@ -33,15 +33,17 @@ const Formularios = ({ onNavigate }) => {
     }
   };
 
-  const carregarRespostasDoCiclo = async (cicloId) => {
-    try {
-      const data = await getFormulariosDoCiclo(cicloId);
-      setRespostasAtuais(data.respostas || []);
-    } catch (error) {
-      console.error('Erro ao carregar respostas:', error);
-      setRespostasAtuais([]);
-    }
-  };
+ // No Formularios.jsx, altere a função carregarRespostasDoCiclo:
+const carregarRespostasDoCiclo = async (cicloId) => {
+  try {
+    const data = await getFormulariosDoCiclo(cicloId);
+    console.log('Respostas carregadas:', data);
+    setRespostasAtuais(data.respostas || []);
+  } catch (error) {
+    console.error('Erro ao carregar respostas:', error);
+    setRespostasAtuais([]);
+  }
+};
 
   const handleSelecionarCiclo = async (ciclo, index) => {
     setFormularioAtual(ciclo);
@@ -104,8 +106,8 @@ const Formularios = ({ onNavigate }) => {
         <div className="view-section active">
           <div>
             {ciclos.length === 0 ? (
-              <div className="card" style={{ textAlign: 'center', padding: '3rem' }}>
-                <p>Nenhum formulário cadastrado ainda.</p>
+              <div className="card" style={{ textAlign: 'center', padding: '3rem', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                <p style={{ marginBottom: '1rem' }}>Nenhum formulário cadastrado ainda.</p>
                 <button className="btn btn-primary" onClick={() => onNavigate('criar-formulario')}>
                   Criar primeiro formulário
                 </button>
@@ -143,15 +145,16 @@ const Formularios = ({ onNavigate }) => {
     );
   }
 
-  if (!formularioAtual) {
+  // Verifica se não há formulários
+  if (ciclos.length === 0 || !formularioAtual) {
     return (
       <div>
         <div className="header">
           <h2>Formulários</h2>
           <button className="btn btn-primary" onClick={() => setShowVerTodos(true)}>Ver todos</button>
         </div>
-        <div className="card" style={{ textAlign: 'center', padding: '3rem' }}>
-          <p>Nenhum formulário disponível.</p>
+        <div className="card" style={{ textAlign: 'center', padding: '3rem', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+          <p style={{ marginBottom: '1rem' }}>Nenhum formulário disponível.</p>
           <button className="btn btn-primary" onClick={() => onNavigate('criar-formulario')}>
             Criar formulário
           </button>
@@ -219,7 +222,7 @@ const Formularios = ({ onNavigate }) => {
           </p>
 
           {respostasAtuais.length === 0 ? (
-            <div style={{ textAlign: 'center', padding: '2rem' }}>
+            <div style={{ textAlign: 'center', padding: '2rem', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
               <p>Nenhuma resposta para este formulário ainda.</p>
             </div>
           ) : (

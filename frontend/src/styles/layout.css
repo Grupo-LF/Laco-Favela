@@ -1,65 +1,91 @@
 /* ========================================
    SIDEBAR - Desktop (padrão)
    ======================================== */
-.sidebar {
-    width: 18%;
-    background-color: var(--bg-sidebar);
-    color: white;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around;
-    padding: clamp(1.2rem, 2.3vh, 0.8rem) ;
-    height: 100vh;
-    flex-shrink: 0;
-    transition: all 0.3s ease;
-    overflow-y: visible;
-}
+/* REMOVIDO - Agora controlado por inline styles */
+
+/* Botão Hamburger - escondido no desktop */
+/* REMOVIDO - Agora controlado por inline styles */
+
+/* Overlay para fechar o menu */
+/* REMOVIDO - Agora controlado por inline styles */
+
+/* Overlay ativo */
+/* REMOVIDO - Agora controlado por inline styles */
+
+/* Botão de fechar dentro da sidebar (mobile) */
+/* REMOVIDO - Agora controlado por inline styles */
 
 /* ========================================
    CELULAR E TABLET (até 1024px)
    ======================================== */
 @media (max-width: 1024px) {
-    .sidebar {
-        position: fixed;
-        top: 0;
-        left: -260px;
-        height: 100vh;
-        z-index: 1000;
-        transition: left 0.3s ease;
-        overflow-y: auto;
-        padding: 1rem 0;
-    }
-
-    .sidebar.open {
-        left: 0;
-    }
-
-    .menu-hamburger {
-        display: block;
-    }
-
-    .sidebar.open ~ .sidebar-overlay,
-    body.has-sidebar-open .sidebar-overlay {
-        display: block;
-    }
-
-    .sidebar-toggle {
-        display: none;
-    }
-
-    .grid-4, .grid-3, .grid-2 {
-        grid-template-columns: 1fr;
-    }
-
+    /* Mostra o botão hamburger - REMOVIDO */
+    
+    /* Sidebar escondida por padrão no mobile - REMOVIDO */
+    
+    /* Sidebar aberta - REMOVIDO */
+    
+    /* Mostra botão de fechar dentro da sidebar - REMOVIDO */
+    
+    /* Ajuste do header para mobile */
     .header {
         flex-direction: column;
         align-items: flex-start;
         gap: 0.5rem;
-        padding: 1rem 1.5rem;
     }
-    
+
+    /* Grids responsivos */
+    .grid-4, 
+    .grid-3, 
+    .grid-2 {
+        grid-template-columns: 1fr;
+    }
+
+    /* Cards responsivos */
+    .cards-grid {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    }
+
+    /* Gráficos responsivos */
+    .charts-grid,
+    .ranking-grid {
+        grid-template-columns: 1fr;
+    }
+
+    /* Ajuste do padding da view-section */
     .view-section.active {
         padding: 1rem;
+        margin-top: 50px;
+    }
+
+    /* Ajuste do user-profile no mobile */
+    .user-profile {
+        margin-top: 20px;
+    }
+}
+
+/* ========================================
+   MOBILE PEQUENO (até 480px)
+   ======================================== */
+@media (max-width: 480px) {
+    /* REMOVIDO - Regras da sidebar */
+    
+    .header h2 {
+        font-size: 1.3rem;
+    }
+
+    .view-section.active {
+        padding: 0.8rem;
+        margin-top: 50px;
+    }
+
+    .card-value {
+        font-size: 1.8rem;
+    }
+
+    .card-title,
+    .card-subtitle {
+        font-size: 11px;
     }
 }
 
@@ -76,10 +102,6 @@
     flex-direction: column;
 }
 
-.sidebar.closed ~ .main-content {
-    margin-left: 0;
-}
-
 /* LOGO */
 .logo-container {
     display: flex;
@@ -92,10 +114,10 @@
     height: clamp(75px, 11vh, 85px);
     background: #d9d9d9;
     border-radius: 50%;
-    display: flex; 
-    align-items: center; 
+    display: flex;
+    align-items: center;
     justify-content: center;
-    color: #333; 
+    color: #333;
     font-weight: bold;
     font-size: clamp(0.9rem, 2.8vh, 1.1rem);
 }
@@ -115,14 +137,13 @@
 .user-avatar {
     width: clamp(40px, 7vh, 45px);
     height: clamp(40px, 7vh, 45px);
-    padding: clamp(20px, 4vh, 25px);
     background: #d9d9d9;
     border-radius: 50%;
-    display: inline-flex; 
-    align-items: center; 
+    display: inline-flex;
+    align-items: center;
     justify-content: center;
-    color: #333; 
-    font-weight: 800; 
+    color: #333;
+    font-weight: 800;
     margin-bottom: clamp(0.4rem, 1.5vh, 0.6rem);
     font-size: clamp(1rem, 2.8vh, 1.3rem);
 }
@@ -137,10 +158,6 @@
 }
 
 /* NAVEGAÇÃO */
-/* .nav-section { 
-    margin-bottom: clamp(1rem, 2.8vh, 1.5rem);
-} */
-
 .nav-title {
     font-size: clamp(0.7rem, 1.8vh, 0.8rem);
     text-transform: uppercase;
@@ -162,25 +179,26 @@
     font-size: 1rem;
 }
 
-.nav-item:hover, .nav-item.active {
+.nav-item:hover,
+.nav-item.active {
     background: rgba(255,255,255,0.3);
     border-radius: 10px;
-
     color: black;
 }
 
-.nav-icon { 
+.nav-icon {
     width: clamp(14px, 2.2vh, 18px);
     height: clamp(14px, 2.2vh, 18px);
-    background: rgb(252, 248, 248); 
-    opacity: 0.5; 
+    background: rgb(252, 248, 248);
+    opacity: 0.5;
 }
 
-.nav-item.active .nav-icon { 
-    opacity: 1; 
-    background-color: black; 
+.nav-item.active .nav-icon {
+    opacity: 1;
+    background-color: black;
 }
 
+/* VIEW SECTIONS */
 .view-section {
     width: 100%;
     display: none;
@@ -196,6 +214,64 @@
     box-sizing: border-box;
 }
 
+/* Scroll invisível que aparece ao passar o mouse */
+*::-webkit-scrollbar {
+    width: 6px;
+    background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+    background: transparent;
+    border-radius: 10px;
+}
+
+*:hover::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.2);
+}
+
+*:hover::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 0.3);
+}
+
+/* Firefox */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: transparent transparent;
+}
+
+*:hover {
+    scrollbar-color: rgba(64, 64, 64, 0.2) transparent;
+}
+
+/* Sidebar scroll específico */
+.sidebar::-webkit-scrollbar {
+    width: 6px;
+    background: transparent;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+    background: transparent;
+    border-radius: 10px;
+}
+
+.sidebar:hover::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.sidebar:hover::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.5);
+}
+
+.sidebar {
+    scrollbar-width: thin;
+    scrollbar-color: transparent transparent;
+}
+
+.sidebar:hover {
+    scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
+}
+
+/* HEADER */
 .header {
     display: flex;
     padding: 1.5rem 2rem;
@@ -205,4 +281,16 @@
     margin-bottom: 1rem;
     width: 100%;
     box-sizing: border-box;
+}
+
+/* ANIMAÇÕES */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
