@@ -1,42 +1,44 @@
-from django.db.models import Count, Q
-from rest_framework import generics, status
-from rest_framework.response import Response 
-from rest_framework.permissions import AllowAny, IsAuthenticated 
-from rest_framework.views import APIView
+from rest_framework import generics
+from rest_framework.response import Response
+from rest_framework.permissions import AllowAny
 from .models import Presidente
-from .serializers import PresidenteSerializer, CotaSerializer, PresidenteRankingSerializer 
-from apps.formularios.models import Ciclo, RespostaCiclo
-from django.utils import timezone
+from .serializers import PresidenteSerializer, CotaSerializer, PresidenteRankingSerializer
 
 # Lista E Cadastra presidentes
 class ListaCreatePresidentesView(generics.ListCreateAPIView):
     queryset = Presidente.objects.all().order_by('-criado_em')
     serializer_class = PresidenteSerializer
 
-# Gerenciar cotas do presidente
+
+# Gerenciar cotas do presidente (apenas cota)
 class AtualizarCotaView(generics.UpdateAPIView):
     queryset = Presidente.objects.all()
     serializer_class = CotaSerializer
 
 
-# === ADICIONE A NOVA VIEW DAQUI PARA BAIXO ===
+# ========== NOVA VIEW - Editar qualquer campo do presidente ==========
+class AtualizarPresidenteView(generics.RetrieveUpdateAPIView):
+    queryset = Presidente.objects.all()
+    serializer_class = PresidenteSerializer
+    permission_classes = [AllowAny]  # Permite edição sem autenticação (ou troque se precisar de token)
 
+
+# Ranking de presidentes
 class RankingPresidentesView(generics.ListAPIView):
     serializer_class = PresidenteRankingSerializer
-    permission_classes = [AllowAny] # Permite que o React busque sem travar no Token
+    permission_classes = [AllowAny]
 
     def get_queryset(self):
-        # No ranking de engajamento, trazemos apenas os presidentes ativos
         return Presidente.objects.filter(ativo=True)
 
     def list(self, request, *args, **kwargs):
         queryset = self.get_queryset()
         serializer = self.get_serializer(queryset, many=True)
         
-        # Ordena os presidentes pela 'pontuacao_engajamento' do maior para o menor
+        # Ordena pelo score_final (melhor)
         dados_ordenados = sorted(
             serializer.data, 
-            key=lambda k: k['pontuacao_engajamento'], 
+            key=lambda k: k.get('score_final', 0), 
             reverse=True
         )
         
