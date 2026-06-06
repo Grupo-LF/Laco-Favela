@@ -38,6 +38,12 @@ class Presidente(models.Model): #fiz com base no formulario do presidente de rua
     cota = models.IntegerField(default=0)
     ativo = models.BooleanField(default=True)
     criado_em = models.DateTimeField(auto_now_add=True)
+    
+    # ========== NOVOS CAMPOS ==========
+    setor = models.CharField(max_length=100, blank=True, null=True, help_text="Setor/Região do presidente")
+    visitas = models.IntegerField(default=0, help_text="Quantidade de visitas realizadas")
+    eventos = models.IntegerField(default=0, help_text="Quantidade de eventos realizados")
+    penalizacao = models.IntegerField(default=0, help_text="Pontos de penalização (desconta do score)")
 
     def __str__(self):
         return f"{self.nome} - {self.comunidade}"
