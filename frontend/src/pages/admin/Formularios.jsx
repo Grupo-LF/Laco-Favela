@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ReactComponent as GrayIcon } from '../../assets/Square_gray.svg';
 import { ReactComponent as BlacktIcon } from '../../assets/Square_black.svg';
-import { getCiclos, getCicloDetalhado } from '../../services/formularios';
-import { listarPresidentes } from '../../services/presidente';
+import { getCiclos,getFormulariosDoCiclo,criarCiclo, publicarCiclo, associarRespostasAosPresidentes, listarPresidentes } from '../../services/formularios';
 
 const Formularios = ({ onNavigate }) => {
   const [showVerTodos, setShowVerTodos] = useState(false);
@@ -43,6 +42,7 @@ const Formularios = ({ onNavigate }) => {
     try {
       setLoading(true);
       const data = await getCiclos();
+      const data = await getCiclos();
       setCiclos(data);
       
       // Carrega estatísticas para cada ciclo
@@ -58,45 +58,17 @@ const Formularios = ({ onNavigate }) => {
     }
   };
 
-  // Função para carregar estatísticas de cada ciclo
-  const carregarEstatisticasDosCiclos = async (ciclosList) => {
-    const novasEstatisticas = {};
-    
-    for (const ciclo of ciclosList) {
-      try {
-        const cicloDetalhado = await getCicloDetalhado(ciclo.id);
-        const presidentes = cicloDetalhado.presidentes_associados || [];
-        
-        const completas = presidentes.filter(p => 
-          p.status === 'concluido' || p.status === 'completo' || p.status === 'enviado'
-        ).length;
-        
-        novasEstatisticas[ciclo.id] = {
-          total: presidentes.length,
-          completas: completas,
-          pendentes: presidentes.length - completas
-        };
-      } catch (error) {
-        console.error(`Erro ao carregar estatísticas do ciclo ${ciclo.id}:`, error);
-        novasEstatisticas[ciclo.id] = { total: 0, completas: 0, pendentes: 0 };
-      }
-    }
-    
-    setEstatisticasCiclos(novasEstatisticas);
-  };
-
-  const selecionarCiclo = async (ciclo) => {
-    try {
-      const cicloDetalhado = await getCicloDetalhado(ciclo.id);
-      setFormularioAtual(cicloDetalhado);
-      console.log('Ciclo detalhado:', cicloDetalhado);
-      setPresidentesDoCiclo(cicloDetalhado.presidentes_associados || []);
-    } catch (error) {
-      console.error('Erro ao carregar detalhes do ciclo:', error);
-      setFormularioAtual(ciclo);
-      setPresidentesDoCiclo([]);
-    }
-  };
+ // No Formularios.jsx, altere a função carregarRespostasDoCiclo:
+const carregarRespostasDoCiclo = async (cicloId) => {
+  try {
+    const data = await getFormulariosDoCiclo(cicloId);
+    console.log('Respostas carregadas:', data);
+    setRespostasAtuais(data.respostas || []);
+  } catch (error) {
+    console.error('Erro ao carregar respostas:', error);
+    setRespostasAtuais([]);
+  }
+};
 
   const handleSelecionarCiclo = async (ciclo, index) => {
     await selecionarCiclo(ciclo);
@@ -155,6 +127,8 @@ const Formularios = ({ onNavigate }) => {
             {ciclos.length === 0 ? (
               <div className="card" style={{ textAlign: 'center', padding: '3rem', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
                 <p style={{ marginBottom: '1rem' }}>Nenhum formulário cadastrado ainda.</p>
+              <div className="card" style={{ textAlign: 'center', padding: '3rem', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                <p style={{ marginBottom: '1rem' }}>Nenhum formulário cadastrado ainda.</p>
                 <button className="btn btn-primary" onClick={() => onNavigate('criar-formulario')}>
                   Criar primeiro formulário
                 </button>
@@ -201,6 +175,7 @@ const Formularios = ({ onNavigate }) => {
     );
   }
 
+  // Verifica se não há formulários
   if (ciclos.length === 0 || !formularioAtual) {
     return (
       <div>
@@ -208,6 +183,8 @@ const Formularios = ({ onNavigate }) => {
           <h2>Formulários</h2>
           <button className="btn btn-primary" onClick={() => setShowVerTodos(true)}>Ver todos</button>
         </div>
+        <div className="card" style={{ textAlign: 'center', padding: '3rem', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+          <p style={{ marginBottom: '1rem' }}>Nenhum formulário disponível.</p>
         <div className="card" style={{ textAlign: 'center', padding: '3rem', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
           <p style={{ marginBottom: '1rem' }}>Nenhum formulário disponível.</p>
           <button className="btn btn-primary" onClick={() => onNavigate('criar-formulario')}>
@@ -293,9 +270,9 @@ const Formularios = ({ onNavigate }) => {
             Formulário: {formularioAtual.titulo}
           </p>
 
-          {presidentesDoCiclo.length === 0 ? (
+          {respostasAtuais.length === 0 ? (
             <div style={{ textAlign: 'center', padding: '2rem', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-              <p>Nenhum presidente associado a este formulário ainda.</p>
+              <p>Nenhuma resposta para este formulário ainda.</p>
             </div>
           ) : (
             <div style={{ overflowX: 'auto', width: '100%' }}>
