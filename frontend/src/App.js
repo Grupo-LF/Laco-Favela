@@ -8,11 +8,10 @@ import Login from './pages/login/Login';
 function App(onLogin) {
   const [tipoUsuario, setTipoUsuario] = useState(localStorage.getItem('tipo'));
 
-  const handleLogin = (tipo, token) => {
+  const handleLogin = (tipo, token,nome) => {
     localStorage.setItem('token', token);
-    console.log('Token salvo no localStorage:', token);
     localStorage.setItem('tipo', tipo);
-    console.log('Tipo de usuário salvo no localStorage:', tipo);
+    localStorage.setItem('nome', nome); // Supondo que o nome seja retornado como token, ajuste conforme necessário
     setTipoUsuario(tipo);
   };  
   const handleLoginTest = (tipo) => {

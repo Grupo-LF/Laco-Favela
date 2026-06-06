@@ -1,16 +1,13 @@
 from django.urls import path
 from .views import ListaCreatePresidentesView, AtualizarCotaView, RankingPresidentesView
-from rest_framework.routers import DefaultRouter
-from rest_framework import viewsets
-
 
 urlpatterns = [
-
-    path('presidentes/', ListaCreatePresidentesView.as_view()), 
-    path('presidentes/ranking/', RankingPresidentesView.as_view()),
-    path('presidentes/<int:pk>/', AtualizarCotaView.as_view()),
-
-
-
-
+    # Listar todos os presidentes e criar novo presidente
+    path('presidentes/', ListaCreatePresidentesView.as_view(), name='presidentes-list-create'),
+    
+    # Ranking de engajamento dos presidentes
+    path('presidentes/ranking/', RankingPresidentesView.as_view(), name='presidentes-ranking'),
+    
+    # Atualizar apenas a cota de um presidente específico
+    path('presidentes/<int:pk>/cota/', AtualizarCotaView.as_view(), name='presidentes-cota'),
 ]
