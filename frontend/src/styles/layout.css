@@ -14,11 +14,33 @@
 
 /* Botão de fechar dentro da sidebar (mobile) */
 /* REMOVIDO - Agora controlado por inline styles */
+/* REMOVIDO - Agora controlado por inline styles */
+
+/* Botão Hamburger - escondido no desktop */
+/* REMOVIDO - Agora controlado por inline styles */
+
+/* Overlay para fechar o menu */
+/* REMOVIDO - Agora controlado por inline styles */
+
+/* Overlay ativo */
+/* REMOVIDO - Agora controlado por inline styles */
+
+/* Botão de fechar dentro da sidebar (mobile) */
+/* REMOVIDO - Agora controlado por inline styles */
 
 /* ========================================
    CELULAR E TABLET (até 1024px)
    ======================================== */
 @media (max-width: 1024px) {
+    /* Mostra o botão hamburger - REMOVIDO */
+    
+    /* Sidebar escondida por padrão no mobile - REMOVIDO */
+    
+    /* Sidebar aberta - REMOVIDO */
+    
+    /* Mostra botão de fechar dentro da sidebar - REMOVIDO */
+    
+    /* Ajuste do header para mobile */
     /* Mostra o botão hamburger - REMOVIDO */
     
     /* Sidebar escondida por padrão no mobile - REMOVIDO */
@@ -52,9 +74,60 @@
         grid-template-columns: 1fr;
     }
 
+    /* Grids responsivos */
+    .grid-4, 
+    .grid-3, 
+    .grid-2 {
+        grid-template-columns: 1fr;
+    }
+
+    /* Cards responsivos */
+    .cards-grid {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    }
+
+    /* Gráficos responsivos */
+    .charts-grid,
+    .ranking-grid {
+        grid-template-columns: 1fr;
+    }
+
+    /* Ajuste do padding da view-section */
+
     /* Ajuste do padding da view-section */
     .view-section.active {
         padding: 1rem;
+        margin-top: 50px;
+    }
+
+    /* Ajuste do user-profile no mobile */
+    .user-profile {
+        margin-top: 20px;
+    }
+}
+
+/* ========================================
+   MOBILE PEQUENO (até 480px)
+   ======================================== */
+@media (max-width: 480px) {
+    /* REMOVIDO - Regras da sidebar */
+    
+    .header h2 {
+        font-size: 1.3rem;
+    }
+
+    .view-section.active {
+        padding: 0.8rem;
+        margin-top: 50px;
+    }
+
+    .card-value {
+        font-size: 1.8rem;
+    }
+
+    .card-title,
+    .card-subtitle {
+        font-size: 11px;
         margin-top: 50px;
     }
 
@@ -100,7 +173,6 @@
     transition: all 0.3s ease;
     display: flex;
     flex-direction: column;
-    background-color: var(--bg-screen);
 }
 
 /* LOGO */
@@ -117,8 +189,10 @@
     border-radius: 50%;
     display: flex;
     align-items: center;
+    display: flex;
+    align-items: center;
     justify-content: center;
-    color: var(--color-primary);
+    color: #333;
     font-weight: bold;
     font-size: clamp(0.9rem, 2.8vh, 1.1rem);
 }
@@ -138,12 +212,14 @@
 .user-avatar {
     width: clamp(40px, 7vh, 45px);
     height: clamp(40px, 7vh, 45px);
-    background: var(--color-primary);
+    background: #d9d9d9;
     border-radius: 50%;
     display: inline-flex;
     align-items: center;
+    display: inline-flex;
+    align-items: center;
     justify-content: center;
-    color: var(--text-white);
+    color: #333;
     font-weight: 800;
     margin-bottom: clamp(0.4rem, 1.5vh, 0.6rem);
     font-size: clamp(1rem, 2.8vh, 1.3rem);
@@ -187,23 +263,25 @@
 
 .nav-item:hover,
 .nav-item.active {
-    background: var(--color-accent);
+    background: rgba(255,255,255,0.3);
     border-radius: 10px;
-    color: var(--text-on-accent);
+    color: black;
 }
 
 .nav-icon {
+.nav-icon {
     width: clamp(14px, 2.2vh, 18px);
     height: clamp(14px, 2.2vh, 18px);
-    background: var(--icon-sidebar);
-    opacity: 0.7;
+    background: rgb(252, 248, 248);
+    opacity: 0.5;
 }
 
 .nav-item.active .nav-icon {
     opacity: 1;
-    background-color: var(--color-accent);
+    background-color: black;
 }
 
+/* VIEW SECTIONS */
 /* VIEW SECTIONS */
 .view-section {
     width: 100%;
@@ -218,21 +296,6 @@
     gap: 1.5rem;
     width: 100%;
     box-sizing: border-box;
-}
-
-/* Títulos das páginas */
-.view-section h1,
-.view-section h2,
-.view-section h3,
-.page-title {
-    color: var(--color-primary);
-}
-
-/* Texto do corpo */
-.view-section p,
-.view-section span,
-.view-section div:not(.card):not(.header) {
-    color: var(--text-primary);
 }
 
 /* Scroll invisível que aparece ao passar o mouse */
@@ -302,21 +365,6 @@
     margin-bottom: 1rem;
     width: 100%;
     box-sizing: border-box;
-    border-radius: var(--border-radius-md);
-    box-shadow: var(--shadow-sm);
-}
-
-/* CARDS */
-.card, .dashboard-card, .quadro {
-    background-color: var(--bg-surface);
-    border-radius: var(--border-radius-md);
-    box-shadow: var(--shadow-sm);
-    padding: var(--spacing-lg);
-}
-
-/* Ícones dentro da tela */
-.icon-inside, .card-icon {
-    color: var(--icon-inside);
 }
 
 /* ANIMAÇÕES */
