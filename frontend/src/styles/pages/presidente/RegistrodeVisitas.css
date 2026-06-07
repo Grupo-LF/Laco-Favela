@@ -1,0 +1,280 @@
+/* ============================================================
+   styles/presidente/RegistrodeVisitas.css
+   Escopo: prefixo "rv-" para não conflitar com classes globais
+   Não redefine variáveis — usa as de variables.css do projeto
+   ============================================================ */
+
+/* ── Variáveis locais (complementam variables.css) ── */
+.rv-page {
+  --rv-blue:        #1a3a5c;
+  --rv-blue-mid:    #1d4373;
+  --rv-accent:      #f5a623;
+  --rv-white:       #ffffff;
+  --rv-gray-bg:     #f4f6f9;
+  --rv-gray-hover:  #edf0f5;
+  --rv-gray-border: #e0e3e8;
+  --rv-text-dark:   #1a2b3c;
+  --rv-text-mid:    #4a5568;
+  --rv-text-light:  #8899aa;
+  --rv-shadow:      0 2px 8px rgba(26,58,92,0.08);
+  --rv-radius-sm:   6px;
+  --rv-radius-md:   10px;
+  --rv-radius-lg:   14px;
+  --rv-transition:  0.18s ease;
+}
+
+/* ── Wrapper da página ── */
+.rv-page {
+  padding: 32px 36px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  min-height: 100%;
+  background: var(--rv-gray-bg);
+  font-family: 'DM Sans', 'Segoe UI', sans-serif;
+}
+
+/* ── Cabeçalho ── */
+.rv-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.rv-header__title {
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--rv-text-dark);
+  letter-spacing: -0.3px;
+  margin: 0;
+}
+
+.rv-header__subtitle {
+  font-size: 13px;
+  color: var(--rv-text-light);
+  margin-top: 4px;
+}
+
+.rv-header__subtitle strong {
+  color: var(--rv-text-mid);
+  font-weight: 600;
+}
+
+/* ── Botão Nova Visita ── */
+.rv-btn-nova {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--rv-blue);
+  color: var(--rv-white);
+  border: none;
+  border-radius: var(--rv-radius-sm);
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 3px 10px rgba(26,58,92,0.22);
+  transition: background var(--rv-transition), transform var(--rv-transition);
+  white-space: nowrap;
+  font-family: inherit;
+}
+
+.rv-btn-nova:hover {
+  background: var(--rv-blue-mid);
+  transform: translateY(-1px);
+}
+
+.rv-btn-nova:active {
+  transform: translateY(0);
+}
+
+.rv-btn-nova__plus {
+  width: 20px;
+  height: 20px;
+  background: rgba(255,255,255,0.18);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  line-height: 1;
+}
+
+/* ── Grid de estatísticas ── */
+.rv-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  animation: rv-fadeUp 0.35s ease both 0.05s;
+}
+
+.rv-stat-card {
+  background: var(--rv-white);
+  border-radius: var(--rv-radius-md);
+  padding: 18px 20px;
+  box-shadow: var(--rv-shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  transition: transform var(--rv-transition), box-shadow var(--rv-transition);
+}
+
+.rv-stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(26,58,92,0.12);
+}
+
+.rv-stat-card__icon {
+  color: var(--rv-text-mid);
+  display: flex;
+  align-items: center;
+}
+
+.rv-stat-card__icon svg {
+  width: 22px;
+  height: 22px;
+}
+
+.rv-stat-card__label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: var(--rv-text-light);
+}
+
+.rv-stat-card__value {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--rv-text-dark);
+  line-height: 1;
+}
+
+/* ── Seção Histórico ── */
+.rv-historico {
+  background: var(--rv-white);
+  border-radius: var(--rv-radius-lg);
+  box-shadow: var(--rv-shadow);
+  padding: 24px;
+  animation: rv-fadeUp 0.35s ease both 0.12s;
+}
+
+.rv-historico__title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--rv-text-dark);
+  margin: 0 0 16px 0;
+}
+
+/* ── Lista de visitas ── */
+.rv-visit-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.rv-visit-item {
+  background: var(--rv-gray-bg);
+  border-radius: var(--rv-radius-md);
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  border: 1.5px solid transparent;
+  transition: background var(--rv-transition), transform var(--rv-transition), border-color var(--rv-transition);
+  animation: rv-fadeUp 0.3s ease both;
+}
+
+.rv-visit-item:nth-child(1) { animation-delay: 0.15s; }
+.rv-visit-item:nth-child(2) { animation-delay: 0.20s; }
+.rv-visit-item:nth-child(3) { animation-delay: 0.25s; }
+.rv-visit-item:nth-child(4) { animation-delay: 0.30s; }
+.rv-visit-item:nth-child(5) { animation-delay: 0.35s; }
+
+.rv-visit-item:hover {
+  background: var(--rv-gray-hover);
+  transform: translateX(2px);
+  border-color: var(--rv-gray-border);
+}
+
+.rv-visit-item__icon {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.rv-visit-item__icon svg {
+  width: 22px;
+  height: 22px;
+}
+
+.rv-visit-item__icon--synced { color: #2d7a4f; }
+.rv-visit-item__icon--offline { color: var(--rv-text-light); }
+
+.rv-visit-item__info {
+  flex: 1;
+}
+
+.rv-visit-item__name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--rv-text-dark);
+}
+
+.rv-visit-item__meta {
+  font-size: 12px;
+  color: var(--rv-text-light);
+  margin-top: 2px;
+}
+
+/* ── Badges de status ── */
+.rv-badge {
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.rv-badge--synced {
+  background: #1a3a5c;
+  color: #ffffff;
+}
+
+.rv-badge--offline {
+  background: #f5a623;
+  color: #1a2b3c;
+}
+
+/* ── Animação ── */
+@keyframes rv-fadeUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Responsivo ── */
+@media (max-width: 900px) {
+  .rv-stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .rv-page {
+    padding: 20px 16px;
+  }
+
+  .rv-header {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .rv-stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+}
