@@ -1,0 +1,103 @@
+3c3
+< const Sidebar = ({ activeView, onNavigate }) => {
+---
+> const SidebarPresidente = ({ activeView, onNavigate }) => {
+6,10c6
+<       { id: 'dashboard', label: 'Dashboard' },
+<       { id: 'formularios', label: 'Formulários' }
+<     ],
+<     gestao: [
+<       { id: 'presidentes', label: 'Presidentes' },
+---
+>       { id: 'home', label: 'Home' },
+12c8,9
+<       { id: 'aprovados', label: 'Aprovados' }
+---
+>       { id: 'formularios', label: 'Formulários' },
+>       { id: 'registros', label: 'Registros' },
+14,16c11,13
+<     comunicacao: [
+<       { id: 'feedbacks', label: 'Feedbacks' },
+<       { id: 'historico', label: 'Histórico' }
+---
+>     desempenho: [
+>       { id: 'meu-indicador', label: 'Meu indicador' },
+>       { id: 'ranking', label: 'Ranking' },
+19c16,17
+<    // Função mais simples possível para sair
+---
+> 
+>   // Função mais simples possível para sair
+26d23
+< 
+32,33c29,32
+<       
+<       <div className="user-profile">
+---
+>       {/* Adicione o estilo de cursor pointer e o evento de clique na div do perfil */}
+>       <div className={`user-profile ${activeView === 'perfil' ? 'active' : ''}`} 
+>         style={{ cursor: 'pointer' }}
+>         onClick={() => onNavigate('perfil')}>
+35,36d33
+<         
+<         <div className="badge" style={{ marginTop: '0.5rem', background: 'rgba(255,255,255,0.3)' ,position: 'absolute',left:'65%',bottom:'60%'}}>ADMIN</div>
+37a35
+>         <span style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.7)' }}>Presidente</span>
+39d36
+< 
+43,51c40
+<           <a 
+<             key={item.id}
+<             href="#"
+<             className={`nav-item ${activeView === item.id ? 'active' : ''}`}
+<             onClick={(e) => {
+<               e.preventDefault();
+<               onNavigate(item.id);
+<             }}
+<           >
+---
+>           <a key={item.id} href="#" className={`nav-item ${activeView === item.id ? 'active' : ''}`} onClick={(e) => { e.preventDefault(); onNavigate(item.id); }}>
+57d45
+< 
+59,69c47,49
+<         <div className="nav-title">Gestão</div>
+<         {menuItems.gestao.map(item => (
+<           <a
+<             key={item.id}
+<             href="#"
+<             className={`nav-item ${activeView === item.id ? 'active' : ''}`}
+<             onClick={(e) => {
+<               e.preventDefault();
+<               onNavigate(item.id);
+<             }}
+<           >
+---
+>         <div className="nav-title">Desempenho</div>
+>         {menuItems.desempenho.map(item => (
+>           <a key={item.id} href="#" className={`nav-item ${activeView === item.id ? 'active' : ''}`} onClick={(e) => { e.preventDefault(); onNavigate(item.id); }}>
+75,93d54
+< 
+<       <div className="nav-section">
+<         <div className="nav-title">Comunicação</div>
+<         {menuItems.comunicacao.map(item => (
+<           <a
+<             key={item.id}
+<             href="#"
+<             className={`nav-item ${activeView === item.id ? 'active' : ''}`}
+<             onClick={(e) => {
+<               e.preventDefault();
+<               onNavigate(item.id);
+<             }}
+<           >
+<             <div className="nav-icon"></div>
+<             {item.label}
+<           </a>
+<         ))}
+<       </div>
+< 
+104c65
+< export default Sidebar;
+\ No newline at end of file
+---
+> export default SidebarPresidente;
+\ No newline at end of file

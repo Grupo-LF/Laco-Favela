@@ -1,0 +1,148 @@
+1c1,2
+< import React from 'react';
+---
+> import { useState } from 'react';
+> import './HomePage.css';
+3,24c4,14
+< const Sidebar = ({ activeView, onNavigate }) => {
+<   const menuItems = {
+<     principal: [
+<       { id: 'dashboard', label: 'Dashboard' },
+<       { id: 'formularios', label: 'Formulários' }
+<     ],
+<     gestao: [
+<       { id: 'presidentes', label: 'Presidentes' },
+<       { id: 'familias', label: 'Famílias' },
+<       { id: 'aprovados', label: 'Aprovados' }
+<     ],
+<     comunicacao: [
+<       { id: 'feedbacks', label: 'Feedbacks' },
+<       { id: 'historico', label: 'Histórico' }
+<     ]
+<   };
+<    // Função mais simples possível para sair
+<   const handleSair = () => {
+<     localStorage.removeItem('token');
+<     localStorage.removeItem('tipo');
+<     window.location.href = '/';
+<   };
+---
+> const ProtoIcon = () => (
+>   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+>     <circle cx="12" cy="12" r="10" />
+>   </svg>
+> );
+> 
+> const NAV = [
+>   { id: 'dashboard', label: 'Dashboard', icon: ProtoIcon },
+>   { id: 'notifications', label: 'Notificações', icon: ProtoIcon },
+>   { id: 'settings', label: 'Configurações', icon: ProtoIcon }
+> ];
+25a16,17
+> export default function Sidebar() {
+>   const [activeNav, setActiveNav] = useState('dashboard');
+28,30c20,22
+<     <aside className="sidebar">
+<       <div className="logo-container">
+<         <div className="logo">Logo</div>
+---
+>     <div className="sidebar">
+>       <div className="sidebar__logo-wrap">
+>         <div className="sidebar__logo">Logo</div>
+33,37c25,27
+<       <div className="user-profile">
+<         <div className="user-avatar">NS</div>
+<         
+<         <div className="badge" style={{ marginTop: '0.5rem', background: 'rgba(255,255,255,0.3)' ,position: 'absolute',left:'65%',bottom:'60%'}}>ADMIN</div>
+<         <h5 style={{ marginTop: '0.5rem', fontSize: '0.9rem' }}>Nome e Sobrenome</h5>
+---
+>       <div className="sidebar__profile">
+>         <div className="avatar"></div>
+>         <div className="name">Usuário</div>
+40,50c30,35
+<       <div className="nav-section">
+<         <div className="nav-title">Principal</div>
+<         {menuItems.principal.map(item => (
+<           <a 
+<             key={item.id}
+<             href="#"
+<             className={`nav-item ${activeView === item.id ? 'active' : ''}`}
+<             onClick={(e) => {
+<               e.preventDefault();
+<               onNavigate(item.id);
+<             }}
+---
+>       <nav>
+>         {NAV.map((item) => (
+>           <div 
+>             key={item.id} 
+>             className={`nav-item ${activeNav === item.id ? 'active' : ''}`}
+>             onClick={() => setActiveNav(item.id)}
+52,54c37,39
+<             <div className="nav-icon"></div>
+<             {item.label}
+<           </a>
+---
+>             <item.icon />
+>             <span>{item.label}</span>
+>           </div>
+56,74c41
+<       </div>
+< 
+<       <div className="nav-section">
+<         <div className="nav-title">Gestão</div>
+<         {menuItems.gestao.map(item => (
+<           <a
+<             key={item.id}
+<             href="#"
+<             className={`nav-item ${activeView === item.id ? 'active' : ''}`}
+<             onClick={(e) => {
+<               e.preventDefault();
+<               onNavigate(item.id);
+<             }}
+<           >
+<             <div className="nav-icon"></div>
+<             {item.label}
+<           </a>
+<         ))}
+<       </div>
+---
+>       </nav>
+76,91c43,44
+<       <div className="nav-section">
+<         <div className="nav-title">Comunicação</div>
+<         {menuItems.comunicacao.map(item => (
+<           <a
+<             key={item.id}
+<             href="#"
+<             className={`nav-item ${activeView === item.id ? 'active' : ''}`}
+<             onClick={(e) => {
+<               e.preventDefault();
+<               onNavigate(item.id);
+<             }}
+<           >
+<             <div className="nav-icon"></div>
+<             {item.label}
+<           </a>
+<         ))}
+---
+>       <div className="sidebar__footer">
+>         Sair
+93,100c46
+< 
+<       <div style={{ marginTop: 'auto' }}>
+<         <a href="#" className="nav-item" onClick={(e) => { e.preventDefault(); handleSair(); }}>
+<           <div className="nav-icon"></div>
+<           Sair
+<         </a>
+<       </div>
+<     </aside>
+---
+>     </div>
+102,104c48
+< };
+< 
+< export default Sidebar;
+\ No newline at end of file
+---
+> }

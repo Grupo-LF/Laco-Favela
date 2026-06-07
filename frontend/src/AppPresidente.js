@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './styles/global.css';
-import SidebarPresidente from './components/layout/SidebarPresidente';
+import Sidebar from './layouts/components/Sidebar';  // ← MUDEI AQUI
 import HomePage from './pages/presidente/HomePage';
 import FamiliasPage from './pages/presidente/FamiliasPage';
 import MeuIndicadorPage from './pages/presidente/MeuIndicadorPage';
@@ -21,15 +21,12 @@ function AppPresidente() {
         return <div>formularios (em breve)</div>;
       case 'registros': 
         return <div>Registros (em breve)</div>;
-      
-      // 2. CASOS ATUALIZADOS COM AS SUAS TELAS REAIS:
       case 'meu-indicador': 
         return <MeuIndicadorPage />;
       case 'ranking': 
         return <RankingPage />;
       case 'perfil': 
         return <PerfilPage />;
-        
       default: 
         return <HomePage onNavigate={setActiveView} />;
     }
@@ -37,7 +34,11 @@ function AppPresidente() {
 
   return (
     <div style={{ display: 'flex', height: '100vh' }}>
-      <SidebarPresidente activeView={activeView} onNavigate={setActiveView} />
+      <Sidebar 
+        tipo="presidente"           // ← NOVO: diz que é presidente
+        activeView={activeView} 
+        onNavigate={setActiveView} 
+      />
       <main className="main-content" style={{ flexGrow: 1, overflowY: 'auto' }}>
         {renderView()}
       </main>

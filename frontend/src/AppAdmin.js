@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './styles/global.css';
-import Sidebar from './components/layout/Sidebar';
+import Sidebar from './layouts/components/Sidebar';  // ← MUDEI AQUI
 import Dashboard from './pages/admin/Dashboard';
 import Formularios from './pages/admin/Formularios';
 import CriarFormulario from './pages/admin/CriarFormulario';
@@ -30,8 +30,12 @@ function AppAdmin() {
   };
 
   return (
-    <div style={{ display: 'flex', height: '100vh', border: 'solid' }}>
-      <Sidebar activeView={activeView} onNavigate={setActiveView} />
+    <div style={{ display: 'flex', height: '100vh' }}>  {/* ← REMOVI O border */}
+      <Sidebar 
+        tipo="admin"              // ← NOVO: diz que é admin
+        activeView={activeView} 
+        onNavigate={setActiveView} 
+      />
       <main className="main-content">
         {renderView()}
       </main>
