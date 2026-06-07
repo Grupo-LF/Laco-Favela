@@ -14,33 +14,11 @@
 
 /* Botão de fechar dentro da sidebar (mobile) */
 /* REMOVIDO - Agora controlado por inline styles */
-/* REMOVIDO - Agora controlado por inline styles */
-
-/* Botão Hamburger - escondido no desktop */
-/* REMOVIDO - Agora controlado por inline styles */
-
-/* Overlay para fechar o menu */
-/* REMOVIDO - Agora controlado por inline styles */
-
-/* Overlay ativo */
-/* REMOVIDO - Agora controlado por inline styles */
-
-/* Botão de fechar dentro da sidebar (mobile) */
-/* REMOVIDO - Agora controlado por inline styles */
 
 /* ========================================
    CELULAR E TABLET (até 1024px)
    ======================================== */
 @media (max-width: 1024px) {
-    /* Mostra o botão hamburger - REMOVIDO */
-    
-    /* Sidebar escondida por padrão no mobile - REMOVIDO */
-    
-    /* Sidebar aberta - REMOVIDO */
-    
-    /* Mostra botão de fechar dentro da sidebar - REMOVIDO */
-    
-    /* Ajuste do header para mobile */
     /* Mostra o botão hamburger - REMOVIDO */
     
     /* Sidebar escondida por padrão no mobile - REMOVIDO */
@@ -74,60 +52,9 @@
         grid-template-columns: 1fr;
     }
 
-    /* Grids responsivos */
-    .grid-4, 
-    .grid-3, 
-    .grid-2 {
-        grid-template-columns: 1fr;
-    }
-
-    /* Cards responsivos */
-    .cards-grid {
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    }
-
-    /* Gráficos responsivos */
-    .charts-grid,
-    .ranking-grid {
-        grid-template-columns: 1fr;
-    }
-
-    /* Ajuste do padding da view-section */
-
     /* Ajuste do padding da view-section */
     .view-section.active {
         padding: 1rem;
-        margin-top: 50px;
-    }
-
-    /* Ajuste do user-profile no mobile */
-    .user-profile {
-        margin-top: 20px;
-    }
-}
-
-/* ========================================
-   MOBILE PEQUENO (até 480px)
-   ======================================== */
-@media (max-width: 480px) {
-    /* REMOVIDO - Regras da sidebar */
-    
-    .header h2 {
-        font-size: 1.3rem;
-    }
-
-    .view-section.active {
-        padding: 0.8rem;
-        margin-top: 50px;
-    }
-
-    .card-value {
-        font-size: 1.8rem;
-    }
-
-    .card-title,
-    .card-subtitle {
-        font-size: 11px;
         margin-top: 50px;
     }
 
@@ -190,8 +117,6 @@
     border-radius: 50%;
     display: flex;
     align-items: center;
-    display: flex;
-    align-items: center;
     justify-content: center;
     color: var(--color-primary);
     font-weight: bold;
@@ -215,8 +140,6 @@
     height: clamp(40px, 7vh, 45px);
     background: var(--color-primary);
     border-radius: 50%;
-    display: inline-flex;
-    align-items: center;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -270,7 +193,6 @@
 }
 
 .nav-icon {
-.nav-icon {
     width: clamp(14px, 2.2vh, 18px);
     height: clamp(14px, 2.2vh, 18px);
     background: var(--icon-sidebar);
@@ -282,7 +204,6 @@
     background-color: var(--color-accent);
 }
 
-/* VIEW SECTIONS */
 /* VIEW SECTIONS */
 .view-section {
     width: 100%;
