@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './styles/global.css';
+import './styles/layouts/presidente.css'; 
 import Sidebar from './layouts/components/Sidebar';  // ← MUDEI AQUI
 import HomePage from './pages/presidente/HomePage';
 import FamiliasPage from './pages/presidente/FamiliasPage';

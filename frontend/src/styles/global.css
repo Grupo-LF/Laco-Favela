@@ -2,30 +2,23 @@
    GLOBAL CSS - IMPORTA TODOS OS MÓDULOS
    ======================================== */
 
-/* 1. Variáveis e configurações */
-@import './variables.css';
+/* 1. BASE */
+@import './base/variables.css';
+@import './base/reset.css';
+@import './base/utilities.css';
 
-/* 2. Reset básico */
-@import './reset.css';
+/* 2. COMPONENTES */
+@import './components/sidebar.css';
+@import './components/components.css';
+@import './components/forms.css';
+@import './components/tables.css';
 
-/* 3. Utilitários (flex, grid, gaps) */
-@import './utilities.css';
+/* 3. LAYOUTS (importado em cada App específico) */
+/* Admin: @import './layouts/admin.css' */
+/* Presidente: @import './layouts/presidente.css' */
 
-/* 4. Layout (sidebar, main) */
-@import './layout.css';
-
-/* 5. Componentes (cards, botões, badges) */
-@import './components.css';
-
-/* 6. Tabelas */
-@import './tables.css';
-
-/* 7. Formulários */
-@import './forms.css';
-
-/* 8. Estilos específicos por página */
+/* 4. PÁGINAS */
 @import './pages/dashboard.css';
 @import './pages/feedbacks.css';
-
-/* 9. Estilos para login */
+@import './pages/formularios.css';
 @import './pages/login.css';

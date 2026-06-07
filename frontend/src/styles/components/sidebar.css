@@ -12,37 +12,37 @@
 .logo {
     width: clamp(75px, 11vh, 85px);
     height: clamp(75px, 11vh, 85px);
-    background: var(--color-surface);
+    background: var(--bg-white);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--color-primary);
+    color: var(--primary-blue);
     font-weight: bold;
     font-size: clamp(0.9rem, 2.8vh, 1.1rem);
 }
 
 /* Perfil do usuário */
 .user-profile {
-    background: var(--color-accent);
+    background: var(--primary-yellow);
     margin: 0 0 clamp(1.2rem, 3vh, 1.8rem);
     padding: clamp(0.9rem, 2.2vh, 1.1rem);
     border-radius: 8px;
     display: flex;
     flex-direction: column;
     position: relative;
-    color: var(--color-on-primary);
+    color: var(--text-white);
 }
 
 .user-avatar {
     width: clamp(40px, 7vh, 45px);
     height: clamp(40px, 7vh, 45px);
-    background: var(--color-primary);
+    background: var(--primary-blue);
     border-radius: 50%;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    color: var(--color-on-primary);
+    color: var(--text-white);
     font-weight: 800;
     margin-bottom: clamp(0.4rem, 1.5vh, 0.6rem);
     font-size: clamp(1rem, 2.8vh, 1.3rem);
@@ -51,13 +51,13 @@
 .user-profile h5 {
     font-size: clamp(0.85rem, 2.2vh, 1rem);
     margin-top: 0.2rem;
-    color: var(--color-on-primary);
+    color: var(--text-white);
 }
 
 .user-profile .badge {
     font-size: clamp(0.7rem, 1.8vh, 0.8rem) !important;
-    background: var(--color-primary);
-    color: var(--color-on-primary);
+    background: var(--primary-blue);
+    color: var(--text-white);
     padding: 0.25rem 0.75rem;
     border-radius: 20px;
 }
@@ -68,7 +68,7 @@
     text-transform: uppercase;
     letter-spacing: 1px;
     margin: 0 0 0.8rem;
-    color: var(--color-nav-title);
+    color: rgba(255, 255, 255, 0.7);
 }
 
 .nav-item {
@@ -78,7 +78,7 @@
     align-items: center;
     gap: clamp(0.8rem, 2vh, 1rem);
     cursor: pointer;
-    color: var(--color-nav-item);
+    color: var(--text-white);
     text-decoration: none;
     transition: 0.2s;
     font-size: 1rem;
@@ -86,63 +86,49 @@
 
 .nav-item:hover,
 .nav-item.active {
-    background: var(--color-nav-hover-bg);
+    background: var(--primary-yellow);
     border-radius: 10px;
-    color: var(--color-nav-hover-text);
+    color: var(--primary-blue);
 }
 
 .nav-icon {
     width: clamp(14px, 2.2vh, 18px);
     height: clamp(14px, 2.2vh, 18px);
-    background: var(--color-icon);
+    background: var(--icon-sidebar);
     opacity: 0.7;
 }
 
 .nav-item.active .nav-icon {
     opacity: 1;
-    background-color: var(--color-icon-active);
+    background-color: var(--primary-yellow);
 }
 
-/* ========================================
-   SCROLLBAR - Azul claro, escondido e aparece ao hover
-   ======================================== */
-
-/* Esconder scrollbar por padrão */
-.sidebar {
-    scrollbar-width: thin;
-    scrollbar-color: transparent transparent;
-    overflow-y: auto;
-}
-
-/* WebKit (Chrome, Safari, Edge) */
+/* Scroll da sidebar */
 .sidebar::-webkit-scrollbar {
     width: 6px;
     background: transparent;
 }
 
-.sidebar::-webkit-scrollbar-track {
-    background: transparent;
-    border-radius: 10px;
-}
-
 .sidebar::-webkit-scrollbar-thumb {
     background: transparent;
     border-radius: 10px;
-    transition: background 0.3s ease;
 }
 
-/* Aparece ao passar o mouse sobre a sidebar */
 .sidebar:hover::-webkit-scrollbar-thumb {
-    background: var(--color-scrollbar);
+    background: rgba(255, 255, 255, 0.3);
 }
 
 .sidebar:hover::-webkit-scrollbar-thumb:hover {
-    background: var(--color-scrollbar-hover);
+    background: rgba(255, 255, 255, 0.5);
 }
 
-/* Firefox */
+.sidebar {
+    scrollbar-width: thin;
+    scrollbar-color: transparent transparent;
+}
+
 .sidebar:hover {
-    scrollbar-color: var(--color-scrollbar) transparent;
+    scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
 }
 
 /* Responsividade do sidebar */

@@ -1,0 +1,77 @@
+/* styles/base/variables.css */
+:root {
+    /* ========================================
+       CORES PRINCIPAIS
+    ======================================== */
+    
+    /* Cores da Marca */
+    --primary-blue: #035A8F;      /* Azul principal - títulos, ícones */
+    --primary-yellow: #FFB133;     /* Amarelo - letras da barra, ícones */
+    
+    /* Cores de Fundo */
+    --bg-screen: #F0F2F5;          /* Fundo da tela - acinzentado */
+    --bg-white: #FFFFFF;           /* Branco puro - barra superior, quadros */
+    --bg-sidebar: #035A8F;         /* Fundo da sidebar (azul) */
+    
+    /* Cores de Texto */
+    --text-primary: #000000;       /* Preto - corpo do texto */
+    --text-secondary: #333333;     /* Cinza escuro - textos secundários */
+    --text-light: #666666;         /* Cinza médio - textos leves */
+    --text-white: #FFFFFF;         /* Branco - textos sobre fundo escuro */
+    
+    /* Cores de Ícones */
+    --icon-sidebar: #FFB133;       /* Ícones da barra lateral - amarelo */
+    --icon-inside: #035A8F;        /* Ícones dentro da tela - azul escuro */
+    
+    /* Cores de Feedback */
+    --card-blue: #2196f3;
+    --card-green: #4caf50;
+    --card-orange: #ff9800;
+    --card-red: #f44336;
+    
+    /* ========================================
+       ESPAÇAMENTOS
+    ======================================== */
+    --spacing-xs: 0.25rem;
+    --spacing-sm: 0.5rem;
+    --spacing-md: 1rem;
+    --spacing-lg: 1.5rem;
+    --spacing-xl: 2rem;
+    --spacing-2xl: 3rem;
+    
+    /* ========================================
+       TIPOGRAFIA
+    ======================================== */
+    --font-size-xs: 0.75rem;
+    --font-size-sm: 0.875rem;
+    --font-size-md: 1rem;
+    --font-size-lg: 1.125rem;
+    --font-size-xl: 1.25rem;
+    --font-size-2xl: 1.5rem;
+    --font-size-3xl: 1.875rem;
+    
+    /* ========================================
+       BORDAS
+    ======================================== */
+    --border-radius-sm: 4px;
+    --border-radius-md: 8px;
+    --border-radius-lg: 12px;
+    --border-radius-xl: 16px;
+    --border-radius-full: 9999px;
+    
+    /* ========================================
+       SOMBRAS
+    ======================================== */
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 2px 5px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 4px 10px rgba(0, 0, 0, 0.15);
+    --shadow-xl: 0 10px 15px rgba(0, 0, 0, 0.1);
+    
+    /* ========================================
+       Z-INDEX
+    ======================================== */
+    --z-sidebar: 100;
+    --z-header: 90;
+    --z-modal: 1000;
+    --z-tooltip: 1100;
+}

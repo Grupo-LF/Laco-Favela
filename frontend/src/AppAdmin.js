@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import './styles/global.css';
+import './styles/layouts/admin.css'; 
+
 import Sidebar from './layouts/components/Sidebar';  // ← MUDEI AQUI
 import Dashboard from './pages/admin/Dashboard';
 import Formularios from './pages/admin/Formularios';
