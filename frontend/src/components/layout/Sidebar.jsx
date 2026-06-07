@@ -1,23 +1,13 @@
+// frontend/src/components/layout/Sidebar.jsx
 import React, { useState, useEffect } from 'react';
+import logoImg from '../../assets/logo192.png'; // Importe a imagem do logo
 
-const Sidebar = ({ activeView, onNavigate }) => {
+const Sidebar = ({ tipo, activeView, onNavigate }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
-  // Verificar tamanho da tela
-  useEffect(() => {
-    const handleResize = () => {
-      const mobile = window.innerWidth <= 768;
-      setIsMobile(mobile);
-      if (!mobile) {
-        setIsOpen(false);
-      }
-    };
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
-  const menuItems = {
+  // Menu do ADMIN
+  const menuAdmin = {
     principal: [
       { id: 'dashboard', label: 'Dashboard' },
       { id: 'formularios', label: 'Formulários' }
@@ -32,7 +22,36 @@ const Sidebar = ({ activeView, onNavigate }) => {
       { id: 'historico', label: 'Histórico' }
     ]
   };
-  
+
+  // Menu do PRESIDENTE
+  const menuPresidente = {
+    principal: [
+      { id: 'home', label: 'Home' },
+      { id: 'familias', label: 'Famílias' },
+      { id: 'formularios', label: 'Formulários' },
+      { id: 'registros', label: 'Registros' }
+    ],
+    desempenho: [
+      { id: 'meu-indicador', label: 'Meu Indicador' },
+      { id: 'ranking', label: 'Ranking' }
+    ]
+  };
+
+  const menu = tipo === 'presidente' ? menuPresidente : menuAdmin;
+  const isPresidente = tipo === 'presidente';
+
+  // Detectar mobile
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+      if (window.innerWidth > 768) {
+        setIsOpen(false);
+      }
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   const handleSair = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('tipo');
@@ -41,74 +60,38 @@ const Sidebar = ({ activeView, onNavigate }) => {
 
   const handleNavigate = (id) => {
     onNavigate(id);
-    if (isMobile) {
-      setIsOpen(false);
-    }
+    if (isMobile) setIsOpen(false);
   };
 
-  // Estilos para desktop
-  const desktopStyles = {
-    width: '18%',
-    backgroundColor: 'var(--bg-sidebar)',
-    color: 'white',
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'space-around',
-    padding: 'clamp(1.2rem, 2.3vh, 0.8rem)',
-    height: '100vh',
-    flexShrink: 0,
-    transition: 'all 0.3s ease',
-    overflowY: 'auto',
-    position: 'relative'
-  };
-
-  // Estilos para mobile
-  const mobileStyles = {
-    position: 'fixed',
-    left: isOpen ? '0' : '-100%',
-    top: 0,
-    width: '100%',
-    height: '100vh',
-    backgroundColor: 'var(--bg-sidebar)',
-    color: 'white',
-    display: 'flex',
-    flexDirection: 'column',
-    padding: '1rem',
-    zIndex: 1000,
-    transition: 'left 0.3s ease',
-    overflowY: 'auto',
-    boxShadow: isOpen ? '2px 0 10px rgba(0,0,0,0.3)' : 'none'
-  };
+  // Nome do usuário
+  const userNome = localStorage.getItem('nome') || 'Nome e Sobrenome';
+  const userInitials = userNome.split(' ').map(n => n[0]).join('').toUpperCase();
 
   return (
     <>
-      {/* Botão Hamburger - apenas mobile */}
+      {/* Botão Hamburger Mobile */}
       {isMobile && (
-        <button 
+        <button
           onClick={() => setIsOpen(true)}
           style={{
             position: 'fixed',
             top: '15px',
             left: '15px',
-            outline: 'none',
-          
             zIndex: 1001,
             fontSize: '24px',
             cursor: 'pointer',
             background: 'none',
-            transform: 'scale(1.2)',
             border: 'none',
-            color: '#333',
-            padding: '10px 12px'
+            color: '#333'
           }}
         >
           ☰
         </button>
       )}
 
-      {/* Overlay - apenas quando mobile e sidebar aberta */}
+      {/* Overlay Mobile */}
       {isMobile && isOpen && (
-        <div 
+        <div
           onClick={() => setIsOpen(false)}
           style={{
             position: 'fixed',
@@ -117,77 +100,80 @@ const Sidebar = ({ activeView, onNavigate }) => {
             right: 0,
             bottom: 0,
             background: 'rgba(0,0,0,0.5)',
-            zIndex: 999,
-            cursor: 'pointer'
+            zIndex: 999
           }}
         />
       )}
 
       {/* Sidebar */}
-      <aside style={isMobile ? mobileStyles : desktopStyles}>
-        {/* Botão fechar - apenas mobile */}
+      <aside
+        style={{
+          width: isMobile ? '260px' : '18%',
+          backgroundColor: '#035A8F',
+          color: 'white',
+          display: 'flex',
+          flexDirection: 'column',
+          padding: '1rem',
+          height: '100vh',
+          position: isMobile ? 'fixed' : 'relative',
+          left: isMobile && !isOpen ? '-260px' : '0',
+          top: 0,
+          zIndex: 1000,
+          transition: 'left 0.3s ease',
+          overflowY: 'auto'
+        }}
+      >
+        {/* Botão Fechar Mobile */}
         {isMobile && (
-          <button 
+          <button
             onClick={() => setIsOpen(false)}
             style={{
               position: 'absolute',
-              top: '15px',
-              right: '15px',
+              top: '10px',
+              right: '10px',
               background: 'none',
               border: 'none',
-              fontSize: '24px',
+              fontSize: '20px',
               cursor: 'pointer',
-              color: 'white',
-              padding: '5px'
+              color: 'white'
             }}
           >
             ✕
           </button>
         )}
 
+        {/* Logo com imagem */}
         <div className="logo-container">
-          <div className="logo">Logo</div>
-        </div>
-        
-        <div className="user-profile">
-          <div className="user-avatar">
-            {localStorage.getItem('nome') 
-              ? localStorage.getItem('nome').split(' ').map(n => n[0].toUpperCase()).join('')
-              : 'N'}
-          </div>
-          <div className='badge' style={{ 
-            marginTop: '0.5rem', 
-            background: 'rgba(255,255,255,0.3)', 
-            position: 'absolute', 
-            top: '10%', 
-            right: '7%' 
-          }}>ADMIN</div>
-          <h5 style={{ marginTop: '0.5rem', fontSize: '0.9rem' }}>
-            {localStorage.getItem('nome') || 'Nome e Sobrenome'}
-          </h5>
+          <img 
+            src={logoImg} 
+            alt="Logo" 
+            className="logo"
+            style={{
+              width: '70px',
+              height: '70px',
+              borderRadius: '50%',
+              objectFit: 'cover'
+            }}
+          />
         </div>
 
+        {/* Perfil */}
+        <div 
+          className={`user-profile ${isPresidente ? 'clickable' : ''}`}
+          onClick={() => isPresidente && handleNavigate('perfil')}
+          style={{ cursor: isPresidente ? 'pointer' : 'default' }}
+        >
+          <div className="user-avatar">{userInitials}</div>
+          <h5 className="user-name">{userNome}</h5>
+          <div className="badge" style={{position: 'absolute', top: '10%', right: '6%', fontSize: '0.75rem'}}>
+            {isPresidente ? 'PRESIDENTE' : 'ADMIN'}
+          </div>
+        </div>
+
+        {/* Menu Principal */}
         <div className="nav-section">
           <div className="nav-title">Principal</div>
-          {menuItems.principal.map(item => (
-            <a 
-              key={item.id}
-              href="#"
-              className={`nav-item ${activeView === item.id ? 'active' : ''}`}
-              onClick={(e) => {
-                e.preventDefault();
-                handleNavigate(item.id);
-              }}
-            >
-              <div className="nav-icon"></div>
-              {item.label}
-            </a>
-          ))}
-        </div>
-
-        <div className="nav-section">
-          <div className="nav-title">Gestão</div>
-          {menuItems.gestao.map(item => (
+          {menu.principal?.map(item => (
             <a
               key={item.id}
               href="#"
@@ -203,26 +189,79 @@ const Sidebar = ({ activeView, onNavigate }) => {
           ))}
         </div>
 
-        <div className="nav-section">
-          <div className="nav-title">Comunicação</div>
-          {menuItems.comunicacao.map(item => (
-            <a
-              key={item.id}
-              href="#"
-              className={`nav-item ${activeView === item.id ? 'active' : ''}`}
-              onClick={(e) => {
-                e.preventDefault();
-                handleNavigate(item.id);
-              }}
-            >
-              <div className="nav-icon"></div>
-              {item.label}
-            </a>
-          ))}
-        </div>
+        {/* Gestão (Admin) */}
+        {menu.gestao && (
+          <div className="nav-section">
+            <div className="nav-title">Gestão</div>
+            {menu.gestao.map(item => (
+              <a
+                key={item.id}
+                href="#"
+                className={`nav-item ${activeView === item.id ? 'active' : ''}`}
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleNavigate(item.id);
+                }}
+              >
+                <div className="nav-icon"></div>
+                {item.label}
+              </a>
+            ))}
+          </div>
+        )}
 
-        <div style={{ marginTop: 'auto' }}>
-          <a href="#" className="nav-item" onClick={(e) => { e.preventDefault(); handleSair(); }}>
+        {/* Desempenho (Presidente) */}
+        {menu.desempenho && (
+          <div className="nav-section">
+            <div className="nav-title">Desempenho</div>
+            {menu.desempenho.map(item => (
+              <a
+                key={item.id}
+                href="#"
+                className={`nav-item ${activeView === item.id ? 'active' : ''}`}
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleNavigate(item.id);
+                }}
+              >
+                <div className="nav-icon"></div>
+                {item.label}
+              </a>
+            ))}
+          </div>
+        )}
+
+        {/* Comunicação (só Admin) */}
+        {menu.comunicacao && (
+          <div className="nav-section">
+            <div className="nav-title">Comunicação</div>
+            {menu.comunicacao.map(item => (
+              <a
+                key={item.id}
+                href="#"
+                className={`nav-item ${activeView === item.id ? 'active' : ''}`}
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleNavigate(item.id);
+                }}
+              >
+                <div className="nav-icon"></div>
+                {item.label}
+              </a>
+            ))}
+          </div>
+        )}
+
+        {/* Sair */}
+        <div className="sidebar-footer">
+          <a
+            href="#"
+            className="nav-item logout"
+            onClick={(e) => {
+              e.preventDefault();
+              handleSair();
+            }}
+          >
             <div className="nav-icon"></div>
             Sair
           </a>

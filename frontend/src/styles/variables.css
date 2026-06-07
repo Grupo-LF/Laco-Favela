@@ -1,23 +1,104 @@
-/* Cores, variáveis */
+/* frontend/src/styles/base/variables.css */
 :root {
-    --bg-sidebar: #8e8e8e;
-    --bg-main: #f0f0f0;
-    --white: #ffffff;
-    --text-main: #333333;
-    --text-light: #666666;
-    --border-color: #e0e0e0;
-    --primary: #4a4a4a;
-    --accent: #d1d1d1;
-    
-    /* Cores para cards */
-    --card-blue: #2196f3;
-    --card-green: #4caf50;
-    --card-orange: #ff9800;
-    --card-red: #f44336;
-    
-    /* Espaçamentos */
-    --spacing-sm: 0.5rem;
-    --spacing-md: 1rem;
-    --spacing-lg: 1.5rem;
-    --spacing-xl: 2rem;
+  /* ========================================
+     CORES PRINCIPAIS - PALETA DO PROJETO
+     ======================================== */
+  
+  /* Cores da Marca */
+  --color-primary: #035A8F;      /* Azul principal - títulos da página, ícones dentro da tela */
+  --color-accent: #FFB133;        /* Amarelo - letras da barra, ícones da barra */
+   
+  /* Cores de Fundo */
+  --bg-screen: #F0F2F5;           /* Fundo da tela - acinzentado */
+  --bg-surface: #FFFFFF;          /* Branco puro - barra superior e quadros */
+  --bg-sidebar: #035A8F;          /* Fundo da sidebar (azul) */
+  
+  /* Cores de Texto */
+  --text-primary: #000000;        /* Letra preta - corpo do texto */
+  --text-secondary: #333333;      /* Cinza escuro - textos secundários */
+  --text-light: #666666;          /* Cinza médio - textos leves */
+  --text-white: #FFFFFF;          /* Branco - textos sobre fundo escuro */
+  --text-on-primary: #FFFFFF;     /* Texto sobre fundo azul */
+  --text-on-accent: #035A8F;      /* Texto sobre fundo amarelo (azul) */
+  
+  /* Cores de Ícones */
+  --icon-sidebar: #FFB133;        /* Ícones da barra lateral - amarelo */
+  --icon-inside: #035A8F;         /* Ícones dentro da tela - azul escuro */
+  
+  /* Cores de Feedback */
+  --color-success: #4caf50;
+  --color-warning: #ff9800;
+  --color-error: #f44336;
+  --color-info: #2196f3;
+  --white: #FFFFFF;
+  /* Cores de Bordas e Divisórias */
+  --border-color: #e0e0e0;
+  --border-light: #f0f0f0;
+  
+  /* ========================================
+     SOMBRAS
+     ======================================== */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 2px 5px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 4px 10px rgba(0, 0, 0, 0.15);
+  
+  /* ========================================
+     ESPAÇAMENTOS
+     ======================================== */
+  --spacing-xs: 0.25rem;
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 1.5rem;
+  --spacing-xl: 2rem;
+  --spacing-2xl: 3rem;
+  
+  /* ========================================
+     TIPOGRAFIA
+     ======================================== */
+  --font-family-base: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+  
+  --font-size-xs: 0.75rem;     /* 12px */
+  --font-size-sm: 0.875rem;    /* 14px */
+  --font-size-md: 1rem;        /* 16px */
+  --font-size-lg: 1.125rem;    /* 18px */
+  --font-size-xl: 1.25rem;     /* 20px */
+  --font-size-2xl: 1.5rem;     /* 24px */
+  --font-size-3xl: 1.875rem;   /* 30px */
+  
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  
+  /* ========================================
+     BORDAS
+     ======================================== */
+  --border-radius-sm: 4px;
+  --border-radius-md: 8px;
+  --border-radius-lg: 12px;
+  --border-radius-xl: 16px;
+  --border-radius-full: 9999px;
+  
+  /* ========================================
+     LARGURAS
+     ======================================== */
+  --sidebar-width: 280px;
+  --sidebar-width-collapsed: 80px;
+  --header-height: 70px;
+  
+  /* ========================================
+     Z-INDEX
+     ======================================== */
+  --z-sidebar: 100;
+  --z-header: 90;
+  --z-modal: 1000;
+  --z-tooltip: 1100;
+  --z-toast: 1200;
+  
+  /* ========================================
+     TRANSIÇÕES
+     ======================================== */
+  --transition-fast: 0.2s ease;
+  --transition-normal: 0.3s ease;
+  --transition-slow: 0.5s ease;
 }
