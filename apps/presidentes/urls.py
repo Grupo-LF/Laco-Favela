@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import ListaCreatePresidentesView, AtualizarCotaView, RankingPresidentesView, AdminStatusCotasView, PresidenteHomeView
+from .views import ListaCreatePresidentesView, AtualizarCotaView, RankingPresidentesView, AdminStatusCotasView, PresidenteHomeView, RegistrarVisitaView
 from rest_framework.routers import DefaultRouter
 from rest_framework import viewsets
 
@@ -11,7 +11,7 @@ urlpatterns = [
     path('presidentes/<int:pk>/', AtualizarCotaView.as_view()),
     path('admin/dashboard/cotas/', AdminStatusCotasView.as_view(), name='admin-status-cotas'),
     path('presidentes/me/home/', PresidenteHomeView.as_view(), name='presidente-home'),
-
+    path('presidentes/visita/registrar/', RegistrarVisitaView.as_view(), name='registrar-visita'),
 
 
 
