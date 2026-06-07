@@ -18,12 +18,12 @@ urlpatterns = [
     # Atualizar apenas a cota de um presidente específico
     path('presidentes/<int:pk>/cota/', AtualizarCotaView.as_view(), name='presidentes-cota'),
     
-    # Atualizar qualquer campo do presidente (PATCH)
+    # Atualizar qualquer campo do presidente (PATCH) - ESSENCIAL!
     path('presidentes/<int:pk>/', AtualizarPresidenteView.as_view(), name='presidentes-update'),
     
     # Admin: Status de cotas de todos os presidentes
-    path('admin/cotas/', AdminStatusCotasView.as_view(), name='admin-cotas'),
+    path('admin/dashboard/cotas/', AdminStatusCotasView.as_view(), name='admin-status-cotas'),
     
     # Presidente: Home do presidente logado
-    path('home/', PresidenteHomeView.as_view(), name='presidente-home'),
+    path('presidentes/me/home/', PresidenteHomeView.as_view(), name='presidente-home'),
 ]
