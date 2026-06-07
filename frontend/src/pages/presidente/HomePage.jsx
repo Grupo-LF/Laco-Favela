@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 import ProgressoCota from '../../components/presidente/ProgressoCota';
 import FormulariosCard from '../../components/presidente/FormulariosCard';
 import UltimasVisitas from '../../components/presidente/UltimasVisitas';
@@ -14,11 +15,17 @@ function HomePage() {
   useEffect(() => {
     async function carregarDados() {
       try {
-        // const res = await axios.get('/api/home/');
-        // setUsuario(res.data.usuario);
-        // setCota(res.data.cota);
-        // setFormularios(res.data.formularios);
-        // setVisitas(res.data.visitas);
+        const res = await axios.get('http://localhost:8000/api/presidentes/me/home/', {
+          headers: {
+            'Authorization': `Token ${localStorage.getItem('token')}`
+          }
+        });
+        if (res.data) {
+          setUsuario(res.data.usuario);
+          setCota(res.data.cota);
+          setFormularios(res.data.formularios || []);
+          setVisitas(res.data.visitas || []);
+        }
       } catch (err) {
         console.error('Erro ao carregar dados da home:', err);
       } finally {
