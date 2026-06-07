@@ -7,7 +7,7 @@ import MeuIndicadorPage from './pages/presidente/MeuIndicadorPage';
 import RankingPage from './pages/presidente/RankingPage';
 import PerfilPage from './pages/presidente/PerfilPage';
 import FormularioPage from './pages/presidente/FormularioPage';
-
+import RegistrodeVisitas from './pages/presidente/RegistrodeVisitas';
 function AppPresidente() {
   const [activeView, setActiveView] = useState('home');
 
@@ -18,10 +18,9 @@ function AppPresidente() {
       case 'familias': 
         return <FamiliasPage />;
       case 'formularios': 
-        return <div>formularios (em breve)</div>;
-      case 'registros': 
-        return <div>Registros (em breve)</div>;
-      
+        return <FormularioPage/>;
+      case 'registros':
+         return <RegistrodeVisitas />;
       // 2. CASOS ATUALIZADOS COM AS SUAS TELAS REAIS:
       case 'meu-indicador': 
         return <MeuIndicadorPage />;
