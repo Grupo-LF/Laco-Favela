@@ -113,8 +113,7 @@ const Sidebar = ({ tipo, activeView, onNavigate }) => {
             cursor: 'pointer',
             background: 'none',
             border: 'none',
-            color: '#333',
-            padding: '10px 12px'
+            color: '#333'
           }}
         >
           ☰
@@ -131,8 +130,7 @@ const Sidebar = ({ tipo, activeView, onNavigate }) => {
             right: 0,
             bottom: 0,
             background: 'rgba(0,0,0,0.5)',
-            zIndex: 999,
-            cursor: 'pointer'
+            zIndex: 999
           }}
         />
       )}
