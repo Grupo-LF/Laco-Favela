@@ -80,6 +80,17 @@ class FamiliaViewSet(viewsets.ModelViewSet):
             atualizado_em=timezone.now(),
         )
         return Response({'updated': updated})
+    
+    #Função para incremetn de cotas para o presidente (quando uma familia completa um formúlario havera um +1 no presidente)
+    def IncrementoCotaPresidente(self, serializer):
+        familia = serializer.save()
+        #esse print corresponde ao console do navegador, por enquanto esta so de teste para o front
+        print("PRESIDENTE:", familia.presidente)
+
+        if familia.presidente:
+            familia.presidente.cota += 1
+            familia.presidente.save(update_fields=['cota'])
+
 class RankingFamiliasView(generics.ListAPIView):
     # Aqui usamos o serializer do ranking que calcula a pontuação
     serializer_class = FamiliaRankingSerializer
