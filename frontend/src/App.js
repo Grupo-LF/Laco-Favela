@@ -3,7 +3,8 @@ import React, { useState } from 'react';
 import AppAdmin from './AppAdmin';
 import AppPresidente from './AppPresidente';
 import Login from './pages/login/Login';
-
+import AppMorador from './AppMorador'
+import SidebarMorador from 
 function App(onLogin) {
   const [tipoUsuario, setTipoUsuario] = useState(localStorage.getItem('tipo'));
 
