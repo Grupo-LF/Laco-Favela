@@ -10,14 +10,15 @@ DATABASES = {
 }
 
 ALLOWED_HOSTS = ['*']
-DEBUG = True
+DEBUG = False
 
-# 1. CSRF trusted origins – necessário para o POST do admin
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
 CSRF_TRUSTED_ORIGINS = [
     'https://lacofavela-grdzfab6b0bqhygj.brazilsouth-01.azurewebsites.net'
 ]
 
-# 2. Configurações de proxy reverso (Azure App Service usa front-end)
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 USE_X_FORWARDED_HOST = True
 

@@ -3,7 +3,7 @@ from django.db.models import Q
 from django.utils import timezone
 from rest_framework import status, viewsets,generics
 from rest_framework.decorators import action
-from rest_framework.permissions import AllowAny, IsAdminUser
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
 
 from .models import Familia
@@ -44,7 +44,7 @@ class FamiliaViewSet(viewsets.ModelViewSet):
 
     def get_permissions(self):
         if settings.DEBUG and self.action in ['list', 'retrieve', 'set_status', 'bulk_set_status']:
-            return [AllowAny()]
+            return [IsAuthenticated()]
         if self.action in ['set_status', 'bulk_set_status']:
             return [IsAdminUser()]
         return super().get_permissions()
@@ -83,7 +83,7 @@ class FamiliaViewSet(viewsets.ModelViewSet):
 class RankingFamiliasView(generics.ListAPIView):
     # Aqui usamos o serializer do ranking que calcula a pontuação
     serializer_class = FamiliaRankingSerializer
-    permission_classes = [AllowAny] # 2. ADICIONE ESTA LINHA AQUI (Abre o acesso público)
+    permission_classes = [IsAuthenticated] # 2. ADICIONE ESTA LINHA AQUI (Abre o acesso público)
 
     def get_queryset(self):
         # Traz apenas as famílias aprovadas para o ranking
