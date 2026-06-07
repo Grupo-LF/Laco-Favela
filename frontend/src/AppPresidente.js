@@ -20,7 +20,7 @@ function AppPresidente() {
       case 'formularios': 
         return <div>formularios (em breve)</div>;
       case 'registros': 
-        return <RegistrosdeVisitas/>;
+        return <RegistrodeVisitas/>;
       
       // 2. CASOS ATUALIZADOS COM AS SUAS TELAS REAIS:
       case 'meu-indicador': 
