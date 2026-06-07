@@ -1,10 +1,16 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { ReactComponent as BlacktIcon } from '../../assets/Square_black.svg';
 import { ReactComponent as WhiteIcon } from '../../assets/Square_white.svg';
 import ApexCharts from 'apexcharts';
+import axios from 'axios';
 
 const Dashboard = () => {
+  // ========== ESTADOS ==========
+  const [statusCotas, setStatusCotas] = useState([]);
+  const [cicloTitulo, setCicloTitulo] = useState('Carregando ciclo...'); // NOVO: Estado para o ciclo das cotas
+  const [loading, setLoading] = useState(true);
+
   // ========== DADOS ==========
   const dadosParticipacoes = [
     { mes: 'Jan', familias: 120, eventos: 45 },
@@ -12,14 +18,6 @@ const Dashboard = () => {
     { mes: 'Mar', familias: 180, eventos: 75 },
     { mes: 'Abr', familias: 220, eventos: 90 },
     { mes: 'Mai', familias: 260, eventos: 110 },
-  ];
-
-  const statusCotas = [
-    { nome: 'Nome 1', atual: 48, meta: 50, percentual: 96 },
-    { nome: 'Nome 2', atual: 45, meta: 50, percentual: 90 },
-    { nome: 'Nome 3', atual: 50, meta: 50, percentual: 100 },
-    { nome: 'Nome 4', atual: 31, meta: 50, percentual: 62 },
-    { nome: 'Nome 5', atual: 22, meta: 50, percentual: 44 },
   ];
 
   // ========== CONFIGURAÇÃO DOS GRÁFICOS APEX ==========
@@ -93,6 +91,33 @@ const Dashboard = () => {
   const donutChartRef = useRef(null);
   const rankingChartRef = useRef(null);
 
+  // ========== CARREGAR DADOS DE COTAS ==========
+  useEffect(() => {
+    async function carregarCotas() {
+      try {
+        setLoading(true);
+        // NOVO: Adicionado o header de Authorization para não dar erro de permissão na API
+        const res = await axios.get('http://localhost:8000/api/admin/dashboard/cotas/', {
+          headers: {
+            'Authorization': `Token ${localStorage.getItem('token')}`
+          }
+        });
+        
+        if (res.data) {
+          // NOVO: Pega o título do ciclo ativo referente a essas cotas
+          if (res.data.ciclo) setCicloTitulo(res.data.ciclo);
+          if (res.data.cotas) setStatusCotas(res.data.cotas);
+        }
+      } catch (err) {
+        console.error('Erro ao carregar cotas:', err);
+        setStatusCotas([]);
+      } finally {
+        setLoading(false);
+      }
+    }
+    carregarCotas();
+  }, []);
+
   // ========== INICIALIZAR GRÁFICOS ==========
   useEffect(() => {
     // Donut Chart
@@ -125,7 +150,8 @@ const Dashboard = () => {
     <div className="header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
         <div>
           <h2 style={{ margin: 0 }}>Dashboard Analítico</h2>
-          <p style={{ margin: 0, color: '#666' }}>Ciclo 1 - Mês 6</p>
+          {/* NOVO: Exibe o nome real do ciclo das cotas que está rodando no momento */}
+          <p style={{ margin: 0, color: '#666' }}>{cicloTitulo}</p>
         </div>
         <div style={{ display: 'flex', gap: '8px' }}>
           <button className="btn btn-outline">Exportar</button>
@@ -133,8 +159,6 @@ const Dashboard = () => {
         </div>
       </div>
     <div style={{ padding: '20px' }}>
-      {/* HEADER */}
-      
 
       {/* CARDS */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '16px', marginBottom: '24px' }}>
@@ -200,22 +224,28 @@ const Dashboard = () => {
           <h3 style={{ marginBottom: '8px' }}>Status de Cotas</h3>
           <p style={{ fontSize: '12px', color: '#666', marginBottom: '16px' }}>Progresso por presidente</p>
           
-          {statusCotas.map((item, index) => (
-            <div key={index} style={{ marginBottom: '20px' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
-                <strong>{item.nome}</strong>
-                <span>{item.atual}/{item.meta}</span>
+          {loading ? (
+            <p style={{ textAlign: 'center', color: '#999' }}>Carregando...</p>
+          ) : statusCotas && statusCotas.length > 0 ? (
+            statusCotas.map((item, index) => (
+              <div key={index} style={{ marginBottom: '20px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
+                  <strong>{item.nome}</strong>
+                  <span>{item.atual}/{item.meta}</span>
+                </div>
+                <div style={{ background: '#e0e0e0', borderRadius: '10px', height: '8px', overflow: 'hidden' }}>
+                  <div style={{ 
+                    background: '#2f2f2f', 
+                    height: '100%', 
+                    width: `${item.percentual}%`,
+                    borderRadius: '10px'
+                  }} />
+                </div>
               </div>
-              <div style={{ background: '#e0e0e0', borderRadius: '10px', height: '8px', overflow: 'hidden' }}>
-                <div style={{ 
-                  background: '#2f2f2f', 
-                  height: '100%', 
-                  width: `${item.percentual}%`,
-                  borderRadius: '10px'
-                }} />
-              </div>
-            </div>
-          ))}
+            ))
+          ) : (
+            <p style={{ textAlign: 'center', color: '#999' }}>Nenhum dado disponível</p>
+          )}
         </div>
       </div>
     </div>
