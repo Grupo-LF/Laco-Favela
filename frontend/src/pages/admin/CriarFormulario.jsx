@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { criarCiclo, publicarCiclo, associarRespostasAosPresidentes, listarPresidentes } from '../../services/formularios';
+import { criarCiclo, publicarCiclo, listarPresidentes, listarPresidentesNaoAssociados } from '../../services/formularios';
 
 const CriarFormulario = ({ onNavigate }) => {
-  // ========== DECLARAÇÕES DE ESTADO ==========
   const [titulo, setTitulo] = useState('');
   const [descricao, setDescricao] = useState('');
   const [perguntas, setPerguntas] = useState([]);
@@ -12,7 +11,6 @@ const CriarFormulario = ({ onNavigate }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  // ========== CARREGAR PRESIDENTES ==========
   useEffect(() => {
     carregarPresidentes();
   }, []);
@@ -20,8 +18,6 @@ const CriarFormulario = ({ onNavigate }) => {
   const carregarPresidentes = async () => {
     try {
       setLoading(true);
-      const data = await listarPresidentes();
-      setPresidentes(data);
       const data = await listarPresidentes();
       setPresidentes(data);
       setError('');
@@ -33,16 +29,11 @@ const CriarFormulario = ({ onNavigate }) => {
     }
   };
 
-  // ========== FUNÇÕES DE PERGUNTAS ==========
   const adicionarPergunta = (tipo) => {
     if (novaPergunta.trim() === '') {
       alert('Digite uma pergunta');
       return;
     }
-
-    setPerguntas([...perguntas, {
-      id: Date.now(),
-      texto: novaPergunta,
 
     setPerguntas([...perguntas, {
       id: Date.now(),
@@ -57,12 +48,8 @@ const CriarFormulario = ({ onNavigate }) => {
     if (window.confirm('Tem certeza que deseja remover esta pergunta?')) {
       setPerguntas(perguntas.filter(p => p.id !== id));
     }
-    if (window.confirm('Tem certeza que deseja remover esta pergunta?')) {
-      setPerguntas(perguntas.filter(p => p.id !== id));
-    }
   };
 
-  // ========== FUNÇÕES PARA EDITAR OPÇÕES ==========
   const adicionarOpcao = useCallback((perguntaId) => {
     setPerguntas(prevPerguntas => 
       prevPerguntas.map(p => {
@@ -104,7 +91,6 @@ const CriarFormulario = ({ onNavigate }) => {
     );
   }, []);
 
-  // ========== FUNÇÕES DE PRESIDENTES ==========
   const togglePresidente = (presidenteId) => {
     if (presidentesSelecionados.includes(presidenteId)) {
       setPresidentesSelecionados(presidentesSelecionados.filter(id => id !== presidenteId));
@@ -121,7 +107,6 @@ const CriarFormulario = ({ onNavigate }) => {
     }
   };
 
-  // ========== FUNÇÃO SALVAR RASCUNHO ==========
   const handleSalvar = async () => {
     if (!titulo) {
       alert('Digite o título do formulário');
@@ -132,8 +117,7 @@ const CriarFormulario = ({ onNavigate }) => {
       alert('Adicione pelo menos uma pergunta ao formulário');
       return;
     }
-    console.log('Salvando rascunho com perguntas:', perguntas);
-    console.log(perguntas);
+
     setLoading(true);
     setError('');
 
@@ -142,7 +126,7 @@ const CriarFormulario = ({ onNavigate }) => {
         titulo: titulo,
         descricao: descricao,
         perguntas: perguntas,
-        status: 'rascunho'
+        presidentes_ids: presidentesSelecionados
       });
 
       console.log('Rascunho salvo:', ciclo);
@@ -156,13 +140,11 @@ const CriarFormulario = ({ onNavigate }) => {
     }
   };
 
-  // ========== FUNÇÃO PUBLICAR ==========
   const handlePublicar = async () => {
     if (!titulo) {
       alert('Digite o título do formulário');
       return;
     }
-
 
     if (perguntas.length === 0) {
       alert('Adicione pelo menos uma pergunta ao formulário');
@@ -173,44 +155,35 @@ const CriarFormulario = ({ onNavigate }) => {
       alert('Selecione pelo menos um presidente para responder o formulário');
       return;
     }
-    console.log('Publicando formulário com perguntas:', perguntas);
+
     setLoading(true);
     setError('');
 
-
     try {
-      // 1. Criar o ciclo (rascunho)
-      console.log('1. Criando ciclo...');
+      // Cria o ciclo JÁ COM OS PRESIDENTES ASSOCIADOS
       const ciclo = await criarCiclo({
         titulo: titulo,
         descricao: descricao,
         perguntas: perguntas,
-        status: 'rascunho'
+        presidentes_ids: presidentesSelecionados
       });
-      console.log('Ciclo criado ID:', ciclo.id);
+      
+      console.log('Ciclo criado com presidentes:', ciclo);
+      console.log('Presidentes associados:', presidentesSelecionados);
 
-      // 2. Publicar o ciclo (muda status para 'ativo')
-      console.log('2. Publicando ciclo...');
-      await publicarCiclo(ciclo.id);
-      console.log('Ciclo publicado com sucesso!');
-
-      // 3. Associar respostas aos presidentes selecionados
-      console.log('3. Associando presidentes:', presidentesSelecionados);
-      await associarRespostasAosPresidentes(ciclo.id, presidentesSelecionados);
-      console.log('Presidentes associados com sucesso!');
-
+      // Publica o ciclo
+      await publicarCiclo(ciclo.id); // Atualiza a lista de presidentes não associados para refletir as mudanças
+      
       alert('Formulário publicado com sucesso!');
       onNavigate('formularios');
     } catch (err) {
       console.error('Erro ao publicar:', err);
-      setError(err.response?.data?.detail || 'Erro ao publicar formulário');
       setError(err.response?.data?.detail || 'Erro ao publicar formulário');
     } finally {
       setLoading(false);
     }
   };
 
-  // ========== COMPONENTE CAMPO RESPOSTA ==========
   const CampoResposta = React.memo(({ tipo, opcoes = [], perguntaId }) => {
     if (tipo === 'Resposta Aberta') {
       return <input style={{ marginTop: '30px', width: '100%' }} type="text" placeholder="Digite sua resposta aqui..." className="input-underline" />;
@@ -245,47 +218,8 @@ const CriarFormulario = ({ onNavigate }) => {
               >
                 ✕
               </button>
-              <input type="radio" name={`radio-${perguntaId}`} />
-              <input 
-                type="text" 
-                defaultValue={op}
-                onBlur={(e) => atualizarOpcao(perguntaId, idx, e.target.value)}
-                style={{ 
-                  flex: 1, 
-                  padding: '4px 8px', 
-                  border: 'none',
-                  outline: 'none', 
-                  borderRadius: '4px',
-                }}
-              />
-              <button
-                onClick={() => removerOpcao(perguntaId, idx)}
-                style={{
-                  background: 'none',
-                  border: 'none',
-                  color: 'red',
-                  cursor: 'pointer',
-                  fontSize: '16px'
-                }}
-              >
-                ✕
-              </button>
             </div>
           ))}
-          <button
-            onClick={() => adicionarOpcao(perguntaId)}
-            style={{
-              marginTop: '8px',
-              padding: '4px 12px',
-              backgroundColor: '#f0f0f0',
-              border: '1px solid #ccc',
-              borderRadius: '4px',
-              cursor: 'pointer',
-              fontSize: '12px'
-            }}
-          >
-            + Adicionar opção
-          </button>
           <button
             onClick={() => adicionarOpcao(perguntaId)}
             style={{
@@ -333,47 +267,8 @@ const CriarFormulario = ({ onNavigate }) => {
               >
                 ✕
               </button>
-              <input type="checkbox" />
-              <input 
-                type="text" 
-                defaultValue={op}
-                onBlur={(e) => atualizarOpcao(perguntaId, idx, e.target.value)}
-                style={{ 
-                  flex: 1, 
-                  padding: '4px 8px', 
-                  border: '1px solid #ccc', 
-                  borderRadius: '4px',
-                  backgroundColor: '#f9f9f9'
-                }}
-              />
-              <button
-                onClick={() => removerOpcao(perguntaId, idx)}
-                style={{
-                  background: 'none',
-                  border: 'none',
-                  color: 'red',
-                  cursor: 'pointer',
-                  fontSize: '16px'
-                }}
-              >
-                ✕
-              </button>
             </div>
           ))}
-          <button
-            onClick={() => adicionarOpcao(perguntaId)}
-            style={{
-              marginTop: '8px',
-              padding: '4px 12px',
-              backgroundColor: '#f0f0f0',
-              border: '1px solid #ccc',
-              borderRadius: '4px',
-              cursor: 'pointer',
-              fontSize: '12px'
-            }}
-          >
-            + Adicionar opção
-          </button>
           <button
             onClick={() => adicionarOpcao(perguntaId)}
             style={{
@@ -393,15 +288,12 @@ const CriarFormulario = ({ onNavigate }) => {
     }
     return null;
   });
-  });
 
-  // ========== RENDER ==========
   return (
     <div>
       <div className="header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
         <h2 style={{ margin: 0, fontSize: '1.5rem' }}>Criar Novo Formulário</h2>
       </div>
-
 
       <div className="view-section active">
         {error && (
@@ -412,13 +304,9 @@ const CriarFormulario = ({ onNavigate }) => {
 
         <div className="card">
           <div className="flex" style={{ alignItems: 'center', flexDirection: 'row' }}>
-          <div className="flex" style={{ alignItems: 'center', flexDirection: 'row' }}>
             <label style={{ whiteSpace: 'nowrap' }}><strong>Insira o Título do Formulário:</strong></label>
             <input
-            <input
               style={{ border: 'none', background: 'transparent', outline: 'none', width: '100%' }}
-              type="text"
-              placeholder="Título do Formulário"
               type="text"
               placeholder="Título do Formulário"
               className="input-full"
@@ -428,13 +316,6 @@ const CriarFormulario = ({ onNavigate }) => {
           </div>
         </div>
 
-        <div className="card" style={{ marginTop: '1rem', display: 'flex' }}>
-          <div className="flex" style={{ alignItems: 'center', flexDirection: 'row', width: '100%' }}>
-            <label style={{ whiteSpace: 'nowrap' }}><strong>Insira a descrição do Formulário:</strong></label>
-            <input
-              style={{ border: 'none', background: 'transparent', outline: 'none', width: '100%' }}
-              type="text"
-              placeholder="Descrever informações importantes do formulário"
         <div className="card" style={{ marginTop: '1rem', display: 'flex' }}>
           <div className="flex" style={{ alignItems: 'center', flexDirection: 'row', width: '100%' }}>
             <label style={{ whiteSpace: 'nowrap' }}><strong>Insira a descrição do Formulário:</strong></label>
@@ -480,44 +361,11 @@ const CriarFormulario = ({ onNavigate }) => {
             {pergunta.tipo === 'Resposta Aberta' && (
               <hr style={{ width: '50%' }} />
             )}
-            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <label className="text-sm">Pergunta {idx + 1}: {pergunta.texto}</label>
-              <div style={{ display: 'flex', gap: '8px' }}>
-                <button
-                  onClick={() => removerPergunta(pergunta.id)}
-                  style={{
-                    background: 'none',
-                    border: 'none',
-                    color: 'red',
-                    cursor: 'pointer'
-                  }}
-                  title="Remover pergunta"
-                >
-                  ✕
-                </button>
-              </div>
-            </div>
-
-            <p style={{ fontSize: '12px', color: '#666', marginTop: '5px' }}>Tipo: {pergunta.tipo}</p>
-
-            <CampoResposta 
-              tipo={pergunta.tipo} 
-              opcoes={pergunta.opcoes} 
-              perguntaId={pergunta.id}
-            />
-
-            {pergunta.tipo === 'Resposta Aberta' && (
-              <hr style={{ width: '50%' }} />
-            )}
           </div>
         ))}
 
         <div className="form-question-box">
           <label className="text-sm">Insira a nova pergunta aqui</label>
-          <input
-            style={{ marginTop: '30px' }}
-            type="text"
-            placeholder="Digite sua pergunta"
           <input
             style={{ marginTop: '30px' }}
             type="text"
@@ -534,8 +382,6 @@ const CriarFormulario = ({ onNavigate }) => {
           <div className="flex gap-1" style={{ marginTop: '20px', flexDirection: 'column', gap: '14px' }}>
             <button
               className="btn btn-outline"
-            <button
-              className="btn btn-outline"
               style={{ width: '16%', justifyContent: 'center', padding: '0.8rem', color: 'gray' }}
               onClick={() => adicionarPergunta('Resposta Única')}
             >
@@ -543,15 +389,11 @@ const CriarFormulario = ({ onNavigate }) => {
             </button>
             <button
               className="btn btn-outline"
-            <button
-              className="btn btn-outline"
               style={{ width: '16%', justifyContent: 'center', padding: '0.8rem', color: 'gray' }}
               onClick={() => adicionarPergunta('Múltipla Escolha')}
             >
               Múltipla Escolha +
             </button>
-            <button
-              className="btn btn-outline"
             <button
               className="btn btn-outline"
               style={{ width: '16%', justifyContent: 'center', padding: '0.8rem', color: 'gray' }}
@@ -565,7 +407,6 @@ const CriarFormulario = ({ onNavigate }) => {
         {/* SELEÇÃO DE PRESIDENTES */}
         <div className="card" style={{ marginTop: '1rem' }}>
           <h3 style={{ marginBottom: '1rem' }}>Selecionar Presidentes que irão responder</h3>
-
 
           {loading && presidentes.length === 0 ? (
             <div style={{ textAlign: 'center', padding: '1rem' }}>
@@ -584,7 +425,6 @@ const CriarFormulario = ({ onNavigate }) => {
 
               <div style={{ maxHeight: '300px', overflowY: 'auto' }}>
                 {presidentes.map(presidente => (
-                  <div
                   <div
                     key={presidente.id}
                     style={{
@@ -630,13 +470,9 @@ const CriarFormulario = ({ onNavigate }) => {
 
         <div className="flex gap-3" style={{ marginTop: '2rem', marginBottom: '10rem' }}>
           <button className="btn btn-danger" onClick={() => onNavigate('formularios')}>Cancelar</button>
-          <button className="btn btn-danger" onClick={() => onNavigate('formularios')}>Cancelar</button>
           <button className="btn btn-outline" onClick={handleSalvar} disabled={loading}>
             {loading ? 'Salvando...' : 'Salvar Rascunho'}
-            {loading ? 'Salvando...' : 'Salvar Rascunho'}
           </button>
-          <button
-            className="btn btn-primary"
           <button
             className="btn btn-primary"
             onClick={handlePublicar}
