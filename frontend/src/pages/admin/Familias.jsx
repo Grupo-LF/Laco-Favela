@@ -382,7 +382,7 @@ const Familias = ({ onSelectFamilia }) => {
                   
                   return (
                     <tr key={familia.id} style={{ borderBottom: '1px solid #eee', transition: 'background-color 0.3s' }}>
-                      <td style={{ padding: '0.75rem', fontWeight: 'bold' }}>#{familia.rank_fixo}</td>
+                      <td style={{ padding: '0.75rem', fontWeight: 'bold', backgroundColor: '#5d5c5c',borderRadius:'20px' }}>{familia.rank_fixo}</td>
                       <td style={{ padding: '0.75rem' }}><strong>{familia.nome_responsavel}</strong></td>
                       <td style={{ padding: '0.75rem' }}>{familia.presidente_nome || 'Não atribuído'}</td>
                       <td style={{ padding: '0.75rem' }}>
