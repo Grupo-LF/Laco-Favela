@@ -8,6 +8,7 @@ import RankingPage from './pages/presidente/RankingPage';
 import PerfilPage from './pages/presidente/PerfilPage';
 import FormularioPage from './pages/presidente/FormularioPage';
 import RegistrodeVisitas from './pages/presidente/RegistrodeVisitas';
+
 function AppPresidente() {
   const [activeView, setActiveView] = useState('home');
 
@@ -18,18 +19,15 @@ function AppPresidente() {
       case 'familias': 
         return <FamiliasPage />;
       case 'formularios': 
-        return <FormularioPage/>;
-      case 'registros': 
-        return <RegistrodeVisitas/>;
-      
-      // 2. CASOS ATUALIZADOS COM AS SUAS TELAS REAIS:
+        return <FormularioPage />;
+      case 'registros':
+        return <RegistrodeVisitas />;
       case 'meu-indicador': 
         return <MeuIndicadorPage />;
       case 'ranking': 
         return <RankingPage />;
       case 'perfil': 
         return <PerfilPage />;
-        
       default: 
         return <HomePage onNavigate={setActiveView} />;
     }
