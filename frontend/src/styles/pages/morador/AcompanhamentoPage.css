@@ -1,0 +1,171 @@
+.acomp-page {
+  display: flex;
+  flex-direction: column;
+  padding: 28px;
+  background: #f0f0f0;
+  min-height: 100vh;
+  box-sizing: border-box;
+  gap: 20px;
+}
+
+.acomp-page__header {
+  background: #fff;
+  padding: 20px 24px;
+  border-radius: 12px;
+}
+
+.acomp-page__titulo {
+  font-size: 22px;
+  font-weight: 700;
+  color: #111;
+  margin: 0;
+}
+
+.acomp-page__subtitulo {
+  font-size: 13px;
+  color: #888;
+  margin: 4px 0 0 0;
+}
+
+.acomp-page__conteudo {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+.acomp-page__historico {
+  background: #fff;
+  border-radius: 12px;
+  padding: 24px;
+  flex: 1;
+}
+
+.acomp-page__historico-titulo {
+  font-size: 16px;
+  font-weight: 600;
+  color: #222;
+  margin: 0 0 20px 0;
+}
+
+.acomp-ciclo {
+  margin-bottom: 28px;
+}
+
+.acomp-ciclo__titulo {
+  font-size: 15px;
+  font-weight: 700;
+  color: #111;
+  margin: 0 0 4px 0;
+}
+
+.acomp-ciclo__periodo {
+  font-size: 12px;
+  color: #888;
+  margin: 0 0 16px 0;
+}
+
+.acomp-ciclo__etapas {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-left: 8px;
+  border-left: 2px solid #e0e0e0;
+}
+
+.acomp-etapa {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  margin-left: -12px;
+}
+
+.acomp-etapa__icone {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #ccc;
+  flex-shrink: 0;
+}
+
+.acomp-etapa__icone--completo {
+  background: #333;
+}
+
+.acomp-etapa__info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.acomp-etapa__titulo {
+  font-size: 13px;
+  font-weight: 600;
+  color: #222;
+}
+
+.acomp-etapa__titulo--pendente {
+  color: #aaa;
+}
+
+.acomp-etapa__descricao {
+  font-size: 12px;
+  color: #666;
+}
+
+.acomp-etapa__descricao--pendente {
+  color: #ccc;
+}
+
+.acomp-etapa__data {
+  font-size: 11px;
+  color: #aaa;
+}
+
+.acomp-page__ver-mais {
+  margin-top: 16px;
+  background: none;
+  border: none;
+  font-size: 13px;
+  font-weight: 600;
+  color: #333;
+  cursor: pointer;
+  float: right;
+}
+
+.acomp-page__eventos {
+  background: #fff;
+  border-radius: 12px;
+  padding: 24px;
+  width: 280px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.acomp-page__eventos-titulo {
+  font-size: 16px;
+  font-weight: 600;
+  color: #222;
+  margin: 0;
+}
+
+.acomp-evento {
+  background: #f5f5f5;
+  border-radius: 8px;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.acomp-evento__titulo {
+  font-size: 13px;
+  font-weight: 600;
+  color: #222;
+}
+
+.acomp-evento__data {
+  font-size: 12px;
+  color: #888;
+}
