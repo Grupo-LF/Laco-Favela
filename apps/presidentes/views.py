@@ -1,11 +1,12 @@
-from rest_framework import generics, status
-from rest_framework.response import Response
-from rest_framework.permissions import AllowAny, IsAuthenticated
-from rest_framework.views import APIView
 from django.db.models import Count, Q
-from django.utils import timezone
+from rest_framework import generics, status
+from rest_framework.response import Response 
+from rest_framework.permissions import AllowAny, IsAuthenticated 
+from rest_framework.views import APIView
 from .models import Presidente
-from .serializers import PresidenteSerializer, CotaSerializer, PresidenteRankingSerializer
+from .serializers import PresidenteSerializer, CotaSerializer, PresidenteRankingSerializer 
+from apps.formularios.models import Ciclo, RespostaCiclo
+from django.utils import timezone
 
 # Lista E Cadastra presidentes
 class ListaCreatePresidentesView(generics.ListCreateAPIView):
@@ -48,20 +49,35 @@ class RankingPresidentesView(generics.ListAPIView):
         return Response(dados_ordenados)
 
 
-# Status de Cotas (simplificado sem Ciclo)
+# ===== ENDPOINTS PARA O SISTEMA DE COTAS =====
+
 class AdminStatusCotasView(APIView):
-    permission_classes = [AllowAny]
+    permission_classes = [AllowAny] # TODO: Mudar para IsAuthenticated e verificar se é admin
 
     def get(self, request):
         try:
-            presidentes = Presidente.objects.filter(ativo=True).order_by('nome')
+            # Busca o ciclo ativo
+            ciclo_ativo = Ciclo.objects.filter(status='ativo').first()
+            
+            if not ciclo_ativo:
+                return Response(
+                    {'detalhe': 'Nenhum ciclo ativo encontrado'},
+                    status=status.HTTP_404_NOT_FOUND
+                )
+            
+            # Conta as respostas de formulários do presidente
+            presidentes = Presidente.objects.filter(ativo=True).annotate(
+                respostas_completas = Count(
+                    'respostaciclo', 
+                    filter=Q(respostaciclo__ciclo=ciclo_ativo, respostaciclo__status__in=['completo', 'enviado'])
+                )
+            ).order_by('nome')
             
             dados_cotas = []
             
             for presidente in presidentes:
                 meta = presidente.cota
-                # Usando visitas como atual (ou outro campo que você tenha)
-                atual = presidente.visitas  # ou 0 se não tiver
+                atual = presidente.respostas_completas 
                 percentual = int((atual / meta * 100)) if meta > 0 else 0
                 
                 dados_cotas.append({
@@ -72,7 +88,7 @@ class AdminStatusCotasView(APIView):
                 })
             
             return Response({
-                'ciclo': 'Ciclo Atual',
+                'ciclo': ciclo_ativo.titulo,
                 'cotas': dados_cotas
             })
             
@@ -82,34 +98,98 @@ class AdminStatusCotasView(APIView):
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
 
+def get(self, request):
+        try:
+            # Busca o ciclo ativo
+            ciclo_ativo = Ciclo.objects.filter(status='ativo').first()
+            
+            if not ciclo_ativo:
+                return Response(
+                    {'detalhe': 'Nenhum ciclo ativo encontrado'},
+                    status=status.HTTP_404_NOT_FOUND
+                )
+            
+            # Conta as respostas de formulários do presidente
+            presidentes = Presidente.objects.filter(ativo=True).annotate(
+                respostas_completas = Count(
+                    'respostaciclo', 
+                    filter=Q(respostaciclo__ciclo=ciclo_ativo, respostaciclo__status__in=['completo', 'enviado'])
+                )
+            ).order_by('nome')
+            
+            dados_cotas = []
+            
+            for presidente in presidentes:
+                meta = presidente.cota
+                # Pega a contagem gerada pelo annotate
+                atual = presidente.respostas_completas 
+                percentual = int((atual / meta * 100)) if meta > 0 else 0
+                
+                dados_cotas.append({
+                    'nome': presidente.nome,
+                    'atual': atual,
+                    'meta': meta,
+                    'percentual': min(percentual, 100)
+                })
+            
+            return Response({
+                'ciclo': ciclo_ativo.titulo,
+                'cotas': dados_cotas
+            })
+            
+        except Exception as e:
+            return Response(
+                {'erro': str(e)},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
-# Home do Presidente (simplificado sem Ciclo)
 class PresidenteHomeView(APIView):
+    """
+    Retorna os dados do presidente logado para sua página home.
+    Inclui progresso da cota, formulários pendentes e últimas visitas.
+    """
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
         try:
+            # Busca o presidente vinculado ao usuário logado
             presidente = Presidente.objects.filter(user=request.user).first()
             
+            # Se o filtro retornar None, o vínculo realmente não existe no banco
             if not presidente:
                 return Response(
                     {'detalhe': 'Usuário não está vinculado a um presidente'},
                     status=status.HTTP_404_NOT_FOUND
                 )
             
-            # Calcula dados da cota
-            meta = presidente.cota
-            atual = presidente.visitas  # ou outro campo
-            faltam = max(0, meta - atual)
-            percentual = int((atual / meta * 100)) if meta > 0 else 0
+            # Busca o ciclo ativo
+            ciclo_ativo = Ciclo.objects.filter(status='ativo').first()
             
+            if not ciclo_ativo:
+                return Response(
+                    {'detalhe': 'Nenhum ciclo ativo encontrado'},
+                    status=status.HTTP_404_NOT_FOUND
+                )
+            
+            # Conta as respostas completas/enviadas do presidente no ciclo ativo
+            respostas_completas = RespostaCiclo.objects.filter(
+                ciclo=ciclo_ativo,
+                presidente=presidente,
+                status__in=['completo', 'enviado']
+            ).count()
+            
+            # Calcula dias restantes
+            prazo_date = ciclo_ativo.prazo
+            hoje = timezone.now().date() 
+            dias_restantes = max(0, (prazo_date - hoje).days)
+            
+            # Monta a resposta 
             cota_data = {
-                'visitasRealizadas': atual,
-                'meta': meta,
-                'percentual': min(percentual, 100),
-                'faltamParaMeta': faltam,
-                'diasRestantes': 30,  # Valor padrão
-                'posicaoRanking': None
+                'visitasRealizadas': respostas_completas,
+                'meta': presidente.cota,
+                'faltamParaMeta': max(0, presidente.cota - respostas_completas), 
+                'diasRestantes': dias_restantes,
+                'posicaoRanking': None 
             }
             
             return Response({
@@ -120,8 +200,8 @@ class PresidenteHomeView(APIView):
                 },
                 'cota': cota_data,
                 'ciclo': {
-                    'titulo': 'Ciclo Atual',
-                    'prazo': timezone.now().date() + timezone.timedelta(days=30)
+                    'titulo': ciclo_ativo.titulo,
+                    'prazo': ciclo_ativo.prazo
                 }
             })
             
