@@ -3,6 +3,9 @@ from rest_framework import generics, status
 from rest_framework.response import Response 
 from rest_framework.permissions import AllowAny, IsAuthenticated 
 from rest_framework.views import APIView
+
+
+from apps.familias.serializers import FamiliaSerializer
 from .models import Presidente
 from .serializers import PresidenteSerializer, CotaSerializer, PresidenteRankingSerializer 
 from apps.formularios.models import Ciclo, RespostaCiclo
@@ -204,3 +207,11 @@ class PresidenteHomeView(APIView):
                 {'erro': str(e)},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
+        
+class FamiliaCreateView(generics.CreateAPIView):
+    serializer_class = FamiliaSerializer
+    permission_classes = [IsAuthenticated]
+
+    def perform_create(self, serializer):
+        # Vincula a família ao perfil do presidente logado
+        serializer.save(presidente=self.request.user.presidente_profile)

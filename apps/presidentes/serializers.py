@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from apps.familias.models import Familia
 from .models import Presidente
 
 class PresidenteSerializer(serializers.ModelSerializer):
@@ -45,3 +46,20 @@ class PresidenteRankingSerializer(serializers.ModelSerializer):
             pontos += 20
 
         return pontos
+    
+class FamiliaSerializer(serializers.ModelSerializer):
+    renda_display = serializers.CharField(source='get_renda_familiar_display', read_only=True)
+    mae_solo_display = serializers.CharField(source='get_mae_solo_display', read_only=True)
+
+    class Meta:
+        model = Familia
+        fields = [
+                'nome_responsavel', 'endereco', 'comunidade', 'municipio', 
+                'telefone', 'melhor_horario', 'renda_familiar', 'num_membros', 
+                'mae_solo', 'num_filhos', 'bolsa_familia', 'status', 'aprovada',
+                'renda_display', 'mae_solo_display'
+            ]
+
+        read_only_fields = [
+                'status', 'aprovada', 'renda_display', 'mae_solo_display'
+            ]
