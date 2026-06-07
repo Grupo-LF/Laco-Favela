@@ -199,8 +199,8 @@ const Dashboard = () => {
                 <YAxis />
                 <Tooltip />
                 <Legend wrapperStyle={{ fontSize: '12px' }} />
-                <Bar dataKey="familias" fill="#8884d8" name="Famílias" />
-                <Bar dataKey="eventos" fill="#82ca9d" name="Eventos" />
+                <Bar dataKey="familias" fill="var(--color-primary)" name="Famílias" />
+                <Bar dataKey="eventos" fill="var(--color-accent) " name="Eventos" />
               </BarChart>
             </ResponsiveContainer>
           </div>

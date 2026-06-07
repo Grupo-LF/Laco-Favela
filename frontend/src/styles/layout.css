@@ -100,6 +100,7 @@
     transition: all 0.3s ease;
     display: flex;
     flex-direction: column;
+    background-color: var(--bg-screen);
 }
 
 /* LOGO */
@@ -112,37 +113,37 @@
 .logo {
     width: clamp(75px, 11vh, 85px);
     height: clamp(75px, 11vh, 85px);
-    background: #d9d9d9;
+    background: var(--bg-surface);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #333;
+    color: var(--color-primary);
     font-weight: bold;
     font-size: clamp(0.9rem, 2.8vh, 1.1rem);
 }
 
 /* USER PROFILE */
 .user-profile {
-    background: rgba(255,255,255,0.2);
+    background: var(--color-accent);
     margin: 0 0 clamp(1.2rem, 3vh, 1.8rem);
     padding: clamp(0.9rem, 2.2vh, 1.1rem);
     border-radius: 8px;
     display: flex;
     flex-direction: column;
     position: relative;
-    color: #000;
+    color: var(--text-on-accent);
 }
 
 .user-avatar {
     width: clamp(40px, 7vh, 45px);
     height: clamp(40px, 7vh, 45px);
-    background: #d9d9d9;
+    background: var(--color-primary);
     border-radius: 50%;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    color: #333;
+    color: var(--text-white);
     font-weight: 800;
     margin-bottom: clamp(0.4rem, 1.5vh, 0.6rem);
     font-size: clamp(1rem, 2.8vh, 1.3rem);
@@ -151,10 +152,15 @@
 .user-profile h5 {
     font-size: clamp(0.85rem, 2.2vh, 1rem);
     margin-top: 0.2rem;
+    color: var(--text-on-accent);
 }
 
 .user-profile .badge {
     font-size: clamp(0.7rem, 1.8vh, 0.8rem) !important;
+    background: var(--color-primary);
+    color: var(--text-white);
+    padding: 0.25rem 0.75rem;
+    border-radius: var(--border-radius-full);
 }
 
 /* NAVEGAÇÃO */
@@ -163,7 +169,7 @@
     text-transform: uppercase;
     letter-spacing: 1px;
     margin: 0 0 0.8rem;
-    color: #e0e0e0;
+    color: rgba(255, 255, 255, 0.7);
 }
 
 .nav-item {
@@ -173,7 +179,7 @@
     align-items: center;
     gap: clamp(0.8rem, 2vh, 1rem);
     cursor: pointer;
-    color: white;
+    color: var(--text-white);
     text-decoration: none;
     transition: 0.2s;
     font-size: 1rem;
@@ -181,21 +187,21 @@
 
 .nav-item:hover,
 .nav-item.active {
-    background: rgba(255,255,255,0.3);
+    background: var(--color-accent);
     border-radius: 10px;
-    color: black;
+    color: var(--text-on-accent);
 }
 
 .nav-icon {
     width: clamp(14px, 2.2vh, 18px);
     height: clamp(14px, 2.2vh, 18px);
-    background: rgb(252, 248, 248);
-    opacity: 0.5;
+    background: var(--icon-sidebar);
+    opacity: 0.7;
 }
 
 .nav-item.active .nav-icon {
     opacity: 1;
-    background-color: black;
+    background-color: var(--color-accent);
 }
 
 /* VIEW SECTIONS */
@@ -212,6 +218,21 @@
     gap: 1.5rem;
     width: 100%;
     box-sizing: border-box;
+}
+
+/* Títulos das páginas */
+.view-section h1,
+.view-section h2,
+.view-section h3,
+.page-title {
+    color: var(--color-primary);
+}
+
+/* Texto do corpo */
+.view-section p,
+.view-section span,
+.view-section div:not(.card):not(.header) {
+    color: var(--text-primary);
 }
 
 /* Scroll invisível que aparece ao passar o mouse */
@@ -275,12 +296,27 @@
 .header {
     display: flex;
     padding: 1.5rem 2rem;
-    background-color: white;
+    background-color: var(--bg-surface);
     justify-content: space-between;
     align-items: center;
     margin-bottom: 1rem;
     width: 100%;
     box-sizing: border-box;
+    border-radius: var(--border-radius-md);
+    box-shadow: var(--shadow-sm);
+}
+
+/* CARDS */
+.card, .dashboard-card, .quadro {
+    background-color: var(--bg-surface);
+    border-radius: var(--border-radius-md);
+    box-shadow: var(--shadow-sm);
+    padding: var(--spacing-lg);
+}
+
+/* Ícones dentro da tela */
+.icon-inside, .card-icon {
+    color: var(--icon-inside);
 }
 
 /* ANIMAÇÕES */
