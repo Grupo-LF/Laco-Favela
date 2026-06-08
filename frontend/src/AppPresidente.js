@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './styles/global.css';
-import SidebarPresidente from './components/layout/SidebarPresidente';
+import Sidebar from './components/layout/Sidebar';
 import HomePage from './pages/presidente/HomePage';
 import FamiliasPage from './pages/presidente/FamiliasPage';
 import MeuIndicadorPage from './pages/presidente/MeuIndicadorPage';
@@ -35,7 +35,7 @@ function AppPresidente() {
 
   return (
     <div style={{ display: 'flex', height: '100vh' }}>
-      <SidebarPresidente activeView={activeView} onNavigate={setActiveView} />
+      <Sidebar tipo="presidente" activeView={activeView} onNavigate={setActiveView} />
       <main className="main-content" style={{ flexGrow: 1, overflowY: 'auto' }}>
         {renderView()}
       </main>
