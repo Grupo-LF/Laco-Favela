@@ -1,19 +1,17 @@
 import React, { useEffect, useRef } from 'react';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import { ReactComponent as BlacktIcon } from '../../assets/Square_black.svg';
-import { ReactComponent as WhiteIcon } from '../../assets/Square_white.svg';
+import { ReactComponent as AddIcon } from '../../assets/addBtn.svg';
+import { ReactComponent as ExportIcon } from '../../assets/file_export.svg';
 import ApexCharts from 'apexcharts';
 
 const Dashboard = () => {
   // ========== DADOS ==========
   const dadosParticipacoes = [
-    { mes: 'Jan', familias: 120, eventos: 45 },
-    { mes: 'Fev', familias: 150, eventos: 60 },
-    { mes: 'Mar', familias: 180, eventos: 75 },
-    { mes: 'Abr', familias: 220, eventos: 90 },
-    { mes: 'Mai', familias: 260, eventos: 110 },
+    { mes: 'Janeiro', familias: 320, eventos: 85 },
+    { mes: 'Fevereiro', familias: 260, eventos: 85 },
+    { mes: 'Março', familias: 320, eventos: 90 },
+    { mes: 'Abril', familias: 300, eventos: 85 },
   ];
-
+  
   const statusCotas = [
     { nome: 'Nome 1', atual: 48, meta: 50, percentual: 96 },
     { nome: 'Nome 2', atual: 45, meta: 50, percentual: 90 },
@@ -23,18 +21,99 @@ const Dashboard = () => {
   ];
 
   // ========== CONFIGURAÇÃO DOS GRÁFICOS APEX ==========
+  
+  // Gráfico de Barras (Participações por Mês)
+  const barChartOptions = {
+    series: [
+      {
+        name: 'Famílias presentes',
+        data: dadosParticipacoes.map(item => item.familias),
+        color: '#005E94'
+      },
+      {
+        name: 'Eventos',
+        data: dadosParticipacoes.map(item => item.eventos),
+        color: '#F5A623'
+      }
+    ],
+    chart: {
+      type: 'bar',
+      height: 300,
+      toolbar: { show: false },
+      responsive: [{
+        breakpoint: 768,
+        options: { chart: { height: 250 } }
+      }]
+    },
+    plotOptions: {
+      bar: {
+        borderRadius: 10,
+        borderRadiusApplication: 'end',
+        horizontal: false,
+        columnWidth: '60%',
+        barGap: '20%',
+        distributed: false,
+      }
+    },
+    dataLabels: {
+      enabled: false
+    },
+    grid: {
+      show: true,
+      borderColor: '#d9d9d9',
+      strokeDashArray: 0,
+      xaxis: { lines: { show: false } },
+      yaxis: { lines: { show: true, color: '#d9d9d9' } }
+    },
+    xaxis: {
+      categories: dadosParticipacoes.map(item => item.mes),
+      axisBorder: { show: false },
+      axisTicks: { show: false },
+      labels: {
+        show: true,
+        style: { fontSize: '14px', fontWeight: 500 }
+      }
+    },
+    yaxis: {
+      show: true,
+      labels: { show: true },
+      title: { text: '' }
+    },
+    tooltip: {
+      enabled: true,
+      shared: true,
+      intersect: false,
+      y: {
+        formatter: (val) => `${val}`
+      }
+    },
+    legend: {
+      show: true,
+      position: 'top',
+      horizontalAlign: 'left',
+      fontSize: '12px',
+      markers: { radius: 12, width: 12, height: 12 },
+      itemMargin: { horizontal: 15, vertical: 0 }
+    },
+    title: {
+      text: undefined
+    },
+    colors: ['#005E94', '#F5A623']
+  };
+
+  // Gráfico Donut
   const donutOptions = {
     series: [44, 55, 13, 33],
     chart: {
       type: 'donut',
-      height: 300,
+      height: 250,
       responsive: [{
         breakpoint: 768,
         options: { chart: { height: 250 } }
       }]
     },
     labels: ['Mães solo', '+3 filhos', 'Renda baixa', 'Idosos'],
-    colors: ['#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4'],
+    colors: ['#035A8F', '#599DC7', '#297CAE', '#026FB2'],
     dataLabels: { enabled: false },
     legend: {
       position: 'bottom',
@@ -43,85 +122,130 @@ const Dashboard = () => {
     plotOptions: {
       pie: {
         donut: {
-          size: '65%',
-          labels: {
-            show: true,
-            total: {
-              show: true,
-              label: 'Total',
-              fontSize: '14px',
-              formatter: (w) => {
-                return w.globals.seriesTotals.reduce((a, b) => a + b, 0)
-              }
-            }
-          }
+          size: "45%"
         }
       }
     }
   };
 
+  // Gráfico Ranking
   const rankingOptions = {
     series: [{
       name: 'Visitas',
       data: [48, 45, 40, 35, 30]
     }],
+    colors: [
+      "var(--color-primary)",
+      "var(--color-primary)",
+      "var(--color-primary)",
+      "var(--color-accent)",
+      "var(--color-accent)"
+    ],
     chart: {
       type: 'bar',
       height: 350,
-      toolbar: { show: false },
       responsive: [{
+        breakpoint: 1024,
+        options: {
+          chart: { height: 320 },
+          plotOptions: { bar: { barHeight: "45%" } }
+        }
+      }, {
         breakpoint: 768,
-        options: { chart: { height: 280 } }
+        options: {
+          chart: { height: 280 },
+          plotOptions: { bar: { barHeight: "40%" } },
+          dataLabels: { style: { fontSize: '10px' } }
+        }
+      }, {
+        breakpoint: 480,
+        options: {
+          chart: { height: 240 },
+          plotOptions: { bar: { barHeight: "35%" } },
+          xaxis: { labels: { style: { fontSize: '10px' } } }
+        }
       }]
     },
     plotOptions: {
       bar: {
-        borderRadius: 4,
-        horizontal: true
+        barHeight: "50%",
+        borderRadius: 10,
+        horizontal: true,
+        borderRadiusApplication: 'end',
+        distributed: true,
       }
     },
     dataLabels: {
-      enabled: true,
-      formatter: (val) => `${val} visitas`,
-      offsetX: 10,
-      style: { fontSize: '12px' }
+      enabled: false,
+    },
+    legend: {
+      show: false
+    },
+    grid: {
+      show: true,
+      xaxis: { lines: { show: true } },
+      yaxis: { lines: { show: false } }
     },
     xaxis: {
-      categories: ['Presidente 1', 'Presidente 2', 'Presidente 3', 'Presidente 4', 'Presidente 5']
+      categories: ['Presidente 1', 'Presidente 2', 'Presidente 3', 'Presidente 4', 'Presidente 5'],
+      axisBorder: { show: false },
+      axisTicks: { show: false },
+      labels: {
+        show: false,
+        style: { fontSize: '12px', fontWeight: 500 }
+      }
+    },
+    yaxis: {
+      show: true,
+      labels: { show: true }
     },
     title: {
       text: 'Ranking de Presidentes',
       align: 'left',
       style: { fontSize: '16px', fontWeight: 'bold' }
-    }
+    },
   };
 
   // ========== REFERÊNCIAS ==========
+  const barChartRef = useRef(null);
   const donutRef = useRef(null);
   const rankingRef = useRef(null);
-  const donutChartRef = useRef(null);
-  const rankingChartRef = useRef(null);
+  const barChartInstance = useRef(null);
+  const donutChartInstance = useRef(null);
+  const rankingChartInstance = useRef(null);
 
   // ========== INICIALIZAR GRÁFICOS ==========
   useEffect(() => {
-    if (donutRef.current && !donutChartRef.current) {
-      donutChartRef.current = new ApexCharts(donutRef.current, donutOptions);
-      donutChartRef.current.render();
+    // Gráfico de Barras
+    if (barChartRef.current && !barChartInstance.current) {
+      barChartInstance.current = new ApexCharts(barChartRef.current, barChartOptions);
+      barChartInstance.current.render();
     }
 
-    if (rankingRef.current && !rankingChartRef.current) {
-      rankingChartRef.current = new ApexCharts(rankingRef.current, rankingOptions);
-      rankingChartRef.current.render();
+    // Gráfico Donut
+    if (donutRef.current && !donutChartInstance.current) {
+      donutChartInstance.current = new ApexCharts(donutRef.current, donutOptions);
+      donutChartInstance.current.render();
+    }
+
+    // Gráfico Ranking
+    if (rankingRef.current && !rankingChartInstance.current) {
+      rankingChartInstance.current = new ApexCharts(rankingRef.current, rankingOptions);
+      rankingChartInstance.current.render();
     }
 
     return () => {
-      if (donutChartRef.current) {
-        donutChartRef.current.destroy();
-        donutChartRef.current = null;
+      if (barChartInstance.current) {
+        barChartInstance.current.destroy();
+        barChartInstance.current = null;
       }
-      if (rankingChartRef.current) {
-        rankingChartRef.current.destroy();
-        rankingChartRef.current = null;
+      if (donutChartInstance.current) {
+        donutChartInstance.current.destroy();
+        donutChartInstance.current = null;
+      }
+      if (rankingChartInstance.current) {
+        rankingChartInstance.current.destroy();
+        rankingChartInstance.current = null;
       }
     };
   }, []);
@@ -145,12 +269,16 @@ const Dashboard = () => {
         gap: '16px',
       }}>
         <div>
-          <h2 style={{ margin: 0 }}>Dashboard Analítico</h2>
+          <h2 style={{ margin: 0, color: 'var(--color-primary)' }}>Painel Analítico</h2>
           <p style={{ margin: 0, color: '#666' }}>Ciclo 1 - Mês 6</p>
         </div>
         <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-          <button className="btn btn-outline">Exportar</button>
-          <button className="btn btn-primary">Novo ciclo</button>
+          <button className="btn btn-outline" style={{ padding: '0.45rem 1rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            Exportar <ExportIcon />
+          </button>
+          <button className="btn btn-primary" style={{ color: 'var(--white)', backgroundColor: 'var(--color-primary)', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            Novo ciclo <AddIcon />
+          </button>
         </div>
       </div>
 
@@ -179,93 +307,49 @@ const Dashboard = () => {
           gap: '16px',
           marginBottom: '24px'
         }}>
-          {/* Gráfico de Barras */}
+          {/* Gráfico de Barras com ApexCharts */}
           <div className="card">
-            <div style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              marginBottom: '16px',
-              flexWrap: 'wrap',
-              gap: '8px'
-            }}>
-              <h3 style={{ margin: 0 }}>Participações por Mês</h3>
-              <span className="badge">Último ciclo</span>
-            </div>
-            <ResponsiveContainer width="110%" height={300} barCategoryGap={window.innerWidth < 768 ? 10 : 20} style={{ marginLeft: '-10%' }}>
-              <BarChart
-                data={dadosParticipacoes}
-                margin={{
-                  top: 20,
-                  right: 30,
-                  left: 20,
-                  bottom: 10
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                marginBottom: '20px',
+                flexWrap: 'wrap',
+                gap: '50px'
+              }}
+            >
+              <h3
+                style={{
+                  margin: 0,
+                  fontSize: '22px',
+                  fontWeight: '600'
                 }}
-                barGap={108}
-                barCategoryGap={200}
               >
-                <CartesianGrid
-                  strokeDasharray="3 3"
-                  stroke="var(--border-color)"
-                  vertical={false}
-                />
-                <XAxis
-                  dataKey="mes"
-                  tick={{
-                    fill: 'var(--text-secondary)',
-                    fontSize: 12
-                  }}
-                  axisLine={{ stroke: 'var(--border-color)' }}
-                  tickLine={false}
-                />
-                <YAxis
-                  tick={{
-                    fill: 'var(--text-secondary)',
-                    fontSize: 12
-                  }}
-                  axisLine={{ stroke: 'var(--border-color)' }}
-                  tickLine={false}
-                />
-                <Tooltip
-                  contentStyle={{
-                    backgroundColor: 'var(--bg-surface)',
-                    border: `1px solid var(--border-color)`,
-                    borderRadius: 'var(--border-radius-md)',
-                    color: 'var(--text-primary)'
-                  }}
-                  cursor={{ fill: 'rgba(0,0,0,0.05)' }}
-                />
-                <Legend
-                  wrapperStyle={{
-                    fontSize: '12px',
-                    paddingTop: '10px',
-                    color: 'var(--text-primary)'
-                  }}
-                  iconType="circle"
-                />
-                <Bar
-                  dataKey="familias"
-                  fill="var(--color-primary)"
-                  name="Famílias"
-                  radius={[8, 8, 0, 0]}
-                  barSize={window.innerWidth < 768 ? 25 : 40}
-                // background REMOVIDO - não tem mais fundo cinza
-                />
-                <Bar
-                  dataKey="eventos"
-                  fill="var(--color-accent)"
-                  name="Eventos"
-                  radius={[8, 8, 0, 0]}
-                  barSize={window.innerWidth < 768 ? 25 : 40}
-                // background REMOVIDO - não tem mais fundo cinza
-                />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
+                Participações por Mês
+              </h3>
 
+              <select
+                style={{
+                  padding: '10px 15px',
+                  borderRadius: '12px',
+                  border: 'none',
+                  background: '#f3f3f3',
+                  fontWeight: '500',
+                  cursor: 'pointer'
+                }}
+              >
+                <option>Último ciclo</option>
+                <option>Últimos 6 meses</option>
+                <option>Último ano</option>
+              </select>
+            </div>
+            <div ref={barChartRef}></div>
+          </div>
+          
           {/* Gráfico Donut */}
           <div className="card">
-            <h3 style={{ marginBottom: '16px' }}>Distribuição por Perfil</h3>
+            <h3 style={{ marginBottom: '46px' }}>Distribuição por Perfil</h3>
             <div ref={donutRef}></div>
           </div>
         </div>
@@ -298,9 +382,9 @@ const Dashboard = () => {
                   <strong>{item.nome}</strong>
                   <span>{item.atual}/{item.meta}</span>
                 </div>
-                <div style={{ background: '#e0e0e0', borderRadius: '10px', height: '8px', overflow: 'hidden' }}>
+                <div style={{ background: '#e0e0e0', borderRadius: '10px', height: '12px', overflow: 'hidden' }}>
                   <div style={{
-                    background: '#2f2f2f',
+                    background: 'var(--color-primary)',
                     height: '100%',
                     width: `${item.percentual}%`,
                     borderRadius: '10px'
