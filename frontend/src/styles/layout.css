@@ -221,12 +221,7 @@
 }
 
 /* Títulos das páginas */
-.view-section h1,
-.view-section h2,
-.view-section h3,
-.page-title {
-    color: var(--color-primary);
-}
+
 
 /* Texto do corpo */
 .view-section p,

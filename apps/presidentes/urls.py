@@ -1,5 +1,12 @@
 from django.urls import path
-from .views import ListaCreatePresidentesView, AtualizarCotaView, RankingPresidentesView, AtualizarPresidenteView
+from .views import (
+    ListaCreatePresidentesView, 
+    AtualizarCotaView, 
+    RankingPresidentesView, 
+    AtualizarPresidenteView,
+    AdminStatusCotasView,
+    PresidenteHomeView
+)
 
 urlpatterns = [
     # Listar todos os presidentes e criar novo presidente
@@ -11,6 +18,12 @@ urlpatterns = [
     # Atualizar apenas a cota de um presidente específico
     path('presidentes/<int:pk>/cota/', AtualizarCotaView.as_view(), name='presidentes-cota'),
     
-    # NOVA URL: Atualizar qualquer campo do presidente (PATCH)
+    # Atualizar qualquer campo do presidente (PATCH)
     path('presidentes/<int:pk>/', AtualizarPresidenteView.as_view(), name='presidentes-update'),
+    
+    # Admin: Status de cotas de todos os presidentes
+    path('admin/cotas/', AdminStatusCotasView.as_view(), name='admin-cotas'),
+    
+    # Presidente: Home do presidente logado
+    path('home/', PresidenteHomeView.as_view(), name='presidente-home'),
 ]
