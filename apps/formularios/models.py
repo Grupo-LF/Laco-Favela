@@ -63,7 +63,7 @@ class RespostaCiclo(models.Model):
 
     ciclo = models.ForeignKey(Ciclo, on_delete=models.CASCADE, related_name='respostas')
     presidente = models.ForeignKey('presidentes.Presidente', on_delete=models.CASCADE)
-    familia = models.ForeignKey('familias.Familia', on_delete=models.CASCADE)
+    familia = models.ForeignKey('familias.Familia', on_delete=models.CASCADE,null=True, blank=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pendente')
     observacao = models.TextField(blank=True)
     respondido_em = models.DateTimeField(auto_now_add=True)
