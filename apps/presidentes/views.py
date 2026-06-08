@@ -16,38 +16,37 @@ class RegistrarVisitaView(APIView):
     @transaction.atomic # Garante que salva tudo ou não salva nada
     def post(self, request):
         try:
-            # 1. Identificar o Presidente logado
+            # Identificar o Presidente logado
             presidente = Presidente.objects.filter(user=request.user).first()
             if not presidente:
                 return Response({'erro': 'Usuário não está vinculado a um presidente.'}, status=status.HTTP_403_FORBIDDEN)
 
-            # 2. Identificar o Ciclo Ativo
+            # Identificar o Ciclo Ativo
             ciclo_ativo = Ciclo.objects.filter(status='ativo').first()
             if not ciclo_ativo:
                 return Response({'erro': 'Não há nenhum ciclo ativo no momento.'}, status=status.HTTP_400_BAD_REQUEST)
 
-            # 3. Validar a Família Visitada
+            # Validar a Família Visitada
             familia_id = request.data.get('familia_id')
             familia = Familia.objects.filter(id=familia_id, presidente=presidente).first()
             if not familia:
                 return Response({'erro': 'Família não encontrada ou não pertence a este presidente.'}, status=status.HTTP_404_NOT_FOUND)
 
-            # 4. Verificar se a visita já foi feita neste ciclo
-            # Protege contra duplo envio baseado na constraint unique_resposta_por_familia_ciclo
+            # Verificar se a visita já foi feita neste ciclo
             if RespostaCiclo.objects.filter(ciclo=ciclo_ativo, familia=familia).exists():
                 return Response({'erro': 'Esta família já foi visitada no ciclo atual.'}, status=status.HTTP_400_BAD_REQUEST)
 
-            # 5. Criar o registro geral da Visita (RespostaCiclo)
-            # Ao salvar com status 'completo', a cota já vai contabilizar automaticamente!
+            # Criar o registro geral da Visita (RespostaCiclo)
             resposta_ciclo = RespostaCiclo.objects.create(
                 ciclo=ciclo_ativo,
                 presidente=presidente,
                 familia=familia,
                 status='completo', 
-                observacao=request.data.get('observacao', '')
+                observacao=request.data.get('observacao', ''),
+                enviado_em=timezone.now()
             )
 
-            # 6. Salvar cada resposta individual (RespostaItem)
+            # Salvar cada resposta individual (RespostaItem)
             respostas_data = request.data.get('respostas', [])
             
             for item in respostas_data:
@@ -55,7 +54,7 @@ class RegistrarVisitaView(APIView):
                 pergunta = Pergunta.objects.filter(id=pergunta_id, ciclo=ciclo_ativo).first()
                 
                 if pergunta:
-                    RespostaItem.objects.create(
+                    resposta_item = RespostaItem.objects.create(    
                         resposta=resposta_ciclo,
                         pergunta=pergunta,
                         valor_texto=item.get('valor_texto', ''),
@@ -63,8 +62,12 @@ class RegistrarVisitaView(APIView):
                         valor_booleano=item.get('valor_booleano', None),
                         valor_data=item.get('valor_data', None),
                         opcao_id=item.get('opcao_id', None)
-                        # Nota: Se tiver 'selecao_multipla', você precisará adicionar a lógica para popular a relação ManyToMany 'opcoes' aqui.
                     )
+
+                    # Lógica para seleção múltipla
+                    opcoes_ids = item.get('opcoes_ids', []) # O frontend deve enviar uma lista, ex: [1, 4, 5]
+                    if opcoes_ids:
+                        resposta_item.opcoes.set(opcoes_ids)
 
             return Response({'sucesso': 'Visita registrada com sucesso!'}, status=status.HTTP_201_CREATED)
 
