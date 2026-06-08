@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import "C:/CC_local/projetos/LACO_FAVELAP2/Laco-Favela/frontend/src/styles/pages/morador/NotificationPage.css"
+import '../../styles/pages/morador/NotificationPage.css'
 const NotificationPage = ({ onNavigate }) => {
   const [notifications, setNotifications] = useState([
     { id: 1, title: 'Manutenção', message: 'O elevador passará por manutenção amanhã.', read: false },
