@@ -1,5 +1,5 @@
 import React from 'react';
-import '../../../styles/pages/morador/RankingPage.css';
+import '../../styles/pages/morador/RankingPage.css';
 
 const niveis = [
   { id: 1, titulo: 'Nível 1 - Iniciante', pontos: 'A partir de 0 pontos', atual: false },

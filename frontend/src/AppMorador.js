@@ -3,6 +3,8 @@ import './styles/global.css';
 import SidebarMorador from './components/layout/SidebarMorador';
 import HomePage from './pages/morador/HomePage';
 import NotificationPage from './pages/morador/NotificationPage';
+import AcompanhamentoPage from './pages/morador/AcompanhamentoPage';
+import RankingPage from './pages/morador/RankingPage';
 
 function AppMorador() {
   const [activeView, setActiveView] = useState('home');
@@ -14,9 +16,9 @@ function AppMorador() {
       case 'notificacoes':
         return <NotificationPage />;
       case 'acompanhamento':
-        return <div >Acompanhamento (em breve)</div>;
+        return <AcompanhamentoPage />;
       case 'ranking':
-        return <div >Ranking (em breve)</div>;
+        return <RankingPage />;
       case 'ser-presidente':
         return <div >Ser Presidente (em breve)</div>;
       case 'feedback':

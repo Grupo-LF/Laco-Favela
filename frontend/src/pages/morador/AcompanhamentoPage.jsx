@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import '../../../styles/pages/morador/AcompanhamentoPage.css';
+import '../../styles/pages/morador/AcompanhamentoPage.css';
 
 const ciclosExemplo = [
   {
