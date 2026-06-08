@@ -169,7 +169,7 @@
     text-transform: uppercase;
     letter-spacing: 1px;
     margin: 0 0 0.8rem;
-    color: rgba(255, 255, 255, 0.7);
+    color:var(--color-accent)
 }
 
 .nav-item {
@@ -179,10 +179,12 @@
     align-items: center;
     gap: clamp(0.8rem, 2vh, 1rem);
     cursor: pointer;
-    color: var(--text-white);
+    color: var(--color-accent);
     text-decoration: none;
     transition: 0.2s;
     font-size: 1rem;
+    font-weight: 600;
+
 }
 
 .nav-item:hover,
@@ -195,13 +197,15 @@
 .nav-icon {
     width: clamp(14px, 2.2vh, 18px);
     height: clamp(14px, 2.2vh, 18px);
-    background: var(--icon-sidebar);
-    opacity: 0.7;
+    color: var(--color-accent)
+    
+}/* Só muda a cor quando hover no nav-item */
+.nav-item:hover .nav-icon {
+    color: var(--color-primary);
 }
-
-.nav-item.active .nav-icon {
+.nav-item.active .nav-icon{
     opacity: 1;
-    background-color: var(--color-accent);
+    color: var(--color-primary);
 }
 
 /* VIEW SECTIONS */
