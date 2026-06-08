@@ -53,6 +53,7 @@ const Sidebar = ({ tipo, activeView, onNavigate }) => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  // Função para sair
   const handleSair = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('tipo');
