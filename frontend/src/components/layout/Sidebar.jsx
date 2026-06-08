@@ -1,39 +1,39 @@
 // frontend/src/components/layout/Sidebar.jsx
 import React, { useState, useEffect } from 'react';
-import logoImg from '../../assets/logo192.png';
+import logoImg from '../../assets/logo192.png'; // Importe a imagem do logo
 
 const Sidebar = ({ tipo, activeView, onNavigate }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
-  // Menu do ADMIN com ícones
+  // Menu do ADMIN
   const menuAdmin = {
     principal: [
-      { id: 'dashboard', label: 'Painel', icon: <span className="material-symbols-outlined">other_houses</span> },
-      { id: 'formularios', label: 'Formulários', icon: <span className="material-symbols-outlined">description</span> }
+      { id: 'dashboard', label: 'Dashboard', icon: 'dashboard' },
+      { id: 'formularios', label: 'Formulários', icon: 'description' }
     ],
     gestao: [
-      { id: 'presidentes', label: 'Presidentes', icon: <span className="material-symbols-outlined">assignment_ind</span> },
-      { id: 'familias', label: 'Famílias', icon: <span className="material-symbols-outlined">diversity_1</span> },
-      { id: 'aprovados', label: 'Aprovados', icon: <span className="material-symbols-outlined">list_alt_check</span> }
+      { id: 'presidentes', label: 'Presidentes', icon: 'person' },
+      { id: 'familias', label: 'Famílias', icon: 'family_restroom' },
+      { id: 'aprovados', label: 'Aprovados', icon: 'check_circle' }
     ],
     comunicacao: [
-      { id: 'feedbacks', label: 'Feedbacks', icon: <span className="material-symbols-outlined">feedback</span> },
-      { id: 'historico', label: 'Histórico', icon: <span className="material-symbols-outlined">history</span> }
+      { id: 'feedbacks', label: 'Feedbacks', icon: 'feedback' },
+      { id: 'historico', label: 'Histórico', icon: 'history' }
     ]
   };
 
-  // Menu do PRESIDENTE com ícones
+  // Menu do PRESIDENTE
   const menuPresidente = {
     principal: [
-      { id: 'home', label: 'Home', icon: <span className="material-symbols-outlined">home</span> },
-      { id: 'familias', label: 'Famílias', icon: <span className="material-symbols-outlined">diversity_1</span> },
-      { id: 'formularios', label: 'Formulários', icon: <span className="material-symbols-outlined">description</span> },
-      { id: 'registros', label: 'Registros', icon: <span className="material-symbols-outlined">list_alt_check</span> }
+      { id: 'home', label: 'Home', icon: 'home' },
+      { id: 'familias', label: 'Famílias', icon: 'family_restroom' },
+      { id: 'formularios', label: 'Formulários', icon: 'description' },
+      { id: 'registros', label: 'Registros', icon: 'receipt_long' }
     ],
     desempenho: [
-      { id: 'meu-indicador', label: 'Meu indicador', icon: <span className="material-symbols-outlined">bar_chart</span> },
-      { id: 'ranking', label: 'Ranking', icon: <span className="material-symbols-outlined">emoji_events</span> }
+      { id: 'meu-indicador', label: 'Meu indicador', icon: 'trending_up' },
+      { id: 'ranking', label: 'Ranking', icon: 'leaderboard' }
     ]
   };
 
@@ -43,9 +43,8 @@ const Sidebar = ({ tipo, activeView, onNavigate }) => {
   // Detectar mobile
   useEffect(() => {
     const handleResize = () => {
-      const mobile = window.innerWidth <= 768;
-      setIsMobile(mobile);
-      if (!mobile) {
+      setIsMobile(window.innerWidth <= 768);
+      if (window.innerWidth > 768) {
         setIsOpen(false);
       }
     };
@@ -66,42 +65,13 @@ const Sidebar = ({ tipo, activeView, onNavigate }) => {
     if (isMobile) setIsOpen(false);
   };
 
+  // Nome do usuário
   const userNome = localStorage.getItem('nome') || 'Nome e Sobrenome';
   const userInitials = userNome.split(' ').map(n => n[0]).join('').toUpperCase();
 
-  // Estilos
-  const desktopStyles = {
-    width: '18%',
-    backgroundColor: '#035A8F',
-    color: 'white',
-    display: 'flex',
-    flexDirection: 'column',
-    padding: '1rem',
-    height: '100vh',
-    position: 'relative',
-    overflowY: 'auto'
-  };
-
-  const mobileStyles = {
-    position: 'fixed',
-    left: isOpen ? '0' : '-100%',
-    top: 0,
-    width: '80%',
-    maxWidth: '300px',
-    height: '100vh',
-    backgroundColor: '#035A8F',
-    color: 'white',
-    display: 'flex',
-    flexDirection: 'column',
-    padding: '1rem',
-    zIndex: 1000,
-    transition: 'left 0.3s ease',
-    overflowY: 'auto',
-    boxShadow: isOpen ? '2px 0 10px rgba(0,0,0,0.3)' : 'none'
-  };
-
   return (
     <>
+      {/* Botão Hamburger Mobile */}
       {isMobile && (
         <button
           onClick={() => setIsOpen(true)}
@@ -121,6 +91,7 @@ const Sidebar = ({ tipo, activeView, onNavigate }) => {
         </button>
       )}
 
+      {/* Overlay Mobile */}
       {isMobile && isOpen && (
         <div
           onClick={() => setIsOpen(false)}
@@ -136,7 +107,25 @@ const Sidebar = ({ tipo, activeView, onNavigate }) => {
         />
       )}
 
-      <aside style={isMobile ? mobileStyles : desktopStyles}>
+      {/* Sidebar */}
+      <aside
+        style={{
+          width: isMobile ? '260px' : '18%',
+          backgroundColor: '#035A8F',
+          color: 'white',
+          display: 'flex',
+          flexDirection: 'column',
+          padding: '1rem',
+          height: '100vh',
+          position: isMobile ? 'fixed' : 'relative',
+          left: isMobile && !isOpen ? '-260px' : '0',
+          top: 0,
+          zIndex: 1000,
+          transition: 'left 0.3s ease',
+          overflowY: 'auto'
+        }}
+      >
+        {/* Botão Fechar Mobile */}
         {isMobile && (
           <button
             onClick={() => setIsOpen(false)}
@@ -155,10 +144,12 @@ const Sidebar = ({ tipo, activeView, onNavigate }) => {
           </button>
         )}
 
-        <div className="logo-container" style={{ textAlign: 'center', marginBottom: '1rem' }}>
-          <img
-            src={logoImg}
-            alt="Logo"
+        {/* Logo com imagem */}
+        <div className="logo-container">
+          <img 
+            src={logoImg} 
+            alt="Logo" 
+            className="logo"
             style={{
               width: '70px',
               height: '70px',
@@ -168,38 +159,22 @@ const Sidebar = ({ tipo, activeView, onNavigate }) => {
           />
         </div>
 
-        <div className="user-profile" style={{ textAlign: 'center', marginBottom: '1.5rem', position: 'relative' }}>
-          <div className="user-avatar" style={{
-            width: '50px',
-            height: '50px',
-            backgroundColor: '#FF6B35',
-            borderRadius: '50%',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            margin: '0 auto',
-            fontSize: '1.2rem',
-            fontWeight: 'bold'
-          }}>
-            {userInitials}
-          </div>
-          <div className="badge" style={{
-            position: 'absolute',
-            top: '0',
-            right: '0',
-            backgroundColor: '#FF6B35',
-            padding: '4px 8px',
-            borderRadius: '4px',
-            fontSize: '0.7rem',
-            fontWeight: 'bold'
-          }}>
+        {/* Perfil */}
+        <div 
+          className={`user-profile ${isPresidente ? 'clickable' : ''}`}
+          onClick={() => isPresidente && handleNavigate('perfil')}
+          style={{ cursor: isPresidente ? 'pointer' : 'default' }}
+        >
+          <div className="user-avatar">{userInitials}</div>
+          <h5 className="user-name" style={{ marginTop: '0.5rem', fontSize: '0.9rem' }}>{userNome}</h5>
+          <div className="badge" style={{position: 'absolute', top: '10%', right: '6%', padding:'6px ',textAlign:'start',fontSize: '0.75rem'}}>
             {isPresidente ? 'PRESIDENTE' : 'ADMIN'}
           </div>
-          <h5 style={{ marginTop: '0.5rem', fontSize: '0.9rem', marginBottom: 0 }}>{userNome}</h5>
         </div>
 
-        <div className="nav-section" style={{ marginBottom: '1.5rem' }}>
-          <div className="nav-title" style={{ color: '#FF6B35', marginBottom: '0.5rem' }}>Principal</div>
+        {/* Menu Principal */}
+        <div className="nav-section">
+          <div className="nav-title">Principal</div>
           {menu.principal?.map(item => (
             <a
               key={item.id}
@@ -209,19 +184,17 @@ const Sidebar = ({ tipo, activeView, onNavigate }) => {
                 e.preventDefault();
                 handleNavigate(item.id);
               }}
-              style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '0.5rem 0' }}
             >
-              <div className="nav-icon" style={{ display: 'flex', alignItems: 'center' }}>
-                {item.icon}
-              </div>
+              <span className="material-symbols-outlined" style={{ fontSize: '20px', marginRight: '10px' }}>{item.icon}</span>
               {item.label}
             </a>
           ))}
         </div>
 
+        {/* Gestão (Admin) */}
         {menu.gestao && (
-          <div className="nav-section" style={{ marginBottom: '1.5rem' }}>
-            <div className="nav-title" style={{ marginBottom: '0.5rem' }}>Gestão</div>
+          <div className="nav-section">
+            <div className="nav-title">Gestão</div>
             {menu.gestao.map(item => (
               <a
                 key={item.id}
@@ -231,20 +204,18 @@ const Sidebar = ({ tipo, activeView, onNavigate }) => {
                   e.preventDefault();
                   handleNavigate(item.id);
                 }}
-                style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '0.5rem 0' }}
               >
-                <div className="nav-icon" style={{ display: 'flex', alignItems: 'center' }}>
-                  {item.icon}
-                </div>
+                <span className="material-symbols-outlined" style={{ fontSize: '20px', marginRight: '10px' }}>{item.icon}</span>
                 {item.label}
               </a>
             ))}
           </div>
         )}
 
+        {/* Desempenho (Presidente) */}
         {menu.desempenho && (
-          <div className="nav-section" style={{ marginBottom: '1.5rem' }}>
-            <div className="nav-title" style={{ marginBottom: '0.5rem' }}>Desempenho</div>
+          <div className="nav-section">
+            <div className="nav-title">Desempenho</div>
             {menu.desempenho.map(item => (
               <a
                 key={item.id}
@@ -254,20 +225,18 @@ const Sidebar = ({ tipo, activeView, onNavigate }) => {
                   e.preventDefault();
                   handleNavigate(item.id);
                 }}
-                style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '0.5rem 0' }}
               >
-                <div className="nav-icon" style={{ display: 'flex', alignItems: 'center' }}>
-                  {item.icon}
-                </div>
+                <span className="material-symbols-outlined" style={{ fontSize: '20px', marginRight: '10px' }}>{item.icon}</span>
                 {item.label}
               </a>
             ))}
           </div>
         )}
 
+        {/* Comunicação (só Admin) */}
         {menu.comunicacao && (
-          <div className="nav-section" style={{ marginBottom: '1.5rem' }}>
-            <div className="nav-title" style={{ marginBottom: '0.5rem' }}>Comunicação</div>
+          <div className="nav-section">
+            <div className="nav-title">Comunicação</div>
             {menu.comunicacao.map(item => (
               <a
                 key={item.id}
@@ -277,17 +246,15 @@ const Sidebar = ({ tipo, activeView, onNavigate }) => {
                   e.preventDefault();
                   handleNavigate(item.id);
                 }}
-                style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '0.5rem 0' }}
               >
-                <div className="nav-icon" style={{ display: 'flex', alignItems: 'center' }}>
-                  {item.icon}
-                </div>
+                <span className="material-symbols-outlined" style={{ fontSize: '20px', marginRight: '10px' }}>{item.icon}</span>
                 {item.label}
               </a>
             ))}
           </div>
         )}
 
+        {/* Sair */}
         <div style={{ marginTop: 'auto' }}>
           <a
             href="#"
@@ -296,11 +263,8 @@ const Sidebar = ({ tipo, activeView, onNavigate }) => {
               e.preventDefault();
               handleSair();
             }}
-            style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '0.5rem 0' }}
           >
-            <div className="nav-icon" style={{ display: 'flex', alignItems: 'center' }}>
-              <span className="material-symbols-outlined">logout</span>
-            </div>
+            <span className="material-symbols-outlined" style={{ fontSize: '20px', marginRight: '10px' }}>logout</span>
             Sair
           </a>
         </div>

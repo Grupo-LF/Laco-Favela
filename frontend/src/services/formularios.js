@@ -4,15 +4,19 @@ import { getToken } from './auth';
 // ========== FUNÇÕES EXISTENTES ==========
 export const listarCiclos = async () => {
   getToken();
-  getToken();
   const response = await api.get('/ciclos/');
   return response.data;
 };
 
 export const getCiclos = async () => {
   getToken();
-  getToken();
   const response = await api.get('/ciclos');
+  return response.data;
+};
+
+export const getCicloDetalhado = async (cicloId) => {
+  getToken();
+  const response = await api.get(`/ciclos/${cicloId}/`);
   return response.data;
 };
 
@@ -29,7 +33,6 @@ export const getFormulario = async (formularioId) => {
 };
 
 export const submitResposta = async (formularioId, dados) => {
-  getToken();
   getToken();
   const response = await api.post(`/formularios/${formularioId}/respostas`, dados);
   return response.data;
@@ -132,8 +135,18 @@ export const associarRespostasAosPresidentes = async (cicloId, presidentesIds) =
   return Promise.all(promises);
 };
 
+export const criarCicloComPresidentes = async (dados, presidentesIds) => {
+  getToken();
+  const ciclo = await criarCiclo(dados);
+  await associarRespostasAosPresidentes(ciclo.id, presidentesIds);
+  return ciclo;
+};
+
 export const salvarRascunho = async (dados) => {
-  return criarCiclo({ ...dados, status: 'rascunho' });
+  getToken();
+  // Rascunho usa o mesmo criarCiclo mas com status diferente
+  const dadosComStatus = { ...dados, status: 'rascunho' };
+  return criarCiclo(dadosComStatus);
 };
 
 export default {
@@ -146,13 +159,15 @@ export default {
   publicarCiclo,
   salvarRascunho,
   
+  // Formulários
+  getFormulario,
+  
   // Respostas
   getFormulariosDoCiclo,
   submitResposta,
   enviarRespostaCiclo,
-  criarCiclo,
-  salvarRascunho,
-  publicarCiclo,
+  
+  // Presidentes
   listarPresidentes,
   associarRespostasAosPresidentes,
 };

@@ -285,12 +285,11 @@ const Dashboard = () => {
         display: 'flex', 
         justifyContent: 'space-between', 
         alignItems: 'center', 
-        marginBottom: '24px',
-        padding: '0 20px'
+       
       }}>
         <div>
           <h2 style={{ margin: 0, color: 'var(--color-primary)' }}>Painel Analítico</h2>
-          <p style={{ margin: 0, color: '#666' }}>{cicloTitulo}</p>
+          <p style={{ margin: 0, color: '#666' }}>Ciclo 1 - Mês 6</p>
         </div>
         <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
           <button className="btn btn-outline" style={{ padding: '0.45rem 1rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
