@@ -6,34 +6,34 @@ const Sidebar = ({ tipo, activeView, onNavigate }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
-  // Menu do ADMIN
+  // Menu do ADMIN com ícones corrigidos
   const menuAdmin = {
     principal: [
-      { id: 'dashboard', label: 'Dashboard' },
-      { id: 'formularios', label: 'Formulários' }
+      { id: 'dashboard', label: 'Painel', icon: <span className="material-symbols-outlined">other_houses</span> },
+      { id: 'formularios', label: 'Formulários', icon: <span className="material-symbols-outlined">description</span> }
     ],
     gestao: [
-      { id: 'presidentes', label: 'Presidentes' },
-      { id: 'familias', label: 'Famílias' },
-      { id: 'aprovados', label: 'Aprovados' }
+      { id: 'presidentes', label: 'Presidentes', icon: <span className="material-symbols-outlined">assignment_ind</span> },
+      { id: 'familias', label: 'Famílias', icon: <span className="material-symbols-outlined">diversity_1</span> },
+      { id: 'aprovados', label: 'Aprovados', icon: <span className="material-symbols-outlined">list_alt_check</span> }
     ],
     comunicacao: [
-      { id: 'feedbacks', label: 'Feedbacks' },
-      { id: 'historico', label: 'Histórico' }
+      { id: 'feedbacks', label: 'Feedbacks', icon: <span className="material-symbols-outlined">feedback</span> },
+      { id: 'historico', label: 'Histórico', icon: <span className="material-symbols-outlined">history</span> }
     ]
   };
 
-  // Menu do PRESIDENTE
+  // Menu do PRESIDENTE com ícones corrigidos
   const menuPresidente = {
     principal: [
-      { id: 'home', label: 'Home' },
-      { id: 'familias', label: 'Famílias' },
-      { id: 'formularios', label: 'Formulários' },
-      { id: 'registros', label: 'Registros' }
+      { id: 'home', label: 'Home', icon: <span className="material-symbols-outlined">home</span> },
+      { id: 'familias', label: 'Famílias', icon: <span className="material-symbols-outlined">diversity_1</span> },
+      { id: 'formularios', label: 'Formulários', icon: <span className="material-symbols-outlined">description</span> },
+      { id: 'registros', label: 'Registros', icon: <span className="material-symbols-outlined">list_alt_check</span> }
     ],
     desempenho: [
-      { id: 'meu-indicador', label: 'Meu indicador' },
-      { id: 'ranking', label: 'Ranking' }
+      { id: 'meu-indicador', label: 'Meu indicador', icon: <span className="material-symbols-outlined">bar_chart</span> },
+      { id: 'ranking', label: 'Ranking', icon: <span className="material-symbols-outlined">emoji_events</span> }
     ]
   };
 
@@ -167,7 +167,7 @@ const Sidebar = ({ tipo, activeView, onNavigate }) => {
         >
           <div className="user-avatar">{userInitials}</div>
           <h5 className="user-name" style={{ marginTop: '0.5rem', fontSize: '0.9rem' }}>{userNome}</h5>
-          <div className="badge" style={{position: 'absolute', top: '10%', right: '6%', padding:'6px ',textAlign:'start',fontSize: '0.75rem'}}>
+          <div className="badge" style={{position: 'absolute', top: '10%', right: '6%',alignItems:'start',padding:'6px',fontSize: '0.75rem'}}>
             {isPresidente ? 'PRESIDENTE' : 'ADMIN'}
           </div>
         </div>
@@ -185,7 +185,9 @@ const Sidebar = ({ tipo, activeView, onNavigate }) => {
                 handleNavigate(item.id);
               }}
             >
-              <div className="nav-icon"></div>
+              <div className="nav-icon" style={{ display: 'flex', alignItems: 'center', marginRight: '10px' }}>
+                {item.icon}
+              </div>
               {item.label}
             </a>
           ))}
@@ -205,7 +207,9 @@ const Sidebar = ({ tipo, activeView, onNavigate }) => {
                   handleNavigate(item.id);
                 }}
               >
-                <div className="nav-icon"></div>
+                <div className="nav-icon" style={{ display: 'flex', alignItems: 'center', marginRight: '10px' }}>
+                  {item.icon}
+                </div>
                 {item.label}
               </a>
             ))}
@@ -226,7 +230,9 @@ const Sidebar = ({ tipo, activeView, onNavigate }) => {
                   handleNavigate(item.id);
                 }}
               >
-                <div className="nav-icon"></div>
+                <div className="nav-icon" style={{ display: 'flex', alignItems: 'center', marginRight: '10px' }}>
+                  {item.icon}
+                </div>
                 {item.label}
               </a>
             ))}
@@ -247,7 +253,9 @@ const Sidebar = ({ tipo, activeView, onNavigate }) => {
                   handleNavigate(item.id);
                 }}
               >
-                <div className="nav-icon"></div>
+                <div className="nav-icon" style={{ display: 'flex', alignItems: 'center', marginRight: '10px' }}>
+                  {item.icon}
+                </div>
                 {item.label}
               </a>
             ))}
@@ -264,7 +272,9 @@ const Sidebar = ({ tipo, activeView, onNavigate }) => {
               handleSair();
             }}
           >
-            <div className="nav-icon"></div>
+            <div className="nav-icon" style={{ display: 'flex', alignItems: 'center', marginRight: '10px' }}>
+              <span className="material-symbols-outlined">logout</span>
+            </div>
             Sair
           </a>
         </div>

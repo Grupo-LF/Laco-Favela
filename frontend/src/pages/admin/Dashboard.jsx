@@ -11,17 +11,16 @@ const Dashboard = () => {
     { mes: 'Março', familias: 320, eventos: 90 },
     { mes: 'Abril', familias: 300, eventos: 85 },
   ];
-  
+
   const statusCotas = [
-    { nome: 'Nome 1', atual: 48, meta: 50, percentual: 96 },
-    { nome: 'Nome 2', atual: 45, meta: 50, percentual: 90 },
-    { nome: 'Nome 3', atual: 50, meta: 50, percentual: 100 },
-    { nome: 'Nome 4', atual: 31, meta: 50, percentual: 62 },
-    { nome: 'Nome 5', atual: 22, meta: 50, percentual: 44 },
+    { nome: 'Maria Costa', atual: 48, meta: 50, percentual: 96 },
+    { nome: 'Ana Lima', atual: 45, meta: 50, percentual: 90 },
+    { nome: 'André Alves', atual: 50, meta: 50, percentual: 100 },
+    { nome: 'Felipe Ramos', atual: 31, meta: 50, percentual: 62 },
   ];
 
   // ========== CONFIGURAÇÃO DOS GRÁFICOS APEX ==========
-  
+
   // Gráfico de Barras (Participações por Mês)
   const barChartOptions = {
     series: [
@@ -128,7 +127,7 @@ const Dashboard = () => {
     }
   };
 
-  // Gráfico Ranking
+  // Gráfico Ranking - SEM LABEL DEBAIXO E SEM SCROLL
   const rankingOptions = {
     series: [{
       name: 'Visitas',
@@ -144,27 +143,19 @@ const Dashboard = () => {
     chart: {
       type: 'bar',
       height: 350,
-      responsive: [{
-        breakpoint: 1024,
-        options: {
-          chart: { height: 320 },
-          plotOptions: { bar: { barHeight: "45%" } }
-        }
-      }, {
-        breakpoint: 768,
-        options: {
-          chart: { height: 280 },
-          plotOptions: { bar: { barHeight: "40%" } },
-          dataLabels: { style: { fontSize: '10px' } }
-        }
-      }, {
-        breakpoint: 480,
-        options: {
-          chart: { height: 240 },
-          plotOptions: { bar: { barHeight: "35%" } },
-          xaxis: { labels: { style: { fontSize: '10px' } } }
-        }
-      }]
+      toolbar: {
+        show: false
+      },
+      zoom: {
+        enabled: false
+      },
+      animations: {
+        enabled: true
+      },
+      background: 'transparent'
+    },
+    tooltip: {
+      enabled: false
     },
     plotOptions: {
       bar: {
@@ -173,10 +164,14 @@ const Dashboard = () => {
         horizontal: true,
         borderRadiusApplication: 'end',
         distributed: true,
+        dataLabels: {
+          position: 'top'
+        }
       }
     },
     dataLabels: {
       enabled: false,
+      
     },
     legend: {
       show: false
@@ -187,23 +182,28 @@ const Dashboard = () => {
       yaxis: { lines: { show: false } }
     },
     xaxis: {
-      categories: ['Presidente 1', 'Presidente 2', 'Presidente 3', 'Presidente 4', 'Presidente 5'],
+      categories: ['André', 'Maria', 'Ana', 'Felipe', 'João'],
       axisBorder: { show: false },
       axisTicks: { show: false },
       labels: {
-        show: false,
-        style: { fontSize: '12px', fontWeight: 500 }
+        show: false
       }
     },
     yaxis: {
       show: true,
-      labels: { show: true }
+      labels: { 
+        show: true,
+        style: {
+          fontSize: '14px',
+          fontWeight: 'bold'
+        }
+      }
     },
     title: {
       text: 'Ranking de Presidentes',
       align: 'left',
-      style: { fontSize: '16px', fontWeight: 'bold' }
-    },
+      style: { fontSize: '18px', fontWeight: 'bold' }
+    }
   };
 
   // ========== REFERÊNCIAS ==========
@@ -216,19 +216,16 @@ const Dashboard = () => {
 
   // ========== INICIALIZAR GRÁFICOS ==========
   useEffect(() => {
-    // Gráfico de Barras
     if (barChartRef.current && !barChartInstance.current) {
       barChartInstance.current = new ApexCharts(barChartRef.current, barChartOptions);
       barChartInstance.current.render();
     }
 
-    // Gráfico Donut
     if (donutRef.current && !donutChartInstance.current) {
       donutChartInstance.current = new ApexCharts(donutRef.current, donutOptions);
       donutChartInstance.current.render();
     }
 
-    // Gráfico Ranking
     if (rankingRef.current && !rankingChartInstance.current) {
       rankingChartInstance.current = new ApexCharts(rankingRef.current, rankingOptions);
       rankingChartInstance.current.render();
@@ -267,8 +264,7 @@ const Dashboard = () => {
         marginBottom: '24px',
         flexWrap: 'wrap',
         gap: '16px',
-      }}>
-        <div>
+      }}><div>
           <h2 style={{ margin: 0, color: 'var(--color-primary)' }}>Painel Analítico</h2>
           <p style={{ margin: 0, color: '#666' }}>Ciclo 1 - Mês 6</p>
         </div>
@@ -346,7 +342,7 @@ const Dashboard = () => {
             </div>
             <div ref={barChartRef}></div>
           </div>
-          
+
           {/* Gráfico Donut */}
           <div className="card">
             <h3 style={{ marginBottom: '46px' }}>Distribuição por Perfil</h3>
@@ -362,7 +358,7 @@ const Dashboard = () => {
         }}>
           {/* Ranking */}
           <div className="card">
-            <div ref={rankingRef} style={{ overflowX: 'auto' }}></div>
+            <div ref={rankingRef} style={{ overflowX: 'hidden' }}></div>
           </div>
 
           {/* Status de Cotas */}
