@@ -1,6 +1,31 @@
 import React, { useState } from 'react';
 import '../../styles/pages/morador/AcompanhamentoPage.css';
 
+const IconCadastro = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+    <polyline points="14 2 14 8 20 8"/>
+    <line x1="16" y1="13" x2="8" y2="13"/>
+    <line x1="16" y1="17" x2="8" y2="17"/>
+  </svg>
+);
+
+const IconAnalise = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="10"/>
+    <polyline points="12 6 12 12 16 14"/>
+  </svg>
+);
+
+const IconAprovado = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+    <circle cx="12" cy="7" r="4"/>
+  </svg>
+);
+
+const ICONES = [IconCadastro, IconAnalise, IconAprovado];
+
 const ciclosExemplo = [
   {
     id: 1,
@@ -48,16 +73,21 @@ function AcompanhamentoPage() {
               <h3 className="acomp-ciclo__titulo">{ciclo.titulo}</h3>
               <p className="acomp-ciclo__periodo">{ciclo.periodo}</p>
               <div className="acomp-ciclo__etapas">
-                {ciclo.etapas.map((etapa) => (
-                  <div key={etapa.id} className="acomp-etapa">
-                    <div className={`acomp-etapa__icone ${etapa.completo ? 'acomp-etapa__icone--completo' : ''}`} />
-                    <div className="acomp-etapa__info">
-                      <span className={`acomp-etapa__titulo ${!etapa.completo ? 'acomp-etapa__titulo--pendente' : ''}`}>{etapa.titulo}</span>
-                      <span className={`acomp-etapa__descricao ${!etapa.completo ? 'acomp-etapa__descricao--pendente' : ''}`}>{etapa.descricao}</span>
-                      {etapa.data && <span className="acomp-etapa__data">{etapa.data}</span>}
+                {ciclo.etapas.map((etapa, index) => {
+                  const Icone = ICONES[index];
+                  return (
+                    <div key={etapa.id} className="acomp-etapa">
+                      <div className={`acomp-etapa__icone ${etapa.completo ? 'acomp-etapa__icone--completo' : ''}`}>
+                        <Icone />
+                      </div>
+                      <div className="acomp-etapa__info">
+                        <span className={`acomp-etapa__titulo ${!etapa.completo ? 'acomp-etapa__titulo--pendente' : ''}`}>{etapa.titulo}</span>
+                        <span className={`acomp-etapa__descricao ${!etapa.completo ? 'acomp-etapa__descricao--pendente' : ''}`}>{etapa.descricao}</span>
+                        {etapa.data && <span className="acomp-etapa__data">{etapa.data}</span>}
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
           ))}

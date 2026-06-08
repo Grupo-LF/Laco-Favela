@@ -54,6 +54,15 @@
   border-radius: 8px;
   flex-shrink: 0;
   border: 2px solid #f5a623;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #1a3a5c;
+}
+
+.ranking-nivel-card__icone svg {
+  width: 40px;
+  height: 40px;
 }
 
 .ranking-nivel-card__info {
@@ -178,6 +187,22 @@
   background: #e0e8f0;
   border-radius: 6px;
   flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  box-sizing: border-box;
+  color: #1a3a5c;
+}
+
+.ranking-niveis__item-icone--atual {
+  background: #1a3a5c;
+  color: #fff;
+}
+
+.ranking-niveis__item-icone svg {
+  width: 18px;
+  height: 18px;
 }
 
 .ranking-niveis__item-info {
@@ -309,11 +334,22 @@
 }
 
 .ranking-como-ganhar__icone {
-  width: 20px;
-  height: 20px;
+  width: 28px;
+  height: 28px;
   background: #e0e8f0;
-  border-radius: 4px;
+  border-radius: 6px;
   flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px;
+  box-sizing: border-box;
+  color: #1a3a5c;
+}
+
+.ranking-como-ganhar__icone svg {
+  width: 16px;
+  height: 16px;
 }
 
 .ranking-como-ganhar__acao {

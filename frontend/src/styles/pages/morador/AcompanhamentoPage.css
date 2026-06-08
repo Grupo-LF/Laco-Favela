@@ -77,28 +77,38 @@
   display: flex;
   gap: 12px;
   align-items: flex-start;
-  margin-left: -12px;
+  margin-left: -18px;
 }
 
 .acomp-etapa__icone {
-  width: 22px;
-  height: 22px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
-  background: #e0e0e0;
+  background: #e0e8f0;
   flex-shrink: 0;
-  border: 2px solid #fff;
-  box-shadow: 0 0 0 2px #e0e0e0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  box-sizing: border-box;
+  color: #aaa;
 }
 
 .acomp-etapa__icone--completo {
   background: #1a3a5c;
-  box-shadow: 0 0 0 2px #1a3a5c;
+  color: #fff;
+}
+
+.acomp-etapa__icone svg {
+  width: 18px;
+  height: 18px;
 }
 
 .acomp-etapa__info {
   display: flex;
   flex-direction: column;
   gap: 2px;
+  padding-top: 6px;
 }
 
 .acomp-etapa__titulo {
