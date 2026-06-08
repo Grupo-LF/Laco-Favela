@@ -21,7 +21,7 @@ const Feedbacks = () => {
     <div className="feed">
 
       <div className="header">
-        <h2>Feedbacks anônimos</h2>
+        <h2 style={{color:'var(--color-primary)'}}>Feedbacks anônimos</h2>
         <button className="btn btn-outline">Marcar todos como lidos</button>
       </div>
       <div className="view-section active">
@@ -47,6 +47,7 @@ const Feedbacks = () => {
               <p className="text-sm" style={{ marginTop: '0.5rem' }}>Recebido: {feedback.data}</p>
             </div>
           ))}
+          
         </div>
       </div>
     </div>

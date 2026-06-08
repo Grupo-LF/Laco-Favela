@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { listarFamilias } from '../../services/familias';
-
+import { ReactComponent as ExportIcon } from '../../assets/file_export.svg';
 const Aprovados = () => {
   const [aprovados, setAprovados] = useState([]);
   const [familias, setFamilias] = useState([]);
@@ -74,22 +74,22 @@ const Aprovados = () => {
 
   return (
     <div className="apro">
-      <div className="header">
-        <h2>Aprovados</h2>
-        <div className="flex gap-1">
-          <button className="btn btn-outline" disabled title="Funcionalidade em breve">
-            Exportar lista
-          </button>
-          <button className="btn btn-primary" disabled title="Funcionalidade em breve">
-            Publicar aprovados
-          </button>
-        </div>
-      </div>
+     
+            <div className="header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', flexWrap: 'wrap', gap: '1rem' }}>
+                 <h2 style={{ margin: 0 ,color:'var(--color-primary)'}}>Presidentes</h2>
+                 <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+                   <button className="btn btn-outline" style={{ padding: '0.5rem 1rem', cursor: 'pointer' }}>Exportar lista <ExportIcon></ExportIcon></button>
+                   <button className="btn btn-primary"  style={{ padding: '0.5rem 1rem', backgroundColor: 'var(--color-primary)', color: '#fff', border: 'none', cursor: 'pointer' }}>
+                     Gerar Aprovados
+                   </button>
+                 </div>
+               </div>
+      
 
       <div className="view-section active">
-        <div className="card flex justify-between items-center">
+        <div className="card flex justify-between items-center" >
           <div>
-            <h3>Seleção do Ciclo Finalizada</h3>
+            <h3 style={{color:'var(--color-primary)'}}><strong>Seleção do Ciclo Finalizada </strong></h3>
             <p className="text-sm mt-1">sub texto</p>
           </div>
           <div className="flex gap-3">
@@ -123,7 +123,7 @@ const Aprovados = () => {
               className="badge"
               onClick={() => setFiltroCategoria('todos')}
               style={{
-                backgroundColor: filtroCategoria === 'todos' ? '#333' : '#DFDFDF',
+                backgroundColor: filtroCategoria === 'todos' ? 'var(--color-primary)' : '#DFDFDF',
                 color: filtroCategoria === 'todos' ? '#fff' : '#333',
                 cursor: 'pointer',
                 border: 'none',
@@ -139,7 +139,7 @@ const Aprovados = () => {
               className="badge"
               onClick={() => setFiltroCategoria('maes_solo')}
               style={{
-                backgroundColor: filtroCategoria === 'maes_solo' ? '#333' : '#DFDFDF',
+                backgroundColor: filtroCategoria === 'maes_solo' ? 'var(--color-primary)' : '#DFDFDF',
                 color: filtroCategoria === 'maes_solo' ? '#fff' : '#333',
                 cursor: 'pointer',
                 border: 'none',
@@ -155,7 +155,7 @@ const Aprovados = () => {
               className="badge"
               onClick={() => setFiltroCategoria('mais_3_filhos')}
               style={{
-                backgroundColor: filtroCategoria === 'mais_3_filhos' ? '#333' : '#DFDFDF',
+                backgroundColor: filtroCategoria === 'mais_3_filhos' ? 'var(--color-primary)' : '#DFDFDF',
                 color: filtroCategoria === 'mais_3_filhos' ? '#fff' : '#333',
                 cursor: 'pointer',
                 border: 'none',
@@ -171,7 +171,7 @@ const Aprovados = () => {
               className="badge"
               onClick={() => setFiltroCategoria('renda_baixa')}
               style={{
-                backgroundColor: filtroCategoria === 'renda_baixa' ? '#333' : '#DFDFDF',
+                backgroundColor: filtroCategoria === 'renda_baixa' ? 'var(--color-primary)' : '#DFDFDF',
                 color: filtroCategoria === 'renda_baixa' ? '#fff' : '#333',
                 cursor: 'pointer',
                 border: 'none',
@@ -187,7 +187,7 @@ const Aprovados = () => {
               className="badge"
               onClick={() => setFiltroCategoria('alta_participacao')}
               style={{
-                backgroundColor: filtroCategoria === 'alta_participacao' ? '#333' : '#DFDFDF',
+                backgroundColor: filtroCategoria === 'alta_participacao' ? 'var(--color-primary)' : '#DFDFDF',
                 color: filtroCategoria === 'alta_participacao' ? '#fff' : '#333',
                 cursor: 'pointer',
                 border: 'none',
@@ -222,7 +222,7 @@ const Aprovados = () => {
                 <th>Presidente</th>
                 <th>Pontuação</th>
                 <th>Critério Principal</th>
-                <th>Publicado</th>
+                <th>Status</th>
                 <th>Ações</th>
               </tr>
             </thead>
@@ -244,13 +244,14 @@ const Aprovados = () => {
                     <td>{familia.pontuacao || '—'}</td>
                     <td>{familia.criterio_principal || '—'}</td>
                     <td>
-                      <span className="badge" style={{ backgroundColor: familia.publicado ? '#4CAF50' : '#DFDFDF', color: familia.publicado ? '#fff' : '#333' }}>
-                        {familia.publicado ? 'Sim' : 'Não'}
+                      <span className="badge" style={{ backgroundColor: familia.publicado ? 'var(--color-primary)' : 'var(--color-accent)', color: familia.publicado ? '#fff' : '#333' }}>
+                        {familia.publicado ? 'Publicado' : 'Pendente'}
                       </span>
                     </td>
-                    <td>
-                      <button className="btn btn-sm btn-outline" style={{ padding: '4px 8px', fontSize: '12px' }}>
-                        Ver
+                    <td style={{display:'flex', justifyContent:'center'}}>
+                      <button className="btn btn-outline" style={{ backgroundColor: familia.publicado ? '#D9D9D9' : 'var(--color-primary)', color: familia.publicado ? '#333' : '#fff',padding:'6px 12px' }}>
+                        {familia.publicado ? 'Detalhes' : 'Publicar'}
+
                       </button>
                     </td>
                   </tr>

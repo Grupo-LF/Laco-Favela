@@ -32,7 +32,7 @@ const Sidebar = ({ tipo, activeView, onNavigate }) => {
       { id: 'registros', label: 'Registros' }
     ],
     desempenho: [
-      { id: 'meu-indicador', label: 'Meu Indicador' },
+      { id: 'meu-indicador', label: 'Meu indicador' },
       { id: 'ranking', label: 'Ranking' }
     ]
   };
@@ -52,9 +52,11 @@ const Sidebar = ({ tipo, activeView, onNavigate }) => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  // Função para sair
   const handleSair = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('tipo');
+    localStorage.removeItem('nome');
     window.location.href = '/';
   };
 
@@ -164,8 +166,8 @@ const Sidebar = ({ tipo, activeView, onNavigate }) => {
           style={{ cursor: isPresidente ? 'pointer' : 'default' }}
         >
           <div className="user-avatar">{userInitials}</div>
-          <h5 className="user-name">{userNome}</h5>
-          <div className="badge" style={{position: 'absolute', top: '10%', right: '6%', fontSize: '0.75rem'}}>
+          <h5 className="user-name" style={{ marginTop: '0.5rem', fontSize: '0.9rem' }}>{userNome}</h5>
+          <div className="badge" style={{position: 'absolute', top: '10%', right: '6%', padding:'6px ',textAlign:'start',fontSize: '0.75rem'}}>
             {isPresidente ? 'PRESIDENTE' : 'ADMIN'}
           </div>
         </div>
@@ -253,10 +255,10 @@ const Sidebar = ({ tipo, activeView, onNavigate }) => {
         )}
 
         {/* Sair */}
-        <div className="sidebar-footer">
+        <div style={{ marginTop: 'auto' }}>
           <a
             href="#"
-            className="nav-item logout"
+            className="nav-item"
             onClick={(e) => {
               e.preventDefault();
               handleSair();
