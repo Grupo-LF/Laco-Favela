@@ -1,8 +1,6 @@
 # Laço Favela 
 > Um sistema de coleta e armazenamento de informações que são requeridas pelo G10 favelas para a melhor distribuição de donativos aos beneficiários do projeto.
 
-## 🔗 link do projeto : 
-[Laco_favela](lacofavela-grdzfab6b0bqhygj.brazilsouth-01.azurewebsites.net)
 ## 📌 Sobre o Projeto
 Nosso projeto tem como foco desenvolver um protótipo de aplicação web que auxilie o G10 favelas na gestão de doações destinadas às comunidades atendidas pela iniciativa Presidente de Rua. 
 
@@ -21,6 +19,7 @@ Como o projeto está em fase de definição, estas são as tecnologias que prete
 
 
 ## 👥 Equipe
+<details>
 
 | Nome | Portfólio | Curso |
 |------|--------| ------ |
@@ -36,7 +35,7 @@ Como o projeto está em fase de definição, estas são as tecnologias que prete
 | Maria Clara | [clarinhapontess](https://github.com/clarinhapontess) | Ciência da Computação |
 | Renata Mariana | [renatamari](https://www.behance.net/renatamari) | Design |
 | Victor Carraly | [carraly](https://github.com/carraly) | Ciência da Computação |
----
+</details>
 
 ## 📦 Entregas do Projeto
 
@@ -63,6 +62,11 @@ Como o projeto está em fase de definição, estas são as tecnologias que prete
 <details>
 <summary>📅 Status Report 2</summary>
 
-### 🚧 Work in progress 🚧
+## 🌐 Deploy
+
+| Serviço | URL |
+|---------|-----|
+| Backend  | [lacofavela-grdzfab6b0bqhygj.brazilsouth-01.azurewebsites.net](https://lacofavela-grdzfab6b0bqhygj.brazilsouth-01.azurewebsites.net) |
+| Frontend | [jolly-desert-05eb3d010.7.azurestaticapps.net](https://jolly-desert-05eb3d010.7.azurestaticapps.net) |
 
 </details>
