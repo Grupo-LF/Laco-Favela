@@ -19,8 +19,9 @@ function AppPresidente() {
         return <FamiliasPage />;
       case 'formularios': 
         return <FormularioPage/>;
-      case 'registros':
-         return <RegistrodeVisitas />;
+      case 'registros': 
+        return <RegistrodeVisitas/>;
+      
       // 2. CASOS ATUALIZADOS COM AS SUAS TELAS REAIS:
       case 'meu-indicador': 
         return <MeuIndicadorPage />;

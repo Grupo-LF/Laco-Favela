@@ -4,7 +4,6 @@ import AppAdmin from './AppAdmin';
 import AppPresidente from './AppPresidente';
 import AppMorador from './AppMorador';
 import Login from './pages/login/Login';
-
 function App(onLogin) {
   const [tipoUsuario, setTipoUsuario] = useState(localStorage.getItem('tipo'));
 
