@@ -9,6 +9,8 @@
     "@testing-library/user-event": "^13.5.0",
     "apexcharts": "^5.13.0",
     "axios": "^1.16.0",
+    "jspdf": "^4.2.1",
+    "jspdf-autotable": "^5.0.8",
     "node": ">=14.17",
     "react": "^19.2.6",
     "react-apexcharts": "^2.1.0",
