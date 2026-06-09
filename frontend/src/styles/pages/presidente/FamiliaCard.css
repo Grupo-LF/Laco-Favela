@@ -2,9 +2,10 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: #f5f5f5;
+  background: #fff;
   border-radius: 8px;
   padding: 16px 20px;
+  border: 1px solid #e0e8f0;
 }
 
 .familia-card__info {
@@ -16,7 +17,7 @@
 .familia-card__nome {
   font-size: 14px;
   font-weight: 600;
-  color: #222;
+  color: #1a3a5c;
 }
 
 .familia-card__detalhe {
@@ -28,11 +29,18 @@
 }
 
 .familia-card__icone {
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: #1a3a5c;
+}
+
+.familia-card__icone svg {
   width: 14px;
   height: 14px;
-  background: #ccc;
-  border-radius: 2px;
-  flex-shrink: 0;
 }
 
 .familia-card__tags {
@@ -50,13 +58,13 @@
 }
 
 .familia-card__status--visitada {
-  background: #333;
+  background: #1a3a5c;
   color: #fff;
 }
 
 .familia-card__status--pendente {
-  background: #e0e0e0;
-  color: #555;
+  background: #f5a623;
+  color: #fff;
 }
 
 .familia-card__perfil {
@@ -64,6 +72,6 @@
   font-weight: 500;
   padding: 4px 12px;
   border-radius: 999px;
-  background: #eee;
-  color: #444;
+  background: #e0e8f0;
+  color: #1a3a5c;
 }
