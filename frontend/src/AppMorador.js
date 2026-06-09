@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './styles/global.css';
-import SidebarMorador from './components/layout/SidebarMorador';
+import Sidebar from './components/layout/Sidebar';
 import HomePage from './pages/morador/HomePage';
 import NotificationPage from './pages/morador/NotificationPage';
 import AcompanhamentoPage from './pages/morador/AcompanhamentoPage';
@@ -41,13 +41,13 @@ function AppMorador() {
   };
 
   return (
-    <div style={{ display: 'flex', height: '100vh', width: '100vw' }}>
-      <SidebarMorador activeView={activeView} onNavigate={setActiveView} />
-      <main className="main-content" style={{ flexGrow: 1, overflowY: 'auto', backgroundColor: '#f4f6f8' }}>
-        {renderView()}
-      </main>
-    </div>
-  );
+  <div style={{ display: 'flex', height: '100vh', width: '100vw' }}>
+    <Sidebar tipo="morador" activeView={activeView} onNavigate={setActiveView} />
+    <main className="main-content" style={{ flexGrow: 1, overflowY: 'auto', backgroundColor: '#f4f6f8' }}>
+      {renderView()}
+    </main>
+  </div>
+ );
 }
 
 export default AppMorador;
