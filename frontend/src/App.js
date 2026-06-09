@@ -4,21 +4,23 @@ import AppAdmin from './AppAdmin';
 import AppPresidente from './AppPresidente';
 import AppMorador from './AppMorador';
 import Login from './pages/login/Login';
-function App(onLogin) {
+
+function App() {
   const [tipoUsuario, setTipoUsuario] = useState(localStorage.getItem('tipo'));
 
-  const handleLogin = (tipo, token) => {
+  const handleLogin = (tipo, token, nome) => {
     localStorage.setItem('token', token);
-    console.log('Token salvo no localStorage:', token);
     localStorage.setItem('tipo', tipo);
-    console.log('Tipo de usuário salvo no localStorage:', tipo);
+    localStorage.setItem('nome', nome);
     setTipoUsuario(tipo);
   };  
+  
   const handleLoginTest = (tipo) => {
     localStorage.setItem('tipo', tipo);
     console.log('Tipo de usuário salvo no localStorage (modo teste):', tipo);
     setTipoUsuario(tipo);
   }
+  
   // Se não tem tipo, mostra login
   if (!tipoUsuario) return <Login onLogin={handleLogin} handleLoginTest={handleLoginTest} />;
 
