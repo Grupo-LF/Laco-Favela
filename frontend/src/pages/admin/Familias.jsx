@@ -40,6 +40,73 @@ const CardEstatistica = ({ titulo, valor }) => (
   </div>
 );
 
+// ========== COMPONENTE MODAL DE CONFIRMAÇÃO ==========
+const ModalConfirmacao = ({ isOpen, onClose, onConfirm, totalSelecionados }) => {
+  if (!isOpen) return null;
+
+  return (
+    <div style={{
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      backgroundColor: 'rgba(0,0,0,0.5)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      zIndex: 9999
+    }}>
+      <div style={{
+        backgroundColor: 'white',
+        borderRadius: '8px',
+        padding: '24px',
+        width: '90%',
+        maxWidth: '400px',
+        boxShadow: '0 2px 10px rgba(0,0,0,0.1)'
+      }}>
+        <h2 style={{ margin: '0 0 46px 0', fontSize: '22px', fontWeight: '600',textAlign:'center',color:'var(--color-primary)' }}>
+          Deseja confirmar seleção e gerar aprovados?
+        </h2>
+        
+       
+        <div style={{ display: 'flex', gap: '12px', justifyContent: 'space-between',margin:'20px 30px'}}>
+          <button
+            onClick={onConfirm}
+            style={{
+              padding: '8px 18px',
+              backgroundColor: 'var(--color-primary)',
+              color: '#fff',
+              border: 'none',
+              borderRadius: '4px',
+              cursor: 'pointer',
+              fontSize: '16px',
+              fontWeight:'600'
+            }}
+          >
+            Sim
+          </button>
+          <button
+            onClick={onClose}
+            style={{
+              padding: '8px 18px',
+              backgroundColor: 'var(--color-primary)',
+              color: '#fff',
+              border: 'none',
+              borderRadius: '4px',
+              cursor: 'pointer',
+              fontSize: '16px',
+              fontWeight:'600'
+            }}
+          >
+            Não
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 // ========== FUNÇÕES UTILITÁRIAS DE MAPEAMENTO IMAGEM ==========
 const getPerfilLabel = (familia) => {
   if (familia.mae_solo === true || familia.mae_solo === 'sim') return 'Mãe solo';
@@ -57,6 +124,7 @@ const Familias = ({ onSelectFamilia }) => {
   const [error, setError] = useState('');
   const [filtroCategoria, setFiltroCategoria] = useState('todos');
   const [selecionados, setSelecionados] = useState({});
+  const [showModal, setShowModal] = useState(false);
 
   const carregarFamilias = async () => {
     setLoading(true);
@@ -140,11 +208,27 @@ const Familias = ({ onSelectFamilia }) => {
 
   return (
     <div>
+      {/* MODAL */}
+      <ModalConfirmacao 
+        isOpen={showModal}
+        onClose={() => setShowModal(false)}
+        onConfirm={() => {
+          const idsAprovados = Object.keys(selecionados).filter(id => selecionados[id]);
+          console.log("Famílias Enviadas para Aprovação:", idsAprovados);
+          setShowModal(false);
+        }}
+        totalSelecionados={totalPreSelecionadas}
+      />
+
       <div className="header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', flexWrap: 'wrap', gap: '1rem' }}>
         <h2 style={{ margin: 0, color: 'var(--color-primary)' }}>Famílias</h2>
         <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
           <button className="btn btn-outline" style={{ padding: '0.5rem 1rem', cursor: 'pointer' }}>Exportar lista <ExportIcon /></button>
-          <button className="btn btn-primary" style={{ padding: '0.5rem 1rem', backgroundColor: 'var(--color-primary)', color: '#fff', border: 'none', cursor: 'pointer' }}>
+          <button 
+            className="btn btn-primary" 
+            style={{ padding: '0.5rem 1rem', backgroundColor: 'var(--color-primary)', color: '#fff', border: 'none', cursor: 'pointer' }}
+            onClick={() => setShowModal(true)}
+          >
             Gerar Aprovados
           </button>
         </div>
@@ -358,10 +442,7 @@ const Familias = ({ onSelectFamilia }) => {
                 gap: '8px',
                 boxShadow: '0 2px 4px rgba(11, 90, 147, 0.2)'
               }}
-              onClick={() => {
-                const idsAprovados = Object.keys(selecionados).filter(id => selecionados[id]);
-                console.log("Famílias Enviadas para Aprovação:", idsAprovados);
-              }}
+              onClick={() => setShowModal(true)}
             >
               Confirmar seleção e gerar aprovados 
               <span style={{ fontSize: '0.95rem' }}>✓</span>

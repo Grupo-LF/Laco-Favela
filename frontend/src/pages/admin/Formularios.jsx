@@ -51,7 +51,7 @@ const LoadingSpinner = () => (
 const EmptyState = ({ onNavigate }) => (
   <div className="card" style={{ textAlign: 'center', padding: '3rem', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
     <p style={{ marginBottom: '1rem' }}>Nenhum formulário disponível.</p>
-    <button className="btn btn-primary" onClick={() => onNavigate('criar-formulario')}>
+    <button className="btn btn-primary" style={{backgroundColor:'var(--color-primary)'}} onClick={() => onNavigate('criar-formulario')}>
       Criar formulário
     </button>
   </div>
@@ -164,7 +164,7 @@ const TabelaRespostas = ({ formularioAtual, presidentesDoCiclo, isMobile, onNavi
               <td style={{position:'relative', left:'4%'}}>
                 {mapearStatus(presidente.status) === 'Completo'
                   ? <button className="btn btn-outline" style={{ padding: isMobile ? '4px 8px' : '6px 12px', fontSize: isMobile ? '0.7rem' : '0.8rem' }} onClick={() => onNavigate('ver-formulario', { respostaId: presidente.resposta_id })}>Ver</button>
-                  : <button className="btn btn-primary" style={{ padding: isMobile ? '4px 8px' : '6px 12px', fontSize: isMobile ? '0.7rem' : '0.8rem' }} onClick={() => onNavigate('notificar', { presidenteId: presidente.id, nome: presidente.nome })}>Notificar</button>
+                  : <button className="btn btn-primary" style={{backgroundColor:'var(--color-primary)',color:'#fff', padding: isMobile ? '4px 8px' : '6px 12px', fontSize: isMobile ? '0.7rem' : '0.8rem' }} onClick={() => onNavigate('notificar', { presidenteId: presidente.id, nome: presidente.nome })}>Notificar</button>
                 }
               </td>
             </tr>

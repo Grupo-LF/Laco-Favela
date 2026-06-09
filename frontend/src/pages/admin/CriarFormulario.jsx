@@ -34,7 +34,7 @@ const CriarFormulario = ({ onNavigate }) => {
   // ========== FUNÇÕES DE PERGUNTAS ==========
   const adicionarPergunta = (tipo) => {
     if (novaPergunta.trim() === '') {
-      alert('Digite uma pergunta');
+      //colocar um aviso na tela. Sem ser alert 
       return;
     }
 
@@ -314,7 +314,7 @@ const CriarFormulario = ({ onNavigate }) => {
               type="text"
               placeholder="Título do Formulário"
               className="input-full"
-              style={{ flex: 1, padding: '0.5rem', border: '1px solid #ccc', borderRadius: '4px' }}
+              style={{ flex: 1, padding: '0.5rem', border: 'none', outline:'none', borderRadius: '4px' }}
               value={titulo}
               onChange={(e) => setTitulo(e.target.value)}
             />
@@ -328,7 +328,7 @@ const CriarFormulario = ({ onNavigate }) => {
               type="text"
               placeholder="Descrever informações importantes do formulário"
               className="input-full"
-              style={{ flex: 1, padding: '0.5rem', border: '1px solid #ccc', borderRadius: '4px' }}
+              style={{ flex: 1, padding: '0.5rem', border: 'none',outline:'none', borderRadius: '4px' }}
               value={descricao}
               onChange={(e) => setDescricao(e.target.value)}
             />
@@ -378,24 +378,24 @@ const CriarFormulario = ({ onNavigate }) => {
 
         <div className="card" style={{ marginTop: '1rem' }}>
           <p style={{ fontWeight: 'bold', fontSize: '0.85rem' }}>Adicione uma pergunta:</p>
-          <div style={{ display: 'flex', gap: '1rem', marginTop: '10px' }}>
+          <div style={{ display: 'flex', gap: '1rem', marginTop: '10px',flexDirection:'column', maxWidth:'200px',justifyContent:'center'}}>
             <button
               className="btn btn-outline"
-              style={{ padding: '0.5rem 1rem', cursor: 'pointer' }}
+              style={{ padding: '0.5rem 1rem', cursor: 'pointer',display:'block' }}
               onClick={() => adicionarPergunta('Resposta Única')}
             >
               Resposta Única +
             </button>
             <button
               className="btn btn-outline"
-              style={{ padding: '0.5rem 1rem', cursor: 'pointer' }}
+              style={{ padding: '0.5rem 1rem', cursor: 'pointer' ,display:'block'}}
               onClick={() => adicionarPergunta('Múltipla Escolha')}
             >
               Múltipla Escolha +
             </button>
             <button
               className="btn btn-outline"
-              style={{ padding: '0.5rem 1rem', cursor: 'pointer' }}
+              style={{ padding: '0.5rem 1rem', cursor: 'pointer', display:'block' }}
               onClick={() => adicionarPergunta('Resposta Aberta')}
             >
               Resposta aberta +
@@ -455,32 +455,32 @@ const CriarFormulario = ({ onNavigate }) => {
                 ))}
               </div>
 
-              {presidentes.length === 0 && !loading && (
-                <div style={{ textAlign: 'center', padding: '1rem' }}>
-                  <p>Nenhum presidente cadastrado ainda.</p>
-                  <button className="btn btn-primary" style={{ marginTop: '0.5rem', cursor: 'pointer' }} onClick={() => onNavigate('presidentes')}>
-                    Cadastrar Presidente
-                  </button>
-                </div>
-              )}
+              
             </>
           )}
         </div>
 
-        <div style={{ display: 'flex', gap: '1rem', marginTop: '2rem', marginBottom: '10rem' }}>
-          <button className="btn btn-danger" onClick={() => onNavigate('formularios')} style={{ padding: '0.5rem 1rem', cursor: 'pointer' }}>Cancelar</button>
-          <button className="btn btn-outline" onClick={handleSalvar} disabled={loading} style={{ padding: '0.5rem 1rem', cursor: 'pointer' }}>
-            {loading ? 'Salvando...' : 'Salvar Rascunho'}
-          </button>
-          <button
+        <div style={{ display: 'flex', gap: '1rem', marginTop: '2rem', marginBottom: '10rem' , justifyContent:'space-between', padding:'6px 4px'}}>
+          <div style={{display:'flex',flexDirection:'row',gap:'1rem'}}>
+           <button
             className="btn btn-primary"
             onClick={handlePublicar}
             disabled={loading || presidentesSelecionados.length === 0}
-            style={{ padding: '0.5rem 1rem', cursor: 'pointer' }}
+            style={{ padding: '0.5rem 1rem', cursor: 'pointer',background:'var(--color-primary)',color:'#fff' }}
           >
-            {loading ? 'Publicando...' : 'Publicar Formulário'}
+            {loading ? 'Publicando...' : 'Publicar'}
           </button>
+          <button className="btn btn-outline" onClick={handleSalvar} disabled={loading} style={{ padding: '0.5rem 1rem', cursor: 'pointer', backgroundColor:'#8C8C8C',color:'#fff'}}>
+            {loading ? 'Salvando...' : 'Salvar Rascunho'}
+          </button>
+         
+          </div>
+          <div>
+          <button className="btn btn-danger" onClick={() => onNavigate('formularios')} style={{ padding: '0.5rem 1rem', cursor: 'pointer',backgroundColor:'#696969' }}>Excluir</button>
+          </div>
+           
         </div>
+        
       </div>
     </div>
   );

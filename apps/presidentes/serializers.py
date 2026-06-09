@@ -46,43 +46,59 @@ class PresidenteRankingSerializer(serializers.ModelSerializer):
     def get_pontuacao_engajamento(self, obj):
         pontos = 0
 
-        # 1. Comprometimento: Aceitou o termo de liderança?
+        # 1. Comprometimento: Aceitou o termo de liderança? (Máx: 10 pontos)
         if obj.termo_aceito:
-            pontos += 40
+            pontos += 10
 
-        # 2. Volume de Trabalho: Multiplica a cota de famílias por 10
+        # 2. Volume de Trabalho: Baseado na cota (Máx: 40 pontos)
+        # Cada família na cota vale 2 pontos, limitado a 40
         if obj.cota > 0:
-            pontos += (obj.cota * 10)
+            pontos_cota = min(obj.cota * 2, 40)
+            pontos += pontos_cota
 
-        # 3. Comunicação: Se preencheu as redes sociais ganha bônus
+        # 3. Visitas realizadas (Máx: 30 pontos)
+        # Pontua baseado na % da cota atingida
+        if obj.cota > 0 and obj.visitas:
+            percentual_visitas = min((obj.visitas / obj.cota) * 100, 100)
+            pontos_visitas = (percentual_visitas / 100) * 30
+            pontos += pontos_visitas
+
+        # 4. Eventos realizados (Máx: 15 pontos)
+        # Cada evento vale 3 pontos, limitado a 15
+        if obj.eventos:
+            pontos_eventos = min(obj.eventos * 3, 15)
+            pontos += pontos_eventos
+
+        # 5. Comunicação: Rede social preenchida (Máx: 5 pontos)
         if obj.redes_sociais and obj.redes_sociais.strip():
-            pontos += 20
+            pontos += 5
 
-        return pontos
+        return round(pontos, 1)
 
     def get_porcentagem_cota(self, obj):
         """Calcula a porcentagem da cota atingida baseado nas visitas"""
-        if obj.cota > 0:
+        if obj.cota > 0 and obj.cota is not None:
             porcentagem = (obj.visitas / obj.cota) * 100
-            return round(porcentagem, 1)
+            return round(min(porcentagem, 100), 1)  # Limita a 100%
         return 0
 
     def get_score_final(self, obj):
-        """Score final = pontuação de engajamento - penalização"""
+        """Score final = pontuação de engajamento - penalização (não pode ficar negativo)"""
         engajamento = self.get_pontuacao_engajamento(obj)
-        return max(0, engajamento - obj.penalizacao)
+        score = max(0, engajamento - obj.penalizacao)
+        return round(score, 1)
 
     def get_status_display(self, obj):
-        """Define o status baseado no score final"""
+        """Define o status baseado no score final (escala mais realista)"""
         score = self.get_score_final(obj)
         
-        if score >= 100:
+        if score >= 85:
             return "Excelente"
         elif score >= 70:
             return "Bom"
-        elif score >= 40:
+        elif score >= 50:
             return "Regular"
-        elif score >= 20:
+        elif score >= 30:
             return "Atenção"
         else:
             return "Crítico"

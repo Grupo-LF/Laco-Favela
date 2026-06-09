@@ -275,7 +275,7 @@ const Presidentes = () => {
         <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
           <button className="btn btn-outline" style={{ padding: '0.5rem 1rem', cursor: 'pointer' }}>Exportar lista <ExportIcon></ExportIcon></button>
           <button className="btn btn-primary" onClick={() => setMostrarForm(!mostrarForm)} style={{ padding: '0.5rem 1rem', backgroundColor: 'var(--color-primary)', color: '#fff', border: 'none', cursor: 'pointer' }}>
-            {mostrarForm ? 'Fechar Formulário' : 'Novo Presidente'}<AddIcon/>
+            Novo Presidente<AddIcon/>
           </button>
         </div>
       </div>

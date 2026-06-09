@@ -1,39 +1,87 @@
 // frontend/src/components/layout/Sidebar.jsx
 import React, { useState, useEffect } from 'react';
-import logoImg from '../../assets/logo192.png'; // Importe a imagem do logo
+import logoImg from '../../assets/logo192.png';
+import { ReactComponent as IconDashboard } from '../../assets/sidebar/home.svg';
+import { ReactComponent as IconFormularios } from '../../assets/assignment.svg';
+import { ReactComponent as IconPresidentes } from '../../assets/sidebar/assignment_ind.svg';
+import { ReactComponent as IconFamilias } from '../../assets/sidebar/diversity_1.svg';
+import { ReactComponent as IconAprovados } from '../../assets/sidebar/list_alt_check.svg';
+import { ReactComponent as IconFeedbacks } from '../../assets/sidebar/feedback.svg';
+import { ReactComponent as IconHistorico } from '../../assets/sidebar/history.svg';
+import { ReactComponent as IconHome } from '../../assets/sidebar/home.svg';
+import { ReactComponent as IconRegistros } from '../../assets/sidebar/home.svg';
+import { ReactComponent as IconMeuIndicador } from '../../assets/sidebar/home.svg';
+import { ReactComponent as IconRanking } from '../../assets/sidebar/home.svg';
+import { ReactComponent as IconLogout } from '../../assets/sidebar/logout.svg';
 
 const Sidebar = ({ tipo, activeView, onNavigate }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+  const [hoveredItem, setHoveredItem] = useState(null);
+
+  // Função para renderizar ícone com cor dinâmica usando filter
+  const renderIcon = (IconComponent, itemId, isActive) => {
+    const isHovered = hoveredItem === itemId;
+    const isHighlighted = (isHovered || isActive);
+    
+    // Filtro para usar a cor var(--color-accent) que é #F5A623 (laranja)
+    const getFilter = () => {
+      if (!isHighlighted) {
+        return 'brightness(0) saturate(100%) invert(75%) sepia(57%) saturate(1472%) hue-rotate(338deg) brightness(101%) contrast(101%)'; // Branco
+      } else {
+        // Cor -- (azul/primary)
+        return ' brightness(0) saturate(100%) invert(15%) sepia(89%) saturate(2558%) hue-rotate(169deg) brightness(94%) contrast(106%)';
+      }
+    };
+
+    return (
+      <div style={{ 
+        width: '20px', 
+        height: '20px', 
+        display: 'inline-flex',
+        alignItems: 'center',
+        justifyContent: 'center'
+      }}>
+        <IconComponent 
+          style={{ 
+            width: '20px', 
+            height: '20px',
+            filter: getFilter(),
+            transition: 'filter 0.2s ease'
+          }} 
+        />
+      </div>
+    );
+  };
 
   // Menu do ADMIN
   const menuAdmin = {
     principal: [
-      { id: 'dashboard', label: 'Dashboard', icon: 'dashboard' },
-      { id: 'formularios', label: 'Formulários', icon: 'description' }
+      { id: 'dashboard', label: 'Dashboard', icon: IconDashboard },
+      { id: 'formularios', label: 'Formulários', icon: IconFormularios }
     ],
     gestao: [
-      { id: 'presidentes', label: 'Presidentes', icon: 'person' },
-      { id: 'familias', label: 'Famílias', icon: 'family_restroom' },
-      { id: 'aprovados', label: 'Aprovados', icon: 'check_circle' }
+      { id: 'presidentes', label: 'Presidentes', icon: IconPresidentes },
+      { id: 'familias', label: 'Famílias', icon: IconFamilias },
+      { id: 'aprovados', label: 'Aprovados', icon: IconAprovados }
     ],
     comunicacao: [
-      { id: 'feedbacks', label: 'Feedbacks', icon: 'feedback' },
-      { id: 'historico', label: 'Histórico', icon: 'history' }
+      { id: 'feedbacks', label: 'Feedbacks', icon: IconFeedbacks },
+      { id: 'historico', label: 'Histórico', icon: IconHistorico }
     ]
   };
 
   // Menu do PRESIDENTE
   const menuPresidente = {
     principal: [
-      { id: 'home', label: 'Home', icon: 'home' },
-      { id: 'familias', label: 'Famílias', icon: 'family_restroom' },
-      { id: 'formularios', label: 'Formulários', icon: 'description' },
-      { id: 'registros', label: 'Registros', icon: 'receipt_long' }
+      { id: 'home', label: 'Home', icon: IconHome },
+      { id: 'familias', label: 'Famílias', icon: IconFamilias },
+      { id: 'formularios', label: 'Formulários', icon: IconFormularios },
+      { id: 'registros', label: 'Registros', icon: IconRegistros }
     ],
     desempenho: [
-      { id: 'meu-indicador', label: 'Meu indicador', icon: 'trending_up' },
-      { id: 'ranking', label: 'Ranking', icon: 'leaderboard' }
+      { id: 'meu-indicador', label: 'Meu indicador', icon: IconMeuIndicador },
+      { id: 'ranking', label: 'Ranking', icon: IconRanking }
     ]
   };
 
@@ -68,6 +116,13 @@ const Sidebar = ({ tipo, activeView, onNavigate }) => {
   // Nome do usuário
   const userNome = localStorage.getItem('nome') || 'Nome e Sobrenome';
   const userInitials = userNome.split(' ').map(n => n[0]).join('').toUpperCase();
+
+  // Cor do texto baseada em hover/active
+  const getTextColor = (itemId, isActive) => {
+    const isHovered = hoveredItem === itemId;
+    const isHighlighted = (isHovered || isActive);
+    return isHighlighted ? 'var(--color-primary)' : 'var(--color-accent)';
+  };
 
   return (
     <>
@@ -184,8 +239,20 @@ const Sidebar = ({ tipo, activeView, onNavigate }) => {
                 e.preventDefault();
                 handleNavigate(item.id);
               }}
+              onMouseEnter={() => setHoveredItem(item.id)}
+              onMouseLeave={() => setHoveredItem(null)}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '10px',
+                textDecoration: 'none',
+                color: getTextColor(item.id, activeView === item.id),
+                padding: '8px 12px',
+                borderRadius: '8px',
+                transition: 'all 0.2s ease',
+              }}
             >
-              <span className="material-symbols-outlined" style={{ fontSize: '20px', marginRight: '10px' }}>{item.icon}</span>
+              {renderIcon(item.icon, item.id, activeView === item.id)}
               {item.label}
             </a>
           ))}
@@ -204,8 +271,20 @@ const Sidebar = ({ tipo, activeView, onNavigate }) => {
                   e.preventDefault();
                   handleNavigate(item.id);
                 }}
+                onMouseEnter={() => setHoveredItem(item.id)}
+                onMouseLeave={() => setHoveredItem(null)}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '10px',
+                  textDecoration: 'none',
+                  color: getTextColor(item.id, activeView === item.id),
+                  padding: '8px 12px',
+                  borderRadius: '8px',
+                  transition: 'all 0.2s ease',
+                }}
               >
-                <span className="material-symbols-outlined" style={{ fontSize: '20px', marginRight: '10px' }}>{item.icon}</span>
+                {renderIcon(item.icon, item.id, activeView === item.id)}
                 {item.label}
               </a>
             ))}
@@ -225,8 +304,20 @@ const Sidebar = ({ tipo, activeView, onNavigate }) => {
                   e.preventDefault();
                   handleNavigate(item.id);
                 }}
+                onMouseEnter={() => setHoveredItem(item.id)}
+                onMouseLeave={() => setHoveredItem(null)}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '10px',
+                  textDecoration: 'none',
+                  color: getTextColor(item.id, activeView === item.id),
+                  padding: '8px 12px',
+                  borderRadius: '8px',
+                  transition: 'all 0.2s ease',
+                }}
               >
-                <span className="material-symbols-outlined" style={{ fontSize: '20px', marginRight: '10px' }}>{item.icon}</span>
+                {renderIcon(item.icon, item.id, activeView === item.id)}
                 {item.label}
               </a>
             ))}
@@ -246,8 +337,20 @@ const Sidebar = ({ tipo, activeView, onNavigate }) => {
                   e.preventDefault();
                   handleNavigate(item.id);
                 }}
+                onMouseEnter={() => setHoveredItem(item.id)}
+                onMouseLeave={() => setHoveredItem(null)}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '10px',
+                  textDecoration: 'none',
+                  color: getTextColor(item.id, activeView === item.id),
+                  padding: '8px 12px',
+                  borderRadius: '8px',
+                  transition: 'all 0.2s ease',
+                }}
               >
-                <span className="material-symbols-outlined" style={{ fontSize: '20px', marginRight: '10px' }}>{item.icon}</span>
+                {renderIcon(item.icon, item.id, activeView === item.id)}
                 {item.label}
               </a>
             ))}
@@ -263,8 +366,38 @@ const Sidebar = ({ tipo, activeView, onNavigate }) => {
               e.preventDefault();
               handleSair();
             }}
+            onMouseEnter={() => setHoveredItem('logout')}
+            onMouseLeave={() => setHoveredItem(null)}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '10px',
+              textDecoration: 'none',
+              color: hoveredItem === 'logout' ? 'var(--color-accent, #F5A623)' : 'white',
+              padding: '8px 12px',
+              borderRadius: '8px',
+              transition: 'all 0.2s ease',
+              cursor: 'pointer'
+            }}
           >
-            <span className="material-symbols-outlined" style={{ fontSize: '20px', marginRight: '10px' }}>logout</span>
+            <div style={{ 
+              width: '20px', 
+              height: '20px', 
+              display: 'inline-flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}>
+              <IconLogout 
+                style={{ 
+                  width: '20px', 
+                  height: '20px',
+                  filter: hoveredItem === 'logout' 
+                    ? 'brightness(0) saturate(100%) invert(67%) sepia(18%) saturate(3754%) hue-rotate(348deg) brightness(96%) contrast(93%)'
+                    : 'brightness(0) invert(1)',
+                  transition: 'filter 0.2s ease'
+                }} 
+              />
+            </div>
             Sair
           </a>
         </div>
