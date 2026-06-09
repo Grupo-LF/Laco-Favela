@@ -3,6 +3,8 @@ import './styles/global.css';
 import SidebarMorador from './components/layout/SidebarMorador';
 import HomePage from './pages/morador/HomePage';
 import NotificationPage from './pages/morador/NotificationPage';
+import AcompanhamentoPage from './pages/morador/AcompanhamentoPage';
+import RankingPage from './pages/morador/RankingPage';
 
 // 1. IMPORTANDO AS SUAS NOVAS PÁGINAS AQUI:
 import Feedback from './pages/morador/Feedback';
@@ -19,11 +21,13 @@ function AppMorador() {
       case 'notificacoes':
         return <NotificationPage />;
       case 'acompanhamento':
+        return <AcompanhamentoPage />;
+      case 'ranking':
+        return <RankingPage />;
         return <div>Acompanhamento (em breve)</div>;
       case 'ranking':
         return <div>Ranking (em breve)</div>;
       
-      // 2. SUBSTITUINDO OS "EM BREVE" PELOS COMPONENTES REAIS:
       case 'ser-presidente':
         return <SerPresidente />;
       case 'feedback':

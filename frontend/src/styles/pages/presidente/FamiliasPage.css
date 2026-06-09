@@ -3,7 +3,7 @@
   flex-direction: column;
   gap: 20px;
   padding: 28px;
-  background: #f0f0f0;
+  background: #f0f4f8;
   min-height: 100vh;
   box-sizing: border-box;
 }
@@ -11,7 +11,7 @@
 .familias-page__titulo {
   font-size: 24px;
   font-weight: 700;
-  color: #111;
+  color: #1a3a5c;
   margin: 0;
 }
 
@@ -31,22 +31,23 @@
 .familias-page__subtitulo {
   font-size: 16px;
   font-weight: 600;
-  color: #222;
+  color: #1a3a5c;
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
 .familias-page__contador {
-  background: #e0e0e0;
-  color: #555;
+  background: #e0e8f0;
+  color: #1a3a5c;
   font-size: 12px;
   padding: 2px 8px;
   border-radius: 999px;
+  font-weight: 700;
 }
 
 .familias-page__adicionar {
-  background: #333;
+  background: #1a3a5c;
   color: #fff;
   border: none;
   border-radius: 8px;
@@ -58,7 +59,7 @@
 }
 
 .familias-page__adicionar:hover {
-  background: #555;
+  background: #f5a623;
 }
 
 .familias-page__lista {

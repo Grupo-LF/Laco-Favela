@@ -3,7 +3,7 @@
   flex-direction: column;
   gap: 20px;
   padding: 28px;
-  background: #f0f0f0;
+  background: #f0f4f8;
   min-height: 100vh;
   box-sizing: border-box;
 }
@@ -11,7 +11,7 @@
 .home-page__saudacao {
   font-size: 28px;
   font-weight: 700;
-  color: #111;
+  color: #1a3a5c;
   margin: 0;
 }
 
