@@ -9,31 +9,35 @@ const Historico = () => {
   ];
 
   return (
-    <div className="view-section active">
-      <div className="header">
-        <h2>Histórico Completo</h2>
-        <div className="flex gap-1">
-          <button className="btn btn-outline">Todos os ciclos</button>
-          <button className="btn btn-primary">Exportar Histórico</button>
+    <div className="hist">
+
+        <div className="header">
+          <h2>Histórico Completo</h2>
+          <div className="flex gap-1">
+            <button className="btn btn-outline">Todos os ciclos</button>
+            <button className="btn btn-primary">Exportar Histórico</button>
+          </div>
         </div>
-      </div>
 
-      <div className="grid-3">
-        <div className="card"><p className="text-sm">Total de Ciclos</p><h2>3</h2></div>
-        <div className="card"><p className="text-sm">Famílias Beneficiadas</p><h2>104</h2></div>
-        <div className="card"><p className="text-sm">Eventos Realizados</p><h2>67</h2></div>
-      </div>
+      <div className="view-section active">
 
-      <div className="card">
-        <h4>Linha do Tempo</h4>
-        <div className="timeline" style={{ marginTop: '1.5rem' }}>
-          {timeline.map((item, index) => (
-            <div key={index} className="timeline-item">
-              <p className="text-sm">{item.data}</p>
-              <h4>{item.titulo}</h4>
-              <p className="text-sm">{item.descricao}</p>
-            </div>
-          ))}
+        <div className="grid-3">
+          <div className="card"><p className="text-sm">Total de Ciclos</p><h2>3</h2></div>
+          <div className="card"><p className="text-sm">Famílias Beneficiadas</p><h2>104</h2></div>
+          <div className="card"><p className="text-sm">Eventos Realizados</p><h2>67</h2></div>
+        </div>
+
+        <div className="card">
+          <h4>Linha do Tempo</h4>
+          <div className="timeline" style={{ marginTop: '1.5rem' }}>
+            {timeline.map((item, index) => (
+              <div key={index} className="timeline-item">
+                <p className="text-sm">{item.data}</p>
+                <h4>{item.titulo}</h4>
+                <p className="text-sm">{item.descricao}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </div>

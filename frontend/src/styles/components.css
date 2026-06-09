@@ -82,7 +82,7 @@
 }
 
 .filter-chip.active { 
-    background: #999; 
+    background: var(--color-primary); 
     color: white; 
 }
 

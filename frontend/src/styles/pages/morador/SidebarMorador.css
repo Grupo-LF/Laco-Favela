@@ -1,0 +1,219 @@
+/* ============================================================
+   Prefixo "sbm-" — não conflita com classes globais
+   ============================================================ */
+
+.sbm {
+  --sbm-bg:         #1a3a5c;
+  --sbm-accent:     #f5a623;
+  --sbm-accent-hov: #281c07;
+  --sbm-white:      #ffffff;
+  --sbm-text-nav:   rgba(255,255,255,0.75);
+  --sbm-text-label: rgba(255,255,255,0.40);
+  --sbm-hover-bg:   rgba(255,255,255,0.10);
+  --sbm-active-bg:  #f5a623;
+  --sbm-radius:     8px;
+  --sbm-transition: 0.18s ease;
+  --sbm-width:      180px;
+
+  width: var(--sbm-width);
+  min-width: var(--sbm-width);
+  background: var(--sbm-bg);
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  position: sticky;
+  top: 0;
+  flex-shrink: 0;
+  padding-bottom: 16px;
+  font-family: 'DM Sans', 'Segoe UI', sans-serif;
+}
+
+/* ── Logo ── */
+.sbm__logo {
+  display: flex;
+  justify-content: center;
+  padding: 22px 16px 16px;
+}
+
+.sbm__logo-badge {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  background: var(--sbm-accent);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--sbm-white);
+  line-height: 1.2;
+  cursor: default;
+  transition: transform var(--sbm-transition), box-shadow var(--sbm-transition);
+}
+
+.sbm__logo-badge:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 14px rgba(245,166,35,0.40);
+}
+
+.sbm__logo-main {
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.sbm__logo-sub {
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  opacity: 0.9;
+}
+
+/* ── Card do usuário ── */
+.sbm__user {
+  margin: 4px 12px 18px;
+  background: var(--sbm-accent);
+  border-radius: 10px;
+  padding: 12px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sbm__perfil-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: var(--sbm-white);
+  border: none;
+  border-radius: 20px;
+  font-size: 10px;
+  font-weight: 600;
+  color: #1a2b3c;
+  padding: 3px 8px;
+  cursor: pointer;
+  font-family: inherit;
+  white-space: nowrap;
+  transition: background var(--sbm-transition);
+}
+
+.sbm__perfil-btn:hover {
+  background: #f0f0f0;
+}
+
+.sbm__avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: var(--sbm-bg);
+  color: var(--sbm-white);
+  font-size: 14px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.sbm__nome {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--sbm-white);
+  line-height: 1.2;
+}
+
+/* ── Navegação ── */
+.sbm__nav {
+  flex: 1;
+  padding: 0 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  overflow-y: auto;
+}
+
+.sbm__section-label {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--sbm-text-label);
+  padding: 14px 8px 5px;
+  display: block;
+}
+
+.sbm__item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 10px;
+  border-radius: var(--sbm-radius);
+  cursor: pointer;
+  color: var(--sbm-text-nav);
+  font-size: 13px;
+  font-weight: 500;
+  font-family: inherit;
+  background: transparent;
+  border: none;
+  width: 100%;
+  text-align: left;
+  transition: background var(--sbm-transition), color var(--sbm-transition);
+}
+
+.sbm__item:hover {
+  background: var(--sbm-hover-bg);
+  color: var(--sbm-white);
+}
+
+.sbm__item--active {
+  background: var(--sbm-active-bg);
+  color: var(--sbm-white);
+  font-weight: 700;
+}
+
+.sbm__item--active:hover {
+  background: var(--sbm-accent-hov);
+}
+
+.sbm__item-icon {
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.sbm__item-icon svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* ── Rodapé / Sair ── */
+.sbm__footer {
+  padding: 8px 8px 0;
+}
+
+.sbm__logout {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 10px;
+  border-radius: var(--sbm-radius);
+  cursor: pointer;
+  color: rgba(255,255,255,0.50);
+  font-size: 13px;
+  font-weight: 500;
+  font-family: inherit;
+  background: transparent;
+  border: none;
+  width: 100%;
+  text-align: left;
+  transition: color var(--sbm-transition), background var(--sbm-transition);
+}
+
+.sbm__logout:hover {
+  color: var(--sbm-white);
+  background: rgba(255,255,255,0.08);
+}

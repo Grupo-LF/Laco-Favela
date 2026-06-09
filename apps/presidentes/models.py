@@ -1,7 +1,9 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 # Create your models here.
 class Presidente(models.Model): #fiz com base no formulario do presidente de rua que recebemos
+    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True, related_name='presidente_profile')
     TRABALHO_CHOICES = [
         ('sim', 'Sim'),
         ('nao', 'Não'),
@@ -38,6 +40,15 @@ class Presidente(models.Model): #fiz com base no formulario do presidente de rua
     cota = models.IntegerField(default=0)
     ativo = models.BooleanField(default=True)
     criado_em = models.DateTimeField(auto_now_add=True)
+    
+    # ========== NOVOS CAMPOS ==========
+    setor = models.CharField(max_length=100, blank=True, null=True, help_text="Setor/Região do presidente")
+    visitas = models.IntegerField(default=0, help_text="Quantidade de visitas realizadas")
+    eventos = models.IntegerField(default=0, help_text="Quantidade de eventos realizados")
+    penalizacao = models.IntegerField(default=0, help_text="Pontos de penalização (desconta do score)")
 
     def __str__(self):
         return f"{self.nome} - {self.comunidade}"
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs) # Continua o processo normal de salvar

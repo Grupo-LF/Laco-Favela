@@ -1,56 +1,265 @@
-import React from 'react';
-
+import React, { useEffect, useState } from 'react';
+import { listarFamilias } from '../../services/familias';
+import { ReactComponent as ExportIcon } from '../../assets/file_export.svg';
 const Aprovados = () => {
-  const aprovados = [
-    { id: '001', familia: 'Família Santos', pontuacao: 97, criterio: 'Mãe solo', publicado: true },
-    { id: '002', familia: 'Família Oliveira', pontuacao: 93, criterio: '+3 filhos', publicado: true },
-    { id: '003', familia: 'Família Rodrigues', pontuacao: 88, criterio: 'Renda baixa', publicado: false }
-  ];
+  const [aprovados, setAprovados] = useState([]);
+  const [familias, setFamilias] = useState([]);
+  const [search, setSearch] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const [filtroCategoria, setFiltroCategoria] = useState('todos');
+
+  const carregarAprovados = async () => {
+    setLoading(true);
+    setError('');
+    try {
+      const data = await listarFamilias({
+        status: 'aprovada',
+        search: search.trim() || undefined,
+      });
+      setFamilias(Array.isArray(data) ? data : []);
+      setAprovados(Array.isArray(data) ? data : []);
+    } catch (err) {
+      setError('Nao foi possivel carregar as familias aprovadas.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    carregarAprovados();
+  }, [search]);
+
+  // Função para contar famílias por categoria
+  const contarPorCategoria = (categoria) => {
+    switch (categoria) {
+      case 'maes_solo':
+        return aprovados.filter(familia => familia.mae_solo === true).length;
+      case 'mais_3_filhos':
+        return aprovados.filter(familia => (familia.numero_filhos || 0) > 3).length;
+      case 'renda_baixa':
+        return aprovados.filter(familia => familia.renda === 'baixa').length;
+      case 'alta_participacao':
+        return aprovados.filter(familia => familia.participacao === 'alta').length;
+      default:
+        return aprovados.length;
+    }
+  };
+
+  // Função para filtrar as famílias com base no filtro selecionado
+  const filtrarFamilias = () => {
+    let filtrados = [...aprovados];
+
+    if (filtroCategoria !== 'todos') {
+      filtrados = filtrados.filter(familia => {
+        switch (filtroCategoria) {
+          case 'alta_participacao':
+            return familia.participacao === 'alta';
+          case 'maes_solo':
+            return familia.mae_solo === true;
+          case 'mais_3_filhos':
+            return (familia.numero_filhos || 0) > 3;
+          case 'renda_baixa':
+            return familia.renda === 'baixa';
+          default:
+            return true;
+        }
+      });
+    }
+
+    return filtrados;
+  };
+
+  const familiasFiltradas = filtrarFamilias();
 
   return (
-    <div className="view-section active">
-      <div className="header">
-        <h2>Aprovados</h2>
-        <div className="flex gap-1">
-          <button className="btn btn-outline">Exportar lista</button>
-          <button className="btn btn-primary">Publicar aprovados</button>
-        </div>
-      </div>
+    <div className="apro">
+     
+            <div className="header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', flexWrap: 'wrap', gap: '1rem' }}>
+                 <h2 style={{ margin: 0 ,color:'var(--color-primary)'}}>Presidentes</h2>
+                 <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+                   <button className="btn btn-outline" style={{ padding: '0.5rem 1rem', cursor: 'pointer' }}>Exportar lista <ExportIcon></ExportIcon></button>
+                   <button className="btn btn-primary"  style={{ padding: '0.5rem 1rem', backgroundColor: 'var(--color-primary)', color: '#fff', border: 'none', cursor: 'pointer' }}>
+                     Gerar Aprovados
+                   </button>
+                 </div>
+               </div>
+      
 
-      <div className="card flex justify-between items-center" style={{ background: '#e9e9e9' }}>
-        <div>
-          <h4>Seleção do Ciclo 3 finalizada</h4>
-          <p className="text-sm">Revisão completa</p>
+      <div className="view-section active">
+        <div className="card flex justify-between items-center" >
+          <div>
+            <h3 style={{color:'var(--color-primary)'}}><strong>Seleção do Ciclo Finalizada </strong></h3>
+            <p className="text-sm mt-1">sub texto</p>
+          </div>
+          <div className="flex gap-3">
+            <div className="text-center">
+              <h1>{familiasFiltradas.length}</h1>
+              <span className="text-sm">Aprovadas</span>
+            </div>
+            <div className="text-center">
+              <h1>{familias.length}</h1>
+              <span className="text-sm">Avaliadas</span>
+            </div>
+            <div className="text-center">
+              <h1>{familias.length > 0 ? Math.round((familiasFiltradas.length / familias.length) * 100) : 0}%</h1>
+              <span className="text-sm" style={{ marginRight: '10px' }}>taxa</span>
+            </div>
+          </div>
         </div>
-        <div className="flex gap-4">
-          <div className="text-center"><h2>38</h2><span className="text-sm">Aprovadas</span></div>
-          <div className="text-center"><h2>487</h2><span className="text-sm">Avaliadas</span></div>
-          <div className="text-center"><h2>7,8%</h2><span className="text-sm">Taxa</span></div>
-        </div>
-      </div>
 
-      <div className="card">
-        <div className="flex justify-between mb-2">
-          <h4>Famílias Aprovadas - Ciclo 3</h4>
-          <input type="text" placeholder="Buscar família..." style={{ padding: '0.4rem', border: '1px solid #ccc', borderRadius: '4px' }} />
+        {/* Filtro único com quantidades */}
+        <div className="card" style={{ padding: '1rem', backgroundColor: '#fff', borderRadius: '8px', boxShadow: '0 2px 4px rgba(0,0,0,0.1)', marginBottom: '1rem' }}>
+          <div style={{ 
+            display: 'flex', 
+            alignItems: 'center', 
+            gap: '0.75rem', 
+            flexWrap: 'wrap',
+            width: '100%'
+          }}>
+            <h4 style={{ margin: 0, fontWeight: '300', whiteSpace: 'nowrap' }}>Filtrar por:</h4>
+
+            <button
+              className="badge"
+              onClick={() => setFiltroCategoria('todos')}
+              style={{
+                backgroundColor: filtroCategoria === 'todos' ? 'var(--color-primary)' : '#DFDFDF',
+                color: filtroCategoria === 'todos' ? '#fff' : '#333',
+                cursor: 'pointer',
+                border: 'none',
+                padding: '6px 12px',
+                borderRadius: '20px',
+                whiteSpace: 'nowrap'
+              }}
+            >
+              Todas ({contarPorCategoria('todos')})
+            </button>
+
+            <button
+              className="badge"
+              onClick={() => setFiltroCategoria('maes_solo')}
+              style={{
+                backgroundColor: filtroCategoria === 'maes_solo' ? 'var(--color-primary)' : '#DFDFDF',
+                color: filtroCategoria === 'maes_solo' ? '#fff' : '#333',
+                cursor: 'pointer',
+                border: 'none',
+                padding: '6px 12px',
+                borderRadius: '20px',
+                whiteSpace: 'nowrap'
+              }}
+            >
+              Mães Solo ({contarPorCategoria('maes_solo')})
+            </button>
+
+            <button
+              className="badge"
+              onClick={() => setFiltroCategoria('mais_3_filhos')}
+              style={{
+                backgroundColor: filtroCategoria === 'mais_3_filhos' ? 'var(--color-primary)' : '#DFDFDF',
+                color: filtroCategoria === 'mais_3_filhos' ? '#fff' : '#333',
+                cursor: 'pointer',
+                border: 'none',
+                padding: '6px 12px',
+                borderRadius: '20px',
+                whiteSpace: 'nowrap'
+              }}
+            >
+              +3 Filhos ({contarPorCategoria('mais_3_filhos')})
+            </button>
+
+            <button
+              className="badge"
+              onClick={() => setFiltroCategoria('renda_baixa')}
+              style={{
+                backgroundColor: filtroCategoria === 'renda_baixa' ? 'var(--color-primary)' : '#DFDFDF',
+                color: filtroCategoria === 'renda_baixa' ? '#fff' : '#333',
+                cursor: 'pointer',
+                border: 'none',
+                padding: '6px 12px',
+                borderRadius: '20px',
+                whiteSpace: 'nowrap'
+              }}
+            >
+              Baixa Renda ({contarPorCategoria('renda_baixa')})
+            </button>
+
+            <button
+              className="badge"
+              onClick={() => setFiltroCategoria('alta_participacao')}
+              style={{
+                backgroundColor: filtroCategoria === 'alta_participacao' ? 'var(--color-primary)' : '#DFDFDF',
+                color: filtroCategoria === 'alta_participacao' ? '#fff' : '#333',
+                cursor: 'pointer',
+                border: 'none',
+                padding: '6px 12px',
+                borderRadius: '20px',
+                whiteSpace: 'nowrap'
+              }}
+            >
+              Alta Participação ({contarPorCategoria('alta_participacao')})
+            </button>
+          </div>
         </div>
-        <table>
-          <thead>
-            <tr><th>#</th><th>Família</th><th>Pontuação</th><th>Critério Principal</th><th>Publicado</th><th>Ação</th></tr>
-          </thead>
-          <tbody>
-            {aprovados.map(a => (
-              <tr key={a.id}>
-                <td>{a.id}</td>
-                <td>{a.familia}</td>
-                <td>{a.pontuacao}</td>
-                <td><span className="badge">{a.criterio}</span></td>
-                <td><span className="badge" style={!a.publicado ? { background: '#ffd54f' } : {}}>{a.publicado ? 'Publicado' : 'Pendente'}</span></td>
-                <td><button className={a.publicado ? 'btn btn-outline' : 'btn btn-primary'}>{a.publicado ? 'Detalhes' : 'Publicar'}</button></td>
+
+        {/* Tabela de famílias */}
+        <div className="card">
+          <div className="flex justify-between mb-2">
+            <h4>Familias Aprovadas</h4>
+            <input
+              type="text"
+              placeholder="Buscar familia..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              style={{ padding: '0.4rem', border: '1px solid #ccc', borderRadius: '4px' }}
+            />
+          </div>
+          {error && <div className="text-sm" style={{ color: '#b00020' }}>{error}</div>}
+          <table className="table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Família</th>
+                <th>Presidente</th>
+                <th>Pontuação</th>
+                <th>Critério Principal</th>
+                <th>Status</th>
+                <th>Ações</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {loading ? (
+                <tr>
+                  <td colSpan="7">Carregando familias...</td>
+                </tr>
+              ) : familiasFiltradas.length === 0 ? (
+                <tr>
+                  <td colSpan="7">Nenhuma familia aprovada encontrada.</td>
+                </tr>
+              ) : (
+                familiasFiltradas.map((familia, index) => (
+                  <tr key={familia.id}>
+                    <td>{index + 1}</td>
+                    <td>{familia.nome_responsavel}</td>
+                    <td>{familia.presidente || '—'}</td>
+                    <td>{familia.pontuacao || '—'}</td>
+                    <td>{familia.criterio_principal || '—'}</td>
+                    <td>
+                      <span className="badge" style={{ backgroundColor: familia.publicado ? 'var(--color-primary)' : 'var(--color-accent)', color: familia.publicado ? '#fff' : '#333' }}>
+                        {familia.publicado ? 'Publicado' : 'Pendente'}
+                      </span>
+                    </td>
+                    <td style={{display:'flex', justifyContent:'center'}}>
+                      <button className="btn btn-outline" style={{ backgroundColor: familia.publicado ? '#D9D9D9' : 'var(--color-primary)', color: familia.publicado ? '#333' : '#fff',padding:'6px 12px' }}>
+                        {familia.publicado ? 'Detalhes' : 'Publicar'}
+
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );
