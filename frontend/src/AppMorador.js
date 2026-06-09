@@ -6,6 +6,11 @@ import NotificationPage from './pages/morador/NotificationPage';
 import AcompanhamentoPage from './pages/morador/AcompanhamentoPage';
 import RankingPage from './pages/morador/RankingPage';
 
+// 1. IMPORTANDO AS SUAS NOVAS PÁGINAS AQUI:
+import Feedback from './pages/morador/Feedback';
+import PerfilMorador from './pages/morador/Perfil_morador';
+import SerPresidente from './pages/morador/Ser_presidente';
+
 function AppMorador() {
   const [activeView, setActiveView] = useState('home');
 
@@ -19,21 +24,26 @@ function AppMorador() {
         return <AcompanhamentoPage />;
       case 'ranking':
         return <RankingPage />;
+        return <div>Acompanhamento (em breve)</div>;
+      case 'ranking':
+        return <div>Ranking (em breve)</div>;
+      
       case 'ser-presidente':
-        return <div >Ser Presidente (em breve)</div>;
+        return <SerPresidente />;
       case 'feedback':
-        return <div >Feedback (em breve)</div>;
+        return <Feedback />;
       case 'perfil':
-        return <div >Perfil (em breve)</div>;
+        return <PerfilMorador />;
+        
       default:
         return <HomePage onNavigate={setActiveView} />;
     }
   };
 
   return (
-    <div style={{ display: 'flex', height: '100vh' }}>
+    <div style={{ display: 'flex', height: '100vh', width: '100vw' }}>
       <SidebarMorador activeView={activeView} onNavigate={setActiveView} />
-      <main className="main-content" style={{ flexGrow: 1, overflowY: 'auto' }}>
+      <main className="main-content" style={{ flexGrow: 1, overflowY: 'auto', backgroundColor: '#f4f6f8' }}>
         {renderView()}
       </main>
     </div>

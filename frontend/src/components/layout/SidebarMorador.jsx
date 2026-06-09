@@ -44,14 +44,16 @@ const IconLogout = () => (
 );
 
 const NAV_PRINCIPAL = [
-  { id: 'home',           label: 'Início',        icon: IconHome },
+  { id: 'home',           label: 'Início',         icon: IconHome },
   { id: 'notificacoes',   label: 'Notificações',  icon: IconNotificacoes },
   { id: 'acompanhamento', label: 'Acompanhamento',icon: IconAcompanhamento },
 ];
+
+// IDs mapeados para bater com o gerenciador de telas do seu app
 const NAV_DESEMPENHO = [
   { id: 'ranking',        label: 'Ranking',       icon: IconRanking },
-  { id: 'ser-presidente', label: 'Ser Presidente',icon: IconSerPresidente },
-  { id: 'feedback',       label: 'Feedback',      icon: IconFeedback },
+  { id: 'ser-presidente', label: 'Ser Presidente',icon: IconSerPresidente }, // Aciona Ser_presidente.jsx
+  { id: 'feedback',       label: 'Feedback',      icon: IconFeedback },       // Aciona Feedback.jsx
 ];
 
 export default function SidebarMorador({ activeView, onNavigate }) {
@@ -74,7 +76,13 @@ export default function SidebarMorador({ activeView, onNavigate }) {
       </div>
 
       <div className="sbm__user">
-        <button className="sbm__perfil-btn" onClick={() => onNavigate('perfil')}>Ver Perfil</button>
+        {/* Envia 'perfil' para abrir o arquivo Perfil_morador.jsx */}
+        <button 
+          className={`sbm__perfil-btn${activeView === 'perfil' ? ' sbm__perfil-btn--active' : ''}`} 
+          onClick={() => onNavigate('perfil')}
+        >
+          Ver Perfil
+        </button>
         <div className="sbm__avatar">{iniciais}</div>
         <span className="sbm__nome">{nome}</span>
       </div>
@@ -91,6 +99,7 @@ export default function SidebarMorador({ activeView, onNavigate }) {
             {item.label}
           </button>
         ))}
+        
         <span className="sbm__section-label">Desempenho</span>
         {NAV_DESEMPENHO.map(item => (
           <button
