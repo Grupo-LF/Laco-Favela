@@ -2,51 +2,132 @@ from rest_framework import serializers
 from .models import Familia
 
 class FamiliaSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Familia
-        fields = '__all__'
-        read_only_fields = ['aprovada', 'criado_em', 'atualizado_em']
-
-class FamiliaRankingSerializer(serializers.ModelSerializer):
-    # Campo calculado dinamicamente para o ranking
-    pontuacao_prioridade = serializers.SerializerMethodField()
+    # Campos calculados (read-only)
+    score = serializers.IntegerField(read_only=True)
+    participacao_percentual = serializers.CharField(read_only=True)
     
-    # Exibe o texto amigável das escolhas em vez da chave do banco (opcional, mas ótimo para o React)
-    renda_familiar_display = serializers.CharField(source='get_renda_familiar_display', read_only=True)
-    mae_solo_display = serializers.CharField(source='get_mae_solo_display', read_only=True)
+    # Exibe o texto amigável das escolhas
+    perfil_display = serializers.CharField(source='get_perfil_display', read_only=True)
+    status_display = serializers.CharField(source='get_status_display', read_only=True)
+    
+    # Informações do presidente (para exibir no frontend)
+    presidente_nome = serializers.CharField(source='presidente.nome', read_only=True, default='')
+    presidente_id = serializers.IntegerField(source='presidente.id', read_only=True, default=None)
 
     class Meta:
         model = Familia
         fields = [
-            'id', 'nome_responsavel', 'comunidade', 'municipio', 
-            'renda_familiar', 'renda_familiar_display',
-            'mae_solo', 'mae_solo_display', 'num_membros', 
-            'num_filhos', 'bolsa_familia', 'aprovada', 'pontuacao_prioridade'
+            'id',
+            'presidente',
+            'presidente_nome',
+            'presidente_id',
+            'nome_responsavel',
+            'telefone',
+            'perfil',
+            'perfil_display',
+            'num_membros',
+            'total_eventos',
+            'eventos_compareceu',
+            'score',
+            'participacao_percentual',
+            'status',
+            'status_display'
         ]
+        read_only_fields = ['score', 'participacao_percentual']
 
-    def get_pontuacao_prioridade(self, obj):
-        pontos = 0
 
-        # 1. Pesos para Renda Familiar (Menor renda = Mais pontos/prioridade)
-        pesos_renda = {
-            'sem_renda': 50,
-            'ate_meio': 40,
-            'ate_um': 30,
-            'um_a_dois': 15,
-            'mais_dois': 0
-        }
-        pontos += pesos_renda.get(obj.renda_familiar, 0)
+class FamiliaRankingSerializer(serializers.ModelSerializer):
+    """
+    Serializer específico para o ranking de famílias
+    Ordenado por score de engajamento
+    """
+    # Campos calculados
+    score = serializers.IntegerField(read_only=True)
+    participacao_percentual = serializers.CharField(read_only=True)
+    participacao_numero = serializers.IntegerField(source='participacao_numero', read_only=True)
+    
+    # Perfil
+    perfil_display = serializers.CharField(source='get_perfil_display', read_only=True)
+    
+    # Presidente
+    presidente_nome = serializers.CharField(source='presidente.nome', read_only=True, default='')
+    
+    # Eventos formatados
+    eventos_formatado = serializers.SerializerMethodField()
+    
+    class Meta:
+        model = Familia
+        fields = [
+            'id',
+            'nome_responsavel',
+            'telefone',
+            'presidente_nome',
+            'perfil',
+            'perfil_display',
+            'num_membros',
+            'total_eventos',
+            'eventos_compareceu',
+            'eventos_formatado',
+            'score',
+            'participacao_percentual',
+            'participacao_numero',
+            'status'
+        ]
+    
+    def get_eventos_formatado(self, obj):
+        """Retorna eventos no formato '7/9'"""
+        return f"{obj.eventos_compareceu}/{obj.total_eventos}"
 
-        # 2. Pesos para Mãe Solo
-        if obj.mae_solo == 'sim':
-            pontos += 30
 
-        # 3. Peso para Beneficiários do Bolsa Família
-        if obj.bolsa_familia:
-            pontos += 20
+class FamiliaCreateUpdateSerializer(serializers.ModelSerializer):
+    """
+    Serializer para criar e atualizar famílias
+    Permite editar a participação
+    """
+    class Meta:
+        model = Familia
+        fields = [
+            'id',
+            'presidente',
+            'nome_responsavel',
+            'telefone',
+            'perfil',
+            'num_membros',
+            'total_eventos',
+            'eventos_compareceu',
+            'status'
+        ]
+    
+    def validate_eventos_compareceu(self, value):
+        """Valida se eventos_compareceu não é maior que total_eventos"""
+        total_eventos = self.initial_data.get('total_eventos')
+        if total_eventos and value > int(total_eventos):
+            raise serializers.ValidationError(
+                f"eventos_compareceu ({value}) não pode ser maior que total_eventos ({total_eventos})"
+            )
+        return value
+    
+    def validate(self, data):
+        """Validação adicional"""
+        if data.get('eventos_compareceu', 0) > data.get('total_eventos', 9):
+            raise serializers.ValidationError({
+                'eventos_compareceu': 'Não pode ser maior que total_eventos'
+            })
+        return data
 
-        # 4. Peso por volume de membros e filhos (Impacto demográfico)
-        pontos += (obj.num_filhos * 5)
-        pontos += (obj.num_membros * 2)
 
-        return pontos
+class FamiliaBulkUpdateSerializer(serializers.Serializer):
+    """
+    Serializer para atualização em massa (ex: aprovar várias famílias)
+    """
+    ids = serializers.ListField(
+        child=serializers.IntegerField(),
+        help_text="Lista de IDs das famílias"
+    )
+    eventos_compareceu = serializers.IntegerField(required=False, allow_null=True)
+    status = serializers.ChoiceField(choices=Familia.STATUS_CHOICES, required=False)
+    
+    def validate_ids(self, value):
+        if not value:
+            raise serializers.ValidationError("Lista de IDs não pode estar vazia")
+        return value

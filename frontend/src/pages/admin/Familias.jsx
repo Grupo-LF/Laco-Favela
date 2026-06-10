@@ -9,7 +9,8 @@ const OPCOES_CATEGORIA = [
   { valor: 'alta_participacao', label: 'Alta participação' },
   { valor: 'maes_solo', label: 'Mães Solo' },
   { valor: 'mais_3_filhos', label: '+3 Filhos' },
-  { valor: 'renda_baixa', label: 'Renda Baixa' }
+  { valor: 'baixa_renda', label: 'Baixa Renda' },
+  { valor: 'idosos', label: 'Idosos' }
 ];
 
 // ========== COMPONENTES AUXILIARES ==========
@@ -65,12 +66,11 @@ const ModalConfirmacao = ({ isOpen, onClose, onConfirm, totalSelecionados }) => 
         maxWidth: '400px',
         boxShadow: '0 2px 10px rgba(0,0,0,0.1)'
       }}>
-        <h2 style={{ margin: '0 0 46px 0', fontSize: '22px', fontWeight: '600',textAlign:'center',color:'var(--color-primary)' }}>
+        <h2 style={{ margin: '0 0 46px 0', fontSize: '22px', fontWeight: '600', textAlign: 'center', color: 'var(--color-primary)' }}>
           Deseja confirmar seleção e gerar aprovados?
         </h2>
-        
-       
-        <div style={{ display: 'flex', gap: '12px', justifyContent: 'space-between',margin:'20px 30px'}}>
+
+        <div style={{ display: 'flex', gap: '12px', justifyContent: 'space-between', margin: '20px 30px' }}>
           <button
             onClick={onConfirm}
             style={{
@@ -81,7 +81,7 @@ const ModalConfirmacao = ({ isOpen, onClose, onConfirm, totalSelecionados }) => 
               borderRadius: '4px',
               cursor: 'pointer',
               fontSize: '16px',
-              fontWeight:'600'
+              fontWeight: '600'
             }}
           >
             Sim
@@ -96,7 +96,7 @@ const ModalConfirmacao = ({ isOpen, onClose, onConfirm, totalSelecionados }) => 
               borderRadius: '4px',
               cursor: 'pointer',
               fontSize: '16px',
-              fontWeight:'600'
+              fontWeight: '600'
             }}
           >
             Não
@@ -107,12 +107,21 @@ const ModalConfirmacao = ({ isOpen, onClose, onConfirm, totalSelecionados }) => 
   );
 };
 
-// ========== FUNÇÕES UTILITÁRIAS DE MAPEAMENTO IMAGEM ==========
+// ========== FUNÇÕES UTILITÁRIAS ATUALIZADAS PARA O NOVO MODEL ==========
 const getPerfilLabel = (familia) => {
-  if (familia.mae_solo === true || familia.mae_solo === 'sim') return 'Mãe solo';
-  if ((familia.numero_filhos || 0) >= 3) return '+3 filhos';
-  if (familia.renda_familiar === 'baixa' || familia.renda_familiar === 'ate_1_salario') return 'Renda baixa';
-  return 'Padrão';
+  // Usando o campo 'perfil' do novo model
+  switch (familia.perfil) {
+    case 'mae_solo':
+      return 'Mãe solo';
+    case 'baixa_renda':
+      return 'Baixa renda';
+    case 'mais_3_filhos':
+      return '+3 filhos';
+    case 'idosos':
+      return 'Idosos';
+    default:
+      return 'Padrão';
+  }
 };
 
 // ========== COMPONENTE PRINCIPAL ==========
@@ -136,11 +145,13 @@ const Familias = ({ onSelectFamilia }) => {
       const familiasData = Array.isArray(data) ? data : [];
       setFamilias(familiasData);
       
+      // Ordenar por score (já vem do backend, mas garantimos)
       const ordenadasPorScore = [...familiasData].sort((a, b) => (b.score || 0) - (a.score || 0));
       const comRank = ordenadasPorScore.map((item, idx) => ({ ...item, rank_fixo: idx + 1 }));
       
       setFamiliasComRank(comRank);
 
+      // Pré-selecionar as 4 primeiras (como na imagem)
       const initialSelected = {};
       comRank.forEach((f) => {
         if (f.rank_fixo <= 4) {
@@ -166,16 +177,20 @@ const Familias = ({ onSelectFamilia }) => {
     if (filtroCategoria !== 'todos') {
       switch (filtroCategoria) {
         case 'alta_participacao':
-          filtradas = filtradas.filter(f => (f.eventos_participados || 0) >= 5);
+          // Score >= 70 significa alta participação
+          filtradas = filtradas.filter(f => (f.score || 0) >= 70);
           break;
         case 'maes_solo':
-          filtradas = filtradas.filter(f => f.mae_solo === true || f.mae_solo === 'sim');
+          filtradas = filtradas.filter(f => f.perfil === 'mae_solo');
           break;
         case 'mais_3_filhos':
-          filtradas = filtradas.filter(f => (f.numero_filhos || 0) >= 3);
+          filtradas = filtradas.filter(f => f.perfil === 'mais_3_filhos');
           break;
-        case 'renda_baixa':
-          filtradas = filtradas.filter(f => f.renda_familiar === 'baixa' || f.renda_familiar === 'ate_1_salario');
+        case 'baixa_renda':
+          filtradas = filtradas.filter(f => f.perfil === 'baixa_renda');
+          break;
+        case 'idosos':
+          filtradas = filtradas.filter(f => f.perfil === 'idosos');
           break;
         default:
           break;
@@ -198,9 +213,9 @@ const Familias = ({ onSelectFamilia }) => {
     const filtradas = familiasFiltradas();
     return {
       total: filtradas.length,
-      altaParticipacao: filtradas.filter(f => (f.eventos_participados || 0) >= 5).length,
-      maesSolo: filtradas.filter(f => f.mae_solo === true || f.mae_solo === 'sim').length,
-      semParticipacao: filtradas.filter(f => (f.eventos_participados || 0) === 0).length
+      altaParticipacao: filtradas.filter(f => (f.score || 0) >= 70).length,
+      maesSolo: filtradas.filter(f => f.perfil === 'mae_solo').length,
+      semParticipacao: filtradas.filter(f => (f.eventos_compareceu || 0) === 0).length
     };
   }, [familiasComRank, filtroCategoria]);
 
@@ -215,6 +230,7 @@ const Familias = ({ onSelectFamilia }) => {
         onConfirm={() => {
           const idsAprovados = Object.keys(selecionados).filter(id => selecionados[id]);
           console.log("Famílias Enviadas para Aprovação:", idsAprovados);
+          // TODO: Chamar API para aprovar as famílias
           setShowModal(false);
         }}
         totalSelecionados={totalPreSelecionadas}
@@ -312,12 +328,14 @@ const Familias = ({ onSelectFamilia }) => {
                   </tr>
                 ) : (
                   familiasFiltradas().map((familia) => {
-                    const totalEv = familia.total_eventos || 9; 
-                    const partEv = familia.eventos_participados !== undefined ? familia.eventos_participados : (totalEv - familia.rank_fixo + 1);
-                    const porcentagem = Math.min(Math.max(Math.round((partEv / totalEv) * 100), 0), 100);
-                    const score = familia.score || (100 - (familia.rank_fixo * 4));
+                    // Usando os campos do NOVO MODEL
+                    const totalEv = familia.total_eventos || 9;
+                    const partEv = familia.eventos_compareceu || 0;
+                    const porcentagem = familia.participacao_num || Math.min(Math.max(Math.round((partEv / totalEv) * 100), 0), 100);
+                    const score = familia.score || porcentagem;
                     const isTopRank = familia.rank_fixo <= 3;
                     const checked = !!selecionados[familia.id];
+                    const nomePresidente = familia.presidente?.nome || familia.presidente_nome || 'Não definido';
 
                     return (
                       <tr key={familia.id} style={{ borderBottom: '1px solid #f1f5f9' }}>
@@ -329,7 +347,7 @@ const Familias = ({ onSelectFamilia }) => {
                             width: '28px',
                             height: '28px',
                             borderRadius: '50%',
-                            backgroundColor: isTopRank ? '#0b5a93' : '#ffb020',
+                            backgroundColor: isTopRank ? 'var(--color-primary)' : '#ffb020',
                             color: '#fff',
                             fontWeight: 'bold',
                             fontSize: '0.82rem'
@@ -339,14 +357,14 @@ const Familias = ({ onSelectFamilia }) => {
                         </td>
                         <td style={{ padding: '14px 12px' }}>
                           <div style={{ fontSize: '0.88rem', color: '#334155', fontWeight: '600' }}>
-                            {familia.nome_responsavel || `Família ${familia.presidente_nome?.split(' ')[1] || 'Silva'}`}
+                            {familia.nome_responsavel}
                           </div>
                           <div style={{ fontSize: '0.75rem', color: '#94a3b8', marginTop: '2px' }}>
-                            {familia.numero_membros || (7 - familia.rank_fixo)} membros
+                            {familia.num_membros} membros
                           </div>
                         </td>
                         <td style={{ padding: '14px 12px', fontSize: '0.88rem', color: '#334155' }}>
-                          {familia.presidente_nome || 'Maria Costa'}
+                          {nomePresidente}
                         </td>
                         <td style={{ padding: '14px 12px', textAlign: 'center' }}>
                           <span style={{
@@ -377,7 +395,7 @@ const Familias = ({ onSelectFamilia }) => {
                               <div style={{
                                 width: `${porcentagem}%`,
                                 height: '100%',
-                                backgroundColor: '#0b5a93',
+                                backgroundColor: 'var(--color-primary)',
                                 borderRadius: '4px'
                               }} />
                             </div>
@@ -398,8 +416,8 @@ const Familias = ({ onSelectFamilia }) => {
                               justifyContent: 'center',
                               width: '18px',
                               height: '18px',
-                              border: '2px solid #0b5a93',
-                              backgroundColor: checked ? '#0b5a93' : 'transparent',
+                              border: '2px solid var(--color-primary)',
+                              backgroundColor: checked ? 'var(--color-primary)' : 'transparent',
                               borderRadius: '3px',
                               cursor: 'pointer',
                               transition: 'all 0.1s ease'
@@ -424,12 +442,21 @@ const Familias = ({ onSelectFamilia }) => {
             <div style={{ fontSize: '0.88rem', color: '#475569' }}>
               <span style={{ fontWeight: '600', color: '#1e293b' }}>{totalPreSelecionadas} famílias pré-selecionadas</span>
               <span style={{ color: '#94a3b8', margin: '0 6px' }}>•</span>
-              <span style={{ fontWeight: '700', color: '#1e293b', cursor: 'pointer' }}>Ver Mais</span>
+              <span 
+                style={{ fontWeight: '700', color: '#1e293b', cursor: 'pointer' }}
+                onClick={() => {
+                  // TODO: Implementar "Ver Mais" - mostrar todas as famílias sem limite
+                  setFiltroCategoria('todos');
+                  setSearch('');
+                }}
+              >
+                Ver Mais
+              </span>
             </div>
 
             <button 
               style={{
-                backgroundColor: '#0b5a93',
+                backgroundColor: 'var(--color-primary)',
                 color: '#ffffff',
                 border: 'none',
                 borderRadius: '8px',
