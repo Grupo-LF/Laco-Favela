@@ -12,6 +12,7 @@ export const ESTADO_INICIAL_FORM = {
   num_membros: '',
   termo_aceito: false,
   cota: '',
+  meta_familias: ''
 };
 
 export const OPCOES_TRABALHO = [
