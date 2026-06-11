@@ -15,7 +15,16 @@ class FamiliaViewSet(viewsets.ModelViewSet):
     serializer_class = FamiliaSerializer
 
     def get_queryset(self):
+
         queryset = super().get_queryset().select_related('presidente')
+        user = self.request.user
+
+        if not user.is_staff:
+            if hasattr(user, 'presidente_profile'):
+                queryset = queryset.filter(presidente=user.presidente_profile)
+            else:
+                queryset = queryset.filter(user=user)
+
         params = self.request.query_params
 
         status_param = params.get('status')
@@ -43,10 +52,12 @@ class FamiliaViewSet(viewsets.ModelViewSet):
         return queryset
 
     def get_permissions(self):
-        if settings.DEBUG and self.action in ['list', 'retrieve', 'set_status', 'bulk_set_status']:
+        if self.action in ['list', 'retrieve']:
             return [IsAuthenticated()]
+        
         if self.action in ['set_status', 'bulk_set_status']:
             return [IsAdminUser()]
+            
         return super().get_permissions()
 
     @action(detail=True, methods=['patch'], url_path='set-status')
@@ -101,3 +112,16 @@ class RankingFamiliasView(generics.ListAPIView):
         )
         
         return Response(dados_ordenados)
+
+class StatusMeuCadastroView(generics.RetrieveAPIView):
+    serializer_class = FamiliaSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self):
+        # Busca a família vinculada ao usuário logado
+        try:
+            return self.request.user.familia_profile
+        except AttributeError:
+
+            from rest_framework.exceptions import NotFound
+            raise NotFound("Este usuário não possui uma família vinculada.")
