@@ -1,31 +1,53 @@
 import React, { useState } from 'react';
 import './styles/global.css';
-import HomePage from './pages/morador/HomePage.jsx';
+import Sidebar from './components/layout/Sidebar';
+import HomePage from './pages/morador/HomePage';
 import NotificationPage from './pages/morador/NotificationPage';
+import AcompanhamentoPage from './pages/morador/AcompanhamentoPage';
+import RankingPage from './pages/morador/RankingPage';
+
+// 1. IMPORTANDO AS SUAS NOVAS PÁGINAS AQUI:
+import Feedback from './pages/morador/Feedback';
+import PerfilMorador from './pages/morador/Perfil_morador';
+import SerPresidente from './pages/morador/Ser_presidente';
 
 function AppMorador() {
   const [activeView, setActiveView] = useState('home');
 
   const renderView = () => {
-    switch(activeView) {
-      case 'home': 
+    switch (activeView) {
+      case 'home':
         return <HomePage onNavigate={setActiveView} />;
-
-      case 'notificacoes': 
+      case 'notificacoes':
         return <NotificationPage />;
-     
-      default: 
+      case 'acompanhamento':
+        return <AcompanhamentoPage />;
+      case 'ranking':
+        return <RankingPage />;
+        return <div>Acompanhamento (em breve)</div>;
+      case 'ranking':
+        return <div>Ranking (em breve)</div>;
+      
+      case 'ser-presidente':
+        return <SerPresidente />;
+      case 'feedback':
+        return <Feedback />;
+      case 'perfil':
+        return <PerfilMorador />;
+        
+      default:
         return <HomePage onNavigate={setActiveView} />;
     }
   };
 
   return (
-    <div style={{ display: 'flex', height: '100vh' }}>
-      <main className="main-content" style={{ flexGrow: 1, overflowY: 'auto' }}>
-        {renderView()}
-      </main>
-    </div>
-  );
+  <div style={{ display: 'flex', height: '100vh', width: '100vw' }}>
+    <Sidebar tipo="morador" activeView={activeView} onNavigate={setActiveView} />
+    <main className="main-content" style={{ flexGrow: 1, overflowY: 'auto', backgroundColor: '#f4f6f8' }}>
+      {renderView()}
+    </main>
+  </div>
+ );
 }
 
 export default AppMorador;

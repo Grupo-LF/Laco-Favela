@@ -28,30 +28,72 @@ class PerguntaWriteSerializer(serializers.ModelSerializer):
 
 class CicloReadSerializer(serializers.ModelSerializer):
     perguntas = PerguntaReadSerializer(many=True, read_only=True)
+    
+    # ADICIONE ESTA LINHA - declara o campo
+    presidentes_associados = serializers.SerializerMethodField()
 
     class Meta:
         model = Ciclo
-        fields = ['id', 'titulo', 'descricao', 'status', 'prazo', 'criado_em', 'publicado_em', 'encerrado_em', 'perguntas']
+        fields = [
+            'id', 'titulo', 'descricao', 'status', 'prazo', 
+            'criado_em', 'publicado_em', 'encerrado_em', 
+            'perguntas', 'presidentes_associados'
+        ]
+
+    # ADICIONE ESTE MÉTODO
+    def get_presidentes_associados(self, obj):
+        # Busca as respostas do ciclo
+        respostas = RespostaCiclo.objects.filter(ciclo=obj).select_related('presidente')
+        
+        # Retorna os dados dos presidentes
+        return [{
+            'id': r.presidente.id,
+            'nome': r.presidente.nome,
+            'status': r.status
+        } for r in respostas if r.presidente]
 
 
 class CicloWriteSerializer(serializers.ModelSerializer):
     perguntas = PerguntaWriteSerializer(many=True, required=False)
+    
+    presidentes_ids = serializers.ListField(
+        child=serializers.IntegerField(),
+        required=False,
+        write_only=True
+    )
 
     class Meta:
         model = Ciclo
-        fields = ['id', 'titulo', 'descricao', 'status', 'prazo', 'criado_em', 'publicado_em', 'encerrado_em', 'perguntas']
+        fields = [
+            'id', 'titulo', 'descricao', 'status', 'prazo', 
+            'criado_em', 'publicado_em', 'encerrado_em', 
+            'perguntas', 'presidentes_ids'
+        ]
         read_only_fields = ['status', 'criado_em', 'publicado_em', 'encerrado_em']
 
     @transaction.atomic
     def create(self, validated_data):
+        presidentes_ids = validated_data.pop('presidentes_ids', [])
         perguntas_data = validated_data.pop('perguntas', [])
         ciclo = Ciclo.objects.create(**validated_data)
         self._save_perguntas(ciclo, perguntas_data)
+        
+        for presidente_id in presidentes_ids:
+            RespostaCiclo.objects.create(
+                ciclo=ciclo,
+                presidente_id=presidente_id,
+                familia=None,
+                status='pendente',
+                observacao=''
+            )
+        
         return ciclo
 
     @transaction.atomic
     def update(self, instance, validated_data):
         perguntas_data = validated_data.pop('perguntas', None)
+        presidentes_ids = validated_data.pop('presidentes_ids', None)
+        
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
         instance.save()
@@ -59,6 +101,18 @@ class CicloWriteSerializer(serializers.ModelSerializer):
         if perguntas_data is not None:
             instance.perguntas.all().delete()
             self._save_perguntas(instance, perguntas_data)
+        
+        if presidentes_ids is not None:
+            RespostaCiclo.objects.filter(ciclo=instance).delete()
+            for presidente_id in presidentes_ids:
+                RespostaCiclo.objects.create(
+                    ciclo=instance,
+                    presidente_id=presidente_id,
+                    familia=None,
+                    status='pendente',
+                    observacao=''
+                )
+        
         return instance
 
     def _save_perguntas(self, ciclo, perguntas_data):

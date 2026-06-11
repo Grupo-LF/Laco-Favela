@@ -7,7 +7,7 @@ from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
 
 from .models import Familia
-from .serializers import FamiliaSerializer, FamiliaRankingSerializer
+from .serializers import FamiliaSerializer, FamiliaRankingSerializer, FamiliaRankingParticipacaoSerializer
 
 # Create your views here.
 class FamiliaViewSet(viewsets.ModelViewSet):
@@ -113,15 +113,13 @@ class RankingFamiliasView(generics.ListAPIView):
         
         return Response(dados_ordenados)
 
-class StatusMeuCadastroView(generics.RetrieveAPIView):
-    serializer_class = FamiliaSerializer
+class RankingParticipacaoView(generics.ListAPIView):
+
+    #Retorna a lista de famílias aprovadas ordenada por quem participa mais (maior pontuação)
+    
+    serializer_class = FamiliaRankingParticipacaoSerializer
     permission_classes = [IsAuthenticated]
 
-    def get_object(self):
-        # Busca a família vinculada ao usuário logado
-        try:
-            return self.request.user.familia_profile
-        except AttributeError:
-
-            from rest_framework.exceptions import NotFound
-            raise NotFound("Este usuário não possui uma família vinculada.")
+    def get_queryset(self):
+        # Filtra apenas famílias aprovadas e ordena decrescente (-) pelos pontos de participação
+        return Familia.objects.filter(aprovada=True).order_by('-pontos_participacao')

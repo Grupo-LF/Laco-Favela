@@ -1,45 +1,116 @@
-from django.db.models import Count, Q
 from rest_framework import generics, status
-from rest_framework.response import Response 
-from rest_framework.permissions import AllowAny, IsAuthenticated 
+from rest_framework.response import Response
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.views import APIView
 
 
 from apps.familias.serializers import FamiliaSerializer
 from .models import Presidente
 from .serializers import PresidenteSerializer, CotaSerializer, PresidenteRankingSerializer 
-from apps.formularios.models import Ciclo, RespostaCiclo
+from apps.formularios.models import Ciclo, RespostaCiclo, RespostaItem, Pergunta
+from apps.familias.models import Familia
 from django.utils import timezone
+from django.db import transaction
+
+class RegistrarVisitaView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    @transaction.atomic # Garante que salva tudo ou não salva nada
+    def post(self, request):
+        try:
+            # Identificar o Presidente logado
+            presidente = Presidente.objects.filter(user=request.user).first()
+            if not presidente:
+                return Response({'erro': 'Usuário não está vinculado a um presidente.'}, status=status.HTTP_403_FORBIDDEN)
+
+            # Identificar o Ciclo Ativo
+            ciclo_ativo = Ciclo.objects.filter(status='ativo').first()
+            if not ciclo_ativo:
+                return Response({'erro': 'Não há nenhum ciclo ativo no momento.'}, status=status.HTTP_400_BAD_REQUEST)
+
+            # Validar a Família Visitada
+            familia_id = request.data.get('familia_id')
+            familia = Familia.objects.filter(id=familia_id, presidente=presidente).first()
+            if not familia:
+                return Response({'erro': 'Família não encontrada ou não pertence a este presidente.'}, status=status.HTTP_404_NOT_FOUND)
+
+            # Verificar se a visita já foi feita neste ciclo
+            if RespostaCiclo.objects.filter(ciclo=ciclo_ativo, familia=familia).exists():
+                return Response({'erro': 'Esta família já foi visitada no ciclo atual.'}, status=status.HTTP_400_BAD_REQUEST)
+
+            # Criar o registro geral da Visita (RespostaCiclo)
+            resposta_ciclo = RespostaCiclo.objects.create(
+                ciclo=ciclo_ativo,
+                presidente=presidente,
+                familia=familia,
+                status='completo', 
+                observacao=request.data.get('observacao', ''),
+                enviado_em=timezone.now()
+            )
+
+            # Salvar cada resposta individual (RespostaItem)
+            respostas_data = request.data.get('respostas', [])
+            
+            for item in respostas_data:
+                pergunta_id = item.get('pergunta_id')
+                pergunta = Pergunta.objects.filter(id=pergunta_id, ciclo=ciclo_ativo).first()
+                
+                if pergunta:
+                    resposta_item = RespostaItem.objects.create(    
+                        resposta=resposta_ciclo,
+                        pergunta=pergunta,
+                        valor_texto=item.get('valor_texto', ''),
+                        valor_numero=item.get('valor_numero', None),
+                        valor_booleano=item.get('valor_booleano', None),
+                        valor_data=item.get('valor_data', None),
+                        opcao_id=item.get('opcao_id', None)
+                    )
+
+                    # Lógica para seleção múltipla
+                    opcoes_ids = item.get('opcoes_ids', []) # O frontend deve enviar uma lista, ex: [1, 4, 5]
+                    if opcoes_ids:
+                        resposta_item.opcoes.set(opcoes_ids)
+
+            return Response({'sucesso': 'Visita registrada com sucesso!'}, status=status.HTTP_201_CREATED)
+
+        except Exception as e:
+            return Response({'erro': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 # Lista E Cadastra presidentes
 class ListaCreatePresidentesView(generics.ListCreateAPIView):
     queryset = Presidente.objects.all().order_by('-criado_em')
     serializer_class = PresidenteSerializer
 
-# Gerenciar cotas do presidente
+
+# Gerenciar cotas do presidente (apenas cota)
 class AtualizarCotaView(generics.UpdateAPIView):
     queryset = Presidente.objects.all()
     serializer_class = CotaSerializer
 
 
-# === ADICIONE A NOVA VIEW DAQUI PARA BAIXO ===
+# Editar qualquer campo do presidente
+class AtualizarPresidenteView(generics.RetrieveUpdateAPIView):
+    queryset = Presidente.objects.all()
+    serializer_class = PresidenteSerializer
+    permission_classes = [AllowAny]
 
+
+# Ranking de presidentes
 class RankingPresidentesView(generics.ListAPIView):
     serializer_class = PresidenteRankingSerializer
-    permission_classes = [AllowAny] # Permite que o React busque sem travar no Token
+    permission_classes = [AllowAny]
 
     def get_queryset(self):
-        # No ranking de engajamento, trazemos apenas os presidentes ativos
         return Presidente.objects.filter(ativo=True)
 
     def list(self, request, *args, **kwargs):
         queryset = self.get_queryset()
         serializer = self.get_serializer(queryset, many=True)
         
-        # Ordena os presidentes pela 'pontuacao_engajamento' do maior para o menor
+        # Ordena pelo score_final (melhor)
         dados_ordenados = sorted(
             serializer.data, 
-            key=lambda k: k['pontuacao_engajamento'], 
+            key=lambda k: k.get('score_final', 0), 
             reverse=True
         )
         
@@ -49,7 +120,7 @@ class RankingPresidentesView(generics.ListAPIView):
 # ===== ENDPOINTS PARA O SISTEMA DE COTAS =====
 
 class AdminStatusCotasView(APIView):
-    permission_classes = [AllowAny] # TODO: Mudar para IsAuthenticated e verificar se é admin
+    permission_classes = [AllowAny]  # TODO: Mudar para IsAuthenticated e verificar se é admin
 
     def get(self, request):
         try:
@@ -95,50 +166,6 @@ class AdminStatusCotasView(APIView):
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
 
-def get(self, request):
-        try:
-            # Busca o ciclo ativo
-            ciclo_ativo = Ciclo.objects.filter(status='ativo').first()
-            
-            if not ciclo_ativo:
-                return Response(
-                    {'detalhe': 'Nenhum ciclo ativo encontrado'},
-                    status=status.HTTP_404_NOT_FOUND
-                )
-            
-            # Conta as respostas de formulários do presidente
-            presidentes = Presidente.objects.filter(ativo=True).annotate(
-                respostas_completas = Count(
-                    'respostaciclo', 
-                    filter=Q(respostaciclo__ciclo=ciclo_ativo, respostaciclo__status__in=['completo', 'enviado'])
-                )
-            ).order_by('nome')
-            
-            dados_cotas = []
-            
-            for presidente in presidentes:
-                meta = presidente.cota
-                # Pega a contagem gerada pelo annotate
-                atual = presidente.respostas_completas 
-                percentual = int((atual / meta * 100)) if meta > 0 else 0
-                
-                dados_cotas.append({
-                    'nome': presidente.nome,
-                    'atual': atual,
-                    'meta': meta,
-                    'percentual': min(percentual, 100)
-                })
-            
-            return Response({
-                'ciclo': ciclo_ativo.titulo,
-                'cotas': dados_cotas
-            })
-            
-        except Exception as e:
-            return Response(
-                {'erro': str(e)},
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR
-            )
 
 class PresidenteHomeView(APIView):
     """
@@ -152,7 +179,6 @@ class PresidenteHomeView(APIView):
             # Busca o presidente vinculado ao usuário logado
             presidente = Presidente.objects.filter(user=request.user).first()
             
-            # Se o filtro retornar None, o vínculo realmente não existe no banco
             if not presidente:
                 return Response(
                     {'detalhe': 'Usuário não está vinculado a um presidente'},

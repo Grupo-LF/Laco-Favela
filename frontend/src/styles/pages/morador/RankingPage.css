@@ -1,0 +1,365 @@
+.ranking-page {
+  display: flex;
+  flex-direction: column;
+  padding: 28px;
+  background: #f0f4f8;
+  min-height: 100vh;
+  box-sizing: border-box;
+  gap: 20px;
+}
+
+.ranking-page__titulo {
+  font-size: 22px;
+  font-weight: 700;
+  color: #1a3a5c;
+  margin: 0;
+}
+
+.ranking-page__conteudo {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+.ranking-page__esquerda {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  flex: 1;
+}
+
+.ranking-page__direita {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 300px;
+  flex-shrink: 0;
+}
+
+.ranking-nivel-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 24px;
+}
+
+.ranking-nivel-card__topo {
+  display: flex;
+  gap: 16px;
+}
+
+.ranking-nivel-card__icone {
+  width: 80px;
+  height: 80px;
+  background: #f0f4f8;
+  border-radius: 8px;
+  flex-shrink: 0;
+  border: 2px solid #f5a623;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #1a3a5c;
+}
+
+.ranking-nivel-card__icone svg {
+  width: 40px;
+  height: 40px;
+}
+
+.ranking-nivel-card__info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.ranking-nivel-card__nivel {
+  font-size: 13px;
+  color: #888;
+}
+
+.ranking-nivel-card__nome {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1a3a5c;
+}
+
+.ranking-nivel-card__desc {
+  font-size: 12px;
+  color: #666;
+}
+
+.ranking-nivel-card__barra-container {
+  height: 8px;
+  background: #e0e0e0;
+  border-radius: 999px;
+  margin-top: 8px;
+}
+
+.ranking-nivel-card__barra {
+  height: 8px;
+  background: #1a3a5c;
+  border-radius: 999px;
+}
+
+.ranking-nivel-card__pts {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  color: #888;
+  margin-top: 4px;
+}
+
+.ranking-nivel-card__aviso {
+  background: #f0f4f8;
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-size: 11px;
+  color: #1a3a5c;
+  margin-top: 8px;
+  border-left: 3px solid #f5a623;
+}
+
+.ranking-nivel-card__posicao {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: #f0f4f8;
+  border-radius: 8px;
+  padding: 16px;
+  width: 140px;
+  flex-shrink: 0;
+  gap: 4px;
+}
+
+.ranking-nivel-card__posicao-label {
+  font-size: 11px;
+  color: #888;
+}
+
+.ranking-nivel-card__posicao-numero {
+  font-size: 36px;
+  font-weight: 700;
+  color: #1a3a5c;
+}
+
+.ranking-nivel-card__posicao-total {
+  font-size: 11px;
+  color: #888;
+}
+
+.ranking-nivel-card__posicao-variacao {
+  font-size: 11px;
+  color: #f5a623;
+  font-weight: 600;
+  text-align: center;
+}
+
+.ranking-niveis {
+  background: #fff;
+  border-radius: 12px;
+  padding: 24px;
+}
+
+.ranking-niveis__titulo {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1a3a5c;
+  margin: 0 0 16px 0;
+}
+
+.ranking-niveis__item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 8px;
+}
+
+.ranking-niveis__item--atual {
+  background: #f0f4f8;
+  border-left: 3px solid #f5a623;
+}
+
+.ranking-niveis__item-icone {
+  width: 32px;
+  height: 32px;
+  background: #e0e8f0;
+  border-radius: 6px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  box-sizing: border-box;
+  color: #1a3a5c;
+}
+
+.ranking-niveis__item-icone--atual {
+  background: #1a3a5c;
+  color: #fff;
+}
+
+.ranking-niveis__item-icone svg {
+  width: 18px;
+  height: 18px;
+}
+
+.ranking-niveis__item-info {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.ranking-niveis__item-titulo {
+  font-size: 13px;
+  font-weight: 600;
+  color: #1a3a5c;
+}
+
+.ranking-niveis__item-pontos {
+  font-size: 11px;
+  color: #888;
+}
+
+.ranking-niveis__item-badge {
+  background: #f5a623;
+  color: #fff;
+  font-size: 11px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-weight: 600;
+}
+
+.ranking-niveis__rodape {
+  font-size: 11px;
+  color: #aaa;
+  margin-top: 8px;
+}
+
+.ranking-comunidade {
+  background: #fff;
+  border-radius: 12px;
+  padding: 24px;
+}
+
+.ranking-comunidade__titulo {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1a3a5c;
+  margin: 0 0 16px 0;
+}
+
+.ranking-comunidade__item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  margin-bottom: 6px;
+}
+
+.ranking-comunidade__item--voce {
+  background: #1a3a5c;
+  font-weight: 600;
+}
+
+.ranking-comunidade__item--voce .ranking-comunidade__nome,
+.ranking-comunidade__item--voce .ranking-comunidade__posicao,
+.ranking-comunidade__item--voce .ranking-comunidade__pontos {
+  color: #fff;
+}
+
+.ranking-comunidade__posicao {
+  font-size: 13px;
+  font-weight: 700;
+  color: #1a3a5c;
+  width: 24px;
+}
+
+.ranking-comunidade__avatar {
+  width: 32px;
+  height: 32px;
+  background: #e0e8f0;
+  border-radius: 50%;
+  font-size: 11px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #1a3a5c;
+}
+
+.ranking-comunidade__nome {
+  font-size: 13px;
+  color: #1a3a5c;
+  flex: 1;
+}
+
+.ranking-comunidade__pontos {
+  font-size: 13px;
+  font-weight: 600;
+  color: #1a3a5c;
+}
+
+.ranking-como-ganhar {
+  background: #fff;
+  border-radius: 12px;
+  padding: 24px;
+}
+
+.ranking-como-ganhar__titulo {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1a3a5c;
+  margin: 0 0 4px 0;
+}
+
+.ranking-como-ganhar__desc {
+  font-size: 12px;
+  color: #888;
+  margin: 0 0 16px 0;
+}
+
+.ranking-como-ganhar__item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.ranking-como-ganhar__item:last-child {
+  border-bottom: none;
+}
+
+.ranking-como-ganhar__icone {
+  width: 28px;
+  height: 28px;
+  background: #e0e8f0;
+  border-radius: 6px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px;
+  box-sizing: border-box;
+  color: #1a3a5c;
+}
+
+.ranking-como-ganhar__icone svg {
+  width: 16px;
+  height: 16px;
+}
+
+.ranking-como-ganhar__acao {
+  font-size: 13px;
+  color: #333;
+  flex: 1;
+}
+
+.ranking-como-ganhar__pts {
+  font-size: 13px;
+  font-weight: 600;
+  color: #1a3a5c;
+}

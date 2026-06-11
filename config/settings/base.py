@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'apps.core',
     'apps.dadosGerais',
+    'apps.ranking',
     'apps.familias',
     'apps.feedbacks',
     'apps.formularios',

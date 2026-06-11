@@ -50,3 +50,15 @@ class FamiliaRankingSerializer(serializers.ModelSerializer):
         pontos += (obj.num_membros * 2)
 
         return pontos
+
+class FamiliaRankingParticipacaoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Familia
+        fields = [
+            'id', 
+            'nome_responsavel', 
+            'comunidade', 
+            'municipio', 
+            'pontos_participacao', 
+            'acoes_concluidas'
+        ]

@@ -9,15 +9,16 @@
   align-items: center;
   gap: 8px;
   flex: 1;
-  background: #f5f5f5;
+  background: #f0f4f8;
   border-radius: 8px;
   padding: 10px 14px;
+  border: 1px solid #e0e8f0;
 }
 
 .familia-filtros__icone {
   width: 16px;
   height: 16px;
-  background: #ccc;
+  background: #e0e8f0;
   border-radius: 2px;
   flex-shrink: 0;
 }
@@ -26,18 +27,18 @@
   border: none;
   background: transparent;
   font-size: 13px;
-  color: #333;
+  color: #1a3a5c;
   width: 100%;
   outline: none;
 }
 
 .familia-filtros__select {
-  background: #f5f5f5;
-  border: none;
+  background: #f0f4f8;
+  border: 1px solid #e0e8f0;
   border-radius: 8px;
   padding: 10px 14px;
   font-size: 13px;
-  color: #333;
+  color: #1a3a5c;
   cursor: pointer;
   outline: none;
 }

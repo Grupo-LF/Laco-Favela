@@ -51,8 +51,12 @@ class Familia(models.Model):
     bolsa_familia = models.BooleanField(default=False)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pendente')
     aprovada = models.BooleanField(default=False)
+    pontos_participacao = models.IntegerField(default=0, help_text="Pontos acumulados por engajamento")
+    acoes_concluidas = models.IntegerField(default=0, help_text="Quantidade de ações comunitárias feitas")
     criado_em = models.DateTimeField(auto_now_add=True)
     atualizado_em = models.DateTimeField(auto_now=True)
+
+    
 
     def save(self, *args, **kwargs):
         self.aprovada = self.status == 'aprovada'
