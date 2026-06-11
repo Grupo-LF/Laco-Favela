@@ -5,6 +5,7 @@ class FamiliaSerializer(serializers.ModelSerializer):
     # Campos calculados (read-only)
     score = serializers.IntegerField(read_only=True)
     participacao_percentual = serializers.CharField(read_only=True)
+    endereco_completo = serializers.CharField(read_only=True)
     
     # Exibe o texto amigável das escolhas
     perfil_display = serializers.CharField(source='get_perfil_display', read_only=True)
@@ -23,17 +24,24 @@ class FamiliaSerializer(serializers.ModelSerializer):
             'presidente_id',
             'nome_responsavel',
             'telefone',
+            'endereco',
+            'comunidade',
+            'municipio',
+            'endereco_completo',
+            'num_membros',
+            'num_filhos',
+            'recebe_beneficio',
             'perfil',
             'perfil_display',
-            'num_membros',
             'total_eventos',
             'eventos_compareceu',
             'score',
             'participacao_percentual',
             'status',
-            'status_display'
+            'status_display',
+            'aprovada'
         ]
-        read_only_fields = ['score', 'participacao_percentual']
+        read_only_fields = ['score', 'participacao_percentual', 'endereco_completo']
 
 
 class FamiliaRankingSerializer(serializers.ModelSerializer):
@@ -65,13 +73,18 @@ class FamiliaRankingSerializer(serializers.ModelSerializer):
             'perfil',
             'perfil_display',
             'num_membros',
+            'num_filhos',
+            'recebe_beneficio',
+            'comunidade',
+            'municipio',
             'total_eventos',
             'eventos_compareceu',
             'eventos_formatado',
             'score',
             'participacao_percentual',
             'participacao_numero',
-            'status'
+            'status',
+            'aprovada'
         ]
     
     def get_eventos_formatado(self, obj):
@@ -91,11 +104,17 @@ class FamiliaCreateUpdateSerializer(serializers.ModelSerializer):
             'presidente',
             'nome_responsavel',
             'telefone',
-            'perfil',
+            'endereco',
+            'comunidade',
+            'municipio',
             'num_membros',
+            'num_filhos',
+            'recebe_beneficio',
+            'perfil',
             'total_eventos',
             'eventos_compareceu',
-            'status'
+            'status',
+            'aprovada'
         ]
     
     def validate_eventos_compareceu(self, value):
@@ -105,6 +124,18 @@ class FamiliaCreateUpdateSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 f"eventos_compareceu ({value}) não pode ser maior que total_eventos ({total_eventos})"
             )
+        return value
+    
+    def validate_num_filhos(self, value):
+        """Valida se número de filhos não é negativo"""
+        if value < 0:
+            raise serializers.ValidationError("Número de filhos não pode ser negativo")
+        return value
+    
+    def validate_num_membros(self, value):
+        """Valida se número de membros é válido"""
+        if value < 1:
+            raise serializers.ValidationError("Número de membros deve ser pelo menos 1")
         return value
     
     def validate(self, data):
@@ -126,8 +157,28 @@ class FamiliaBulkUpdateSerializer(serializers.Serializer):
     )
     eventos_compareceu = serializers.IntegerField(required=False, allow_null=True)
     status = serializers.ChoiceField(choices=Familia.STATUS_CHOICES, required=False)
+    recebe_beneficio = serializers.BooleanField(required=False, allow_null=True)
+    aprovada = serializers.BooleanField(required=False, allow_null=True)
     
     def validate_ids(self, value):
         if not value:
             raise serializers.ValidationError("Lista de IDs não pode estar vazia")
         return value
+
+
+class FamiliaResumidoSerializer(serializers.ModelSerializer):
+    """
+    Serializer resumido para listagens rápidas
+    """
+    class Meta:
+        model = Familia
+        fields = [
+            'id',
+            'nome_responsavel',
+            'comunidade',
+            'perfil',
+            'num_membros',
+            'score',
+            'status',
+            'aprovada'
+        ]

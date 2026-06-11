@@ -1,4 +1,4 @@
-import { api, getHeaders } from './api';
+import { api } from './api';
 
 export const listarFamilias = async (params = {}) => {
   const response = await api.get('/familias/', { params });
@@ -15,13 +15,14 @@ export const criarFamilia = async (dados) => {
   return response.data;
 };
 
-export const atualizarStatusFamilia = async (id, status) => {
+export const atualizarStatus = async (id, status) => {
   const response = await api.patch(`/familias/${id}/set-status/`, { status });
   return response.data;
 };
 
-export const listarRespostasPorFamilia = async (familiaId) => {
-  const response = await api.get(`/respostas/?familia=${familiaId}`);
+// ✅ FUNÇÃO SIMPLES PARA APROVAR FAMÍLIAS
+export const aprovarFamilias = async (ids) => {
+  const response = await api.patch('/familias/aprovar/', { ids });
   return response.data;
 };
 
@@ -29,6 +30,6 @@ export default {
   listarFamilias,
   obterFamilia,
   criarFamilia,
-  atualizarStatusFamilia,
-  listarRespostasPorFamilia,
+  atualizarStatus,
+  aprovarFamilias,
 };

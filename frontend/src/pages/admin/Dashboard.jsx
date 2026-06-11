@@ -170,31 +170,31 @@ const Dashboard = () => {
       // CABEÇALHO
       pdf.setFontSize(18);
       pdf.setTextColor(0, 94, 148);
-      pdf.text('Painel Analitico - Dashboard', pageWidth / 2, yPosition, { align: 'center' });
+      pdf.text('Painel Analítico - Dashboard', pageWidth / 2, yPosition, { align: 'center' });
       
       yPosition += 10;
       pdf.setFontSize(11);
       pdf.setTextColor(100, 100, 100);
-      pdf.text(`Data de exportacao: ${new Date().toLocaleString('pt-BR')}`, pageWidth / 2, yPosition, { align: 'center' });
+      pdf.text(`Data de exportação: ${new Date().toLocaleString('pt-BR')}`, pageWidth / 2, yPosition, { align: 'center' });
       pdf.text(`Ciclo: ${cicloTitulo}`, pageWidth / 2, yPosition + 6, { align: 'center' });
       
       yPosition += 20;
       
       // CARDS (Métricas)
       const cards = [
-        { titulo: 'FAMILIAS CADASTRADAS', valor: '487', subtitulo: '+30 familias neste ciclo' },
+        { titulo: 'FAMÍLIAS CADASTRADAS', valor: '487', subtitulo: '+30 famílias neste ciclo' },
         { titulo: 'PRESIDENTES ATIVOS', valor: '12', subtitulo: 'Meta: 12' },
-        { titulo: 'APROVACOES PENDENTES', valor: '48', subtitulo: '10% do total' },
-        { titulo: 'FEEDBACKS PENDENTES', valor: '5', subtitulo: 'Requer atencao' }
+        { titulo: 'APROVAÇÕES PENDENTES', valor: '48', subtitulo: '10% do total' },
+        { titulo: 'FEEDBACKS PENDENTES', valor: '5', subtitulo: 'Requer atenção' }
       ];
       
       pdf.setFontSize(14);
       pdf.setTextColor(0, 0, 0);
-      pdf.text('Resumo das Metricas', 20, yPosition);
+      pdf.text('Resumo das Métricas', 20, yPosition);
       yPosition += 10;
       
       const metricsData = cards.map(card => [card.titulo, card.valor, card.subtitulo]);
-      const metricsHeaders = [['Metrica', 'Valor', 'Variacao/Observacao']];
+      const metricsHeaders = [['Métrica', 'Valor', 'Variação/Observação']];
       
       autoTable(pdf, {
         head: metricsHeaders,
@@ -222,7 +222,7 @@ const Dashboard = () => {
         
         pdf.setFontSize(14);
         pdf.setTextColor(0, 0, 0);
-        pdf.text('1. Participacoes por Mes', 20, yPosition);
+        pdf.text('1. Participações por Mês', 20, yPosition);
         yPosition += 10;
         
         try {
@@ -234,7 +234,7 @@ const Dashboard = () => {
           
           const participacoesData = dadosParticipacoes.map(item => [item.mes, item.familias, item.eventos]);
           autoTable(pdf, {
-            head: [['Mes', 'Familias presentes', 'Eventos']],
+            head: [['Mês', 'Famílias presentes', 'Eventos']],
             body: participacoesData,
             startY: yPosition,
             margin: { left: 20, right: 20 },
@@ -244,7 +244,7 @@ const Dashboard = () => {
           });
           yPosition = pdf.lastAutoTable.finalY + 15;
         } catch (error) {
-          console.error('Erro ao adicionar grafico de barras:', error);
+          console.error('Erro ao adicionar gráfico de barras:', error);
         }
       }
       
@@ -256,7 +256,7 @@ const Dashboard = () => {
         }
         
         pdf.setFontSize(14);
-        pdf.text('2. Distribuicao por Perfil', 20, yPosition);
+        pdf.text('2. Distribuição por Perfil', 20, yPosition);
         yPosition += 10;
         
         try {
@@ -267,7 +267,7 @@ const Dashboard = () => {
           yPosition += imgHeight + 10;
           
           const donutData = [
-            ['Maes solo', '44'],
+            ['Mães solo', '44'],
             ['+3 filhos', '55'],
             ['Renda baixa', '13'],
             ['Idosos', '33']
@@ -283,7 +283,7 @@ const Dashboard = () => {
           });
           yPosition = pdf.lastAutoTable.finalY + 15;
         } catch (error) {
-          console.error('Erro ao adicionar grafico donut:', error);
+          console.error('Erro ao adicionar gráfico donut:', error);
         }
       }
       
@@ -306,11 +306,11 @@ const Dashboard = () => {
           yPosition += imgHeight + 10;
           
           const rankingData = [
-            ['Andre', '48 visitas'],
+            ['André', '48 visitas'],
             ['Maria', '45 visitas'],
             ['Ana', '40 visitas'],
             ['Felipe', '35 visitas'],
-            ['Joao', '30 visitas']
+            ['João', '30 visitas']
           ];
           autoTable(pdf, {
             head: [['Presidente', 'Visitas']],
@@ -323,7 +323,7 @@ const Dashboard = () => {
           });
           yPosition = pdf.lastAutoTable.finalY + 15;
         } catch (error) {
-          console.error('Erro ao adicionar grafico de ranking:', error);
+          console.error('Erro ao adicionar gráfico de ranking:', error);
         }
       }
       
@@ -409,7 +409,7 @@ const Dashboard = () => {
         pdf.setFontSize(8);
         pdf.setTextColor(150, 150, 150);
         pdf.text(
-          `Pagina ${i} de ${pageCount} - Gerado por Sistema de Dashboard`,
+          `Página ${i} de ${pageCount} - Gerado por Sistema de Dashboard`,
           pageWidth / 2,
           pdf.internal.pageSize.getHeight() - 10,
           { align: 'center' }
@@ -437,13 +437,13 @@ const Dashboard = () => {
       
       // Cabeçalho geral
       csvData.push({
-        'Tipo': 'RELATORIO COMPLETO DO DASHBOARD',
+        'Tipo': 'RELATÓRIO COMPLETO DO DASHBOARD',
         'Detalhe': '',
         'Valor': '',
         'Extra': ''
       });
       csvData.push({ 
-        'Tipo': 'Data Exportacao', 
+        'Tipo': 'Data Exportação', 
         'Detalhe': new Date().toLocaleString('pt-BR'), 
         'Valor': '',
         'Extra': ''
@@ -457,12 +457,12 @@ const Dashboard = () => {
       csvData.push({ 'Tipo': '', 'Detalhe': '', 'Valor': '', 'Extra': '' });
       
       // Métricas principais
-      csvData.push({ 'Tipo': 'METRICAS PRINCIPAIS', 'Detalhe': '', 'Valor': '', 'Extra': '' });
+      csvData.push({ 'Tipo': 'MÉTRICAS PRINCIPAIS', 'Detalhe': '', 'Valor': '', 'Extra': '' });
       const cards = [
-        { titulo: 'FAMILIAS CADASTRADAS', valor: '487', subtitulo: '+30 familias neste ciclo' },
+        { titulo: 'FAMÍLIAS CADASTRADAS', valor: '487', subtitulo: '+30 famílias neste ciclo' },
         { titulo: 'PRESIDENTES ATIVOS', valor: '12', subtitulo: 'Meta: 12' },
-        { titulo: 'APROVACOES PENDENTES', valor: '48', subtitulo: '10% do total' },
-        { titulo: 'FEEDBACKS PENDENTES', valor: '5', subtitulo: 'Requer atencao' }
+        { titulo: 'APROVAÇÕES PENDENTES', valor: '48', subtitulo: '10% do total' },
+        { titulo: 'FEEDBACKS PENDENTES', valor: '5', subtitulo: 'Requer atenção' }
       ];
       cards.forEach(card => {
         csvData.push({
@@ -475,8 +475,8 @@ const Dashboard = () => {
       csvData.push({ 'Tipo': '', 'Detalhe': '', 'Valor': '', 'Extra': '' });
       
       // Participações por Mês
-      csvData.push({ 'Tipo': 'PARTICIPACOES POR MES', 'Detalhe': '', 'Valor': '', 'Extra': '' });
-      csvData.push({ 'Tipo': 'Mes', 'Detalhe': 'Familias presentes', 'Valor': 'Eventos', 'Extra': '' });
+      csvData.push({ 'Tipo': 'PARTICIPAÇÕES POR MÊS', 'Detalhe': '', 'Valor': '', 'Extra': '' });
+      csvData.push({ 'Tipo': 'Mês', 'Detalhe': 'Famílias presentes', 'Valor': 'Eventos', 'Extra': '' });
       dadosParticipacoes.forEach(item => {
         csvData.push({
           'Tipo': item.mes,
@@ -490,14 +490,14 @@ const Dashboard = () => {
       // Totais de Participações
       const totalFamilias = dadosParticipacoes.reduce((sum, item) => sum + item.familias, 0);
       const totalEventos = dadosParticipacoes.reduce((sum, item) => sum + item.eventos, 0);
-      csvData.push({ 'Tipo': 'TOTAIS', 'Detalhe': 'Total de Familias', 'Valor': totalFamilias, 'Extra': '' });
+      csvData.push({ 'Tipo': 'TOTAIS', 'Detalhe': 'Total de Famílias', 'Valor': totalFamilias, 'Extra': '' });
       csvData.push({ 'Tipo': 'TOTAIS', 'Detalhe': 'Total de Eventos', 'Valor': totalEventos, 'Extra': '' });
       csvData.push({ 'Tipo': '', 'Detalhe': '', 'Valor': '', 'Extra': '' });
       
       // Distribuição por Perfil
-      csvData.push({ 'Tipo': 'DISTRIBUICAO POR PERFIL', 'Detalhe': '', 'Valor': '', 'Extra': '' });
+      csvData.push({ 'Tipo': 'DISTRIBUIÇÃO POR PERFIL', 'Detalhe': '', 'Valor': '', 'Extra': '' });
       const perfis = [
-        { perfil: 'Maes solo', quantidade: 44 },
+        { perfil: 'Mães solo', quantidade: 44 },
         { perfil: '+3 filhos', quantidade: 55 },
         { perfil: 'Renda baixa', quantidade: 13 },
         { perfil: 'Idosos', quantidade: 33 }
@@ -519,11 +519,11 @@ const Dashboard = () => {
       // Ranking de Presidentes
       csvData.push({ 'Tipo': 'RANKING DE PRESIDENTES', 'Detalhe': '', 'Valor': '', 'Extra': '' });
       const ranking = [
-        { nome: 'Andre', visitas: 48 },
+        { nome: 'André', visitas: 48 },
         { nome: 'Maria', visitas: 45 },
         { nome: 'Ana', visitas: 40 },
         { nome: 'Felipe', visitas: 35 },
-        { nome: 'Joao', visitas: 30 }
+        { nome: 'João', visitas: 30 }
       ];
       csvData.push({ 'Tipo': 'Presidente', 'Detalhe': 'Visitas', 'Valor': '', 'Extra': '' });
       ranking.forEach(item => {
@@ -538,7 +538,7 @@ const Dashboard = () => {
       const totalVisitas = ranking.reduce((sum, item) => sum + item.visitas, 0);
       const mediaVisitas = (totalVisitas / ranking.length).toFixed(2);
       csvData.push({ 'Tipo': 'Total de Visitas', 'Detalhe': totalVisitas, 'Valor': '', 'Extra': '' });
-      csvData.push({ 'Tipo': 'Media de Visitas', 'Detalhe': mediaVisitas, 'Valor': '', 'Extra': '' });
+      csvData.push({ 'Tipo': 'Média de Visitas', 'Detalhe': mediaVisitas, 'Valor': '', 'Extra': '' });
       csvData.push({ 'Tipo': '', 'Detalhe': '', 'Valor': '', 'Extra': '' });
       
       // STATUS DE COTAS (detalhado)
@@ -566,7 +566,7 @@ const Dashboard = () => {
         csvData.push({ 'Tipo': 'Total Atual', 'Detalhe': totalAtual, 'Valor': '', 'Extra': '' });
         csvData.push({ 'Tipo': 'Total Meta', 'Detalhe': totalMeta, 'Valor': '', 'Extra': '' });
         csvData.push({ 'Tipo': 'Percentual Geral', 'Detalhe': `${totalPercentualGeral}%`, 'Valor': '', 'Extra': '' });
-        csvData.push({ 'Tipo': 'Media Individual', 'Detalhe': `${mediaPercentual}%`, 'Valor': '', 'Extra': '' });
+        csvData.push({ 'Tipo': 'Média Individual', 'Detalhe': `${mediaPercentual}%`, 'Valor': '', 'Extra': '' });
         
         // Presidentes que atingiram a meta
         const metaAtingida = statusCotas.filter(item => item.percentual >= 100);
@@ -703,10 +703,10 @@ const Dashboard = () => {
   }, [showMenu]);
 
   const cards = [
-    { titulo: 'FAMILIAS CADASTRADAS', valor: '487', subtitulo: '+30 familias neste ciclo' },
+    { titulo: 'FAMÍLIAS CADASTRADAS', valor: '487', subtitulo: '+30 famílias neste ciclo' },
     { titulo: 'PRESIDENTES ATIVOS', valor: '12', subtitulo: 'Meta: 12' },
-    { titulo: 'APROVACOES PENDENTES', valor: '48', subtitulo: '10% do total' },
-    { titulo: 'FEEDBACKS PENDENTES', valor: '5', subtitulo: 'Requer atencao' }
+    { titulo: 'APROVAÇÕES PENDENTES', valor: '48', subtitulo: '10% do total' },
+    { titulo: 'FEEDBACKS PENDENTES', valor: '5', subtitulo: 'Requer atenção' }
   ];
 
   return (
@@ -735,8 +735,8 @@ const Dashboard = () => {
         alignItems: 'center',
       }}>
         <div>
-          <h2 style={{ margin: 0, color: 'var(--color-primary)' }}>Painel Analitico</h2>
-          <p style={{ margin: 0, color: '#666' }}>Ciclo 1 - Mes 6</p>
+          <h2 style={{ margin: 0, color: 'var(--color-primary)' }}>Painel Analítico</h2>
+          <p style={{ margin: 0, color: '#666' }}>Ciclo 1 - Mês 6</p>
         </div>
         <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', position: 'relative' }}>
           <div className="export-menu" style={{ position: 'relative', display: 'inline-block' }}>
@@ -843,7 +843,7 @@ const Dashboard = () => {
               gap: '50px'
             }}>
               <h3 style={{ margin: 0, fontSize: '22px', fontWeight: '600' }}>
-                Participacoes por Mes
+                Participações por Mês
               </h3>
               <select style={{
                 padding: '10px 15px',
@@ -853,16 +853,16 @@ const Dashboard = () => {
                 fontWeight: '500',
                 cursor: 'pointer'
               }}>
-                <option>Ultimo ciclo</option>
-                <option>Ultimos 6 meses</option>
-                <option>Ultimo ano</option>
+                <option>Último ciclo</option>
+                <option>Últimos 6 meses</option>
+                <option>Último ano</option>
               </select>
             </div>
             <div ref={barChartRef}></div>
           </div>
 
           <div className="card">
-            <h3 style={{ marginBottom: '46px' }}>Distribuicao por Perfil</h3>
+            <h3 style={{ marginBottom: '46px' }}>Distribuição por Perfil</h3>
             <div ref={donutRef}></div>
           </div>
         </div>

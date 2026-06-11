@@ -9,60 +9,74 @@ class FamiliaAdmin(admin.ModelAdmin):
         'presidente',
         'perfil',
         'num_membros',
+        'num_filhos',
+        'recebe_beneficio',
         'eventos_compareceu',
         'total_eventos',
         'score_display',
-        'participacao_display',
-        'status'
+        'status',
+        'aprovada',
+        'aprovada_icon'
     ]
     
     list_filter = [
         'perfil',
         'status',
-        'presidente'
+        'aprovada',
+        'presidente',
+        'recebe_beneficio',
+        'comunidade'
     ]
     
     search_fields = [
         'nome_responsavel',
         'telefone',
-        'presidente__nome'
+        'presidente__nome',
+        'endereco',
+        'comunidade'
     ]
     
-    # Campos que podem ser editados diretamente na lista
     list_editable = [
-        'eventos_compareceu',  # ✅ EDITÁVEL
-        'total_eventos',       # ✅ EDITÁVEL
-        'status'
+        'eventos_compareceu',
+        'total_eventos',
+        'status',
+        'aprovada'  # ✅ PODE EDITAR DIRETO NA LISTA
     ]
     
-    # Campos somente leitura (calculados)
-    readonly_fields = ['score_display', 'participacao_display']
-    
+    readonly_fields = ['score_display']
     list_per_page = 25
     
     def score_display(self, obj):
-        """Mostra o score calculado"""
-        return obj.score
+        return f"{obj.score}%"
     score_display.short_description = 'SCORE'
     
-    def participacao_display(self, obj):
-        """Mostra a porcentagem de participação"""
-        return obj.participacao_percentual
-    participacao_display.short_description = 'PART. (%)'
-    
-    # Organização do formulário de edição
+    def aprovada_icon(self, obj):
+        return '✅' if obj.aprovada else '❌'
+    aprovada_icon.short_description = '✓'
+
     fieldsets = (
         ('Informações Pessoais', {
             'fields': ('nome_responsavel', 'telefone', 'presidente')
         }),
-        ('Perfil da Família', {
-            'fields': ('perfil', 'num_membros')
+        ('Endereço', {
+            'fields': ('endereco', 'comunidade', 'municipio')
         }),
-        ('Participação em Eventos (EDITÁVEL)', {
+        ('Composição Familiar', {
+            'fields': ('num_membros', 'num_filhos', 'recebe_beneficio')
+        }),
+        ('Perfil', {
+            'fields': ('perfil',)
+        }),
+        ('Participação em Eventos', {
             'fields': ('eventos_compareceu', 'total_eventos'),
-            'description': 'O score é calculado automaticamente: (eventos_compareceu / total_eventos) * 100'
+            'description': 'O score é calculado automaticamente'
         }),
-        ('Status', {
-            'fields': ('status',)
+        ('Status do Processo', {
+            'fields': ('status',),
+            'description': 'Pendente ou Completo'
+        }),
+        ('Aprovação', {
+            'fields': ('aprovada',),
+            'description': 'Marcar se a família foi aprovada'
         }),
     )

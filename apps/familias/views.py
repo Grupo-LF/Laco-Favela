@@ -28,6 +28,14 @@ class FamiliaViewSet(viewsets.ModelViewSet):
         
         params = self.request.query_params
 
+        # ✅ FILTRO POR APROVADA (ADICIONADO)
+        aprovada_param = params.get('aprovada')
+        if aprovada_param is not None:
+            if aprovada_param.lower() == 'true':
+                queryset = queryset.filter(aprovada=True)
+            elif aprovada_param.lower() == 'false':
+                queryset = queryset.filter(aprovada=False)
+
         # Filtro por status
         status_param = params.get('status')
         if status_param:
@@ -66,7 +74,7 @@ class FamiliaViewSet(viewsets.ModelViewSet):
         return queryset
 
     def get_permissions(self):
-        if settings.DEBUG and self.action in ['list', 'retrieve', 'set_status', 'bulk_set_status', 'ranking']:
+        if settings.DEBUG and self.action in ['list', 'retrieve', 'set_status', 'bulk_set_status', 'ranking', 'aprovar']:
             return [IsAuthenticated()]
         if self.action in ['set_status', 'bulk_set_status']:
             return [IsAdminUser()]
@@ -141,6 +149,58 @@ class FamiliaViewSet(viewsets.ModelViewSet):
         return Response({
             'updated': updated,
             'message': f'{updated} família(s) atualizada(s) com {eventos_compareceu} eventos'
+        })
+
+    @action(detail=False, methods=['patch'], url_path='bulk-update-aprovada')
+    def bulk_update_aprovada(self, request):
+        """
+        Atualiza o campo aprovada de várias famílias de uma vez
+        Exemplo: PATCH /familias/bulk-update-aprovada/
+        {
+            "ids": [1, 2, 3],
+            "aprovada": true
+        }
+        """
+        ids = request.data.get('ids', [])
+        aprovada_value = request.data.get('aprovada')
+
+        if not isinstance(ids, list) or not ids:
+            return Response({'detail': 'Informe uma lista de ids.'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        if aprovada_value is None:
+            return Response({'detail': 'Informe aprovada (true/false).'}, status=status.HTTP_400_BAD_REQUEST)
+
+        updated = Familia.objects.filter(id__in=ids).update(aprovada=aprovada_value)
+        
+        return Response({
+            'updated': updated,
+            'message': f'{updated} família(s) atualizada(s) com aprovada={aprovada_value}'
+        })
+
+    # ✅ NOVO ENDPOINT SIMPLES PARA APROVAR FAMÍLIAS
+    @action(detail=False, methods=['patch'], url_path='aprovar')
+    def aprovar(self, request):
+        """
+        Aprova várias famílias de uma vez (endpoint simplificado)
+        Exemplo: PATCH /api/familias/aprovar/
+        {
+            "ids": [1, 2, 3]
+        }
+        """
+        ids = request.data.get('ids', [])
+        
+        if not isinstance(ids, list) or not ids:
+            return Response(
+                {'detail': 'Informe uma lista de ids.'}, 
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        # Atualiza o campo aprovada para True
+        updated = Familia.objects.filter(id__in=ids).update(aprovada=True)
+        
+        return Response({
+            'atualizadas': updated,
+            'mensagem': f'{updated} família(s) aprovada(s) com sucesso!'
         })
 
     @action(detail=False, methods=['get'], url_path='ranking')

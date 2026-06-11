@@ -9,26 +9,29 @@ const Aprovados = () => {
   const [error, setError] = useState('');
   const [filtroCategoria, setFiltroCategoria] = useState('todos');
 
-  const carregarAprovados = async () => {
-    setLoading(true);
-    setError('');
-    try {
-      const data = await listarFamilias({
-        status: 'aprovada',
-        search: search.trim() || undefined,
-      });
-      setFamilias(Array.isArray(data) ? data : []);
-      setAprovados(Array.isArray(data) ? data : []);
-    } catch (err) {
-      setError('Nao foi possivel carregar as familias aprovadas.');
-    } finally {
-      setLoading(false);
-    }
-  };
+ const carregarAprovados = async () => {
+  setLoading(true);
+  setError('');
+  try {
+    // Busca apenas os aprovados (sem search)
+    const data = await listarFamilias({
+      aprovada: 'true',  // ou 'true' dependendo do backend
+    });
+    console.log(data);
+    const familiasData = Array.isArray(data) ? data : [];
+    setFamilias(familiasData);
+    setAprovados(familiasData);
+  } catch (err) {
+    setError('Nao foi possivel carregar as familias aprovadas.');
+  } finally {
+    setLoading(false);
+  }
+};
 
-  useEffect(() => {
-    carregarAprovados();
-  }, [search]);
+useEffect(() => {
+  carregarAprovados();
+}, []); // ⚠️ Removeu o search da dependência
+
 
   // Função para contar famílias por categoria
   const contarPorCategoria = (categoria) => {
@@ -66,7 +69,7 @@ const Aprovados = () => {
         }
       });
     }
-
+    console.log(filtrados)
     return filtrados;
   };
 
@@ -76,7 +79,7 @@ const Aprovados = () => {
     <div className="apro">
      
             <div className="header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', flexWrap: 'wrap', gap: '1rem' }}>
-                 <h2 style={{ margin: 0 ,color:'var(--color-primary)'}}>Presidentes</h2>
+                 <h2 style={{ margin: 0 ,color:'var(--color-primary)'}}>Aprovados</h2>
                  <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
                    <button className="btn btn-outline" style={{ padding: '0.5rem 1rem', cursor: 'pointer' }}>Exportar lista <ExportIcon></ExportIcon></button>
                    <button className="btn btn-primary"  style={{ padding: '0.5rem 1rem', backgroundColor: 'var(--color-primary)', color: '#fff', border: 'none', cursor: 'pointer' }}>
@@ -240,9 +243,11 @@ const Aprovados = () => {
                   <tr key={familia.id}>
                     <td>{index + 1}</td>
                     <td>{familia.nome_responsavel}</td>
-                    <td>{familia.presidente || '—'}</td>
-                    <td>{familia.pontuacao || '—'}</td>
-                    <td>{familia.criterio_principal || '—'}</td>
+                    <td>{familia.presidente_nome || '—'}</td>
+                    <td>{familia.score || '—'}</td>
+                    <td><span className="badge" style={{ backgroundColor: '#D9D9D9', color: '#333' }}>
+                       {familia.perfil_display || '—'}
+                       </span></td>
                     <td>
                       <span className="badge" style={{ backgroundColor: familia.publicado ? 'var(--color-primary)' : 'var(--color-accent)', color: familia.publicado ? '#fff' : '#333' }}>
                         {familia.publicado ? 'Publicado' : 'Pendente'}
