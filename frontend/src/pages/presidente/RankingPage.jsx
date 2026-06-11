@@ -1,110 +1,134 @@
 import React from 'react';
+import '../../styles/pages/presidente/RankingPage.css';
 
-function RankingPage() {
+export default function RankingPage() {
   return (
-    <div style={styles.pageContainer}>
-      <div style={styles.headerTela}>
-        <h1 style={styles.tituloTela}>Ranking de Presidentes</h1>
-        <p style={styles.subtituloTela}>Gamificação da rede: Reconhecimento dos líderes com maior engajamento.</p>
-      </div>
+    <div className="pres-container">
+      <header className="pres-header">
+        <h1>Ranking</h1>
+      </header>
 
-      <div style={styles.podiumContainer}>
-        {/* 2º Lugar */}
-        <div style={styles.podiumColunaContainer}>
-          <div style={styles.podiumAvatar}>🥈</div>
-          <div style={styles.podiumNome}>Joaquim Oliveira</div>
-          <div style={styles.podiumComunidade}>Complexo do Alemão</div>
-          <div style={styles.podiumPontos}>980 pts</div>
-          <div style={{...styles.podiumBloco, height: '140px', background: '#cbd5e1'}}>
-            <span style={styles.podiumNumero}>2</span>
+      <div className="rank-main-layout">
+        <div className="rank-left-column">
+          {/* Pódio Visual */}
+          <div className="rank-podium-card">
+            <div className="podium-container">
+              {/* 2º Lugar */}
+              <div className="podium-column second">
+                <div className="avatar-circle">AL</div>
+                <span className="podium-name">Ana Lima</span>
+                <div className="podium-bar bar-2">
+                  <span className="position">2º</span>
+                  <span className="points">91 pts</span>
+                </div>
+              </div>
+
+              {/* 1º Lugar */}
+              <div className="podium-column first">
+                <div className="avatar-circle main-avatar">MC</div>
+                <span className="podium-name">Maria Costa</span>
+                <div className="podium-bar bar-1">
+                  <span className="position">1º</span>
+                  <span className="points">98 pts</span>
+                </div>
+              </div>
+
+              {/* 3º Lugar */}
+              <div className="podium-column third">
+                <div className="avatar-circle">AA</div>
+                <span className="podium-name">André Alves</span>
+                <div className="podium-bar bar-3">
+                  <span className="position">3º</span>
+                  <span className="points">82 pts</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Classificação Geral */}
+          <div className="rank-general-card">
+            <h3>Classificação Geral</h3>
+            <div className="rank-list">
+              {[
+                { pos: '1º', initial: 'MC', name: 'Maria Costa', sub: 'Rua do Sol • 30 famílias visitadas', pts: '98 pts' },
+                { pos: '2º', initial: 'AL', name: 'Ana Lima', sub: 'Rua da Flor • 29 famílias visitadas', pts: '91 pts' },
+                { pos: '3º', initial: 'AA', name: 'André Alves', sub: 'Rua da Planta • 28 famílias visitadas', pts: '82 pts' },
+                { pos: '4º', initial: 'NS', name: 'Felipe Ramos', sub: 'Rua da Folha • 25 famílias visitadas', pts: '76 pts' },
+                { pos: '5º', initial: 'NS', name: 'Rafael Coelho', sub: 'Rua da Árvore • 18 famílias visitadas', pts: '61 pts' }
+              ].map((row, idx) => (
+                <div key={idx} className="rank-list-item">
+                  <div className="item-left-block">
+                    <span className="list-pos">{row.pos}</span>
+                    <div className="list-avatar">{row.initial}</div>
+                    <div className="list-meta">
+                      <span className="list-name">{row.name}</span>
+                      <span className="list-sub">{row.sub}</span>
+                    </div>
+                  </div>
+                  <span className="list-pts">{row.pts}</span>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
 
-        {/* 1º Lugar */}
-        <div style={styles.podiumColunaContainer}>
-          <div style={{...styles.podiumAvatar, fontSize: '50px'}}>👑</div>
-          <div style={{...styles.podiumNome, fontWeight: '700'}}>Clara Santos</div>
-          <div style={styles.podiumComunidade}>Rocinha</div>
-          <div style={{...styles.podiumPontos, color: '#eab308'}}>1.250 pts</div>
-          <div style={{...styles.podiumBloco, height: '190px', background: '#1e293b', borderTop: '6px solid #eab308'}}>
-            <span style={{...styles.podiumNumero, color: '#eab308'}}>1</span>
+        <div className="rank-right-column">
+          {/* Minha Pontuação */}
+          <div className="rank-side-card">
+            <h3>Minha Pontuação</h3>
+            <div className="side-table">
+              <div className="side-row">
+                <span>Visitas realizadas</span>
+                <span className="points-add">+36 pts</span>
+              </div>
+              <div className="side-row">
+                <span>Formulários enviados</span>
+                <span className="points-add">+36 pts</span>
+              </div>
+              <div className="side-row">
+                <span>Cota atingida</span>
+                <span className="points-add">+36 pts</span>
+              </div>
+              <div className="side-row">
+                <span>Bônus pontualidade</span>
+                <span className="points-add">+36 pts</span>
+              </div>
+              <div className="side-total-row">
+                <span className="total-label">Total</span>
+                <span className="total-value">82 pts</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Como subir no Ranking */}
+          <div className="rank-side-card info-card">
+            <div className="card-header-with-icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#005691" strokeWidth="2">
+                <circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/>
+              </svg>
+              <h3>Como subir no Ranking</h3>
+            </div>
+            <div className="side-table plain">
+              <div className="side-row">
+                <span>Visita realizada</span>
+                <span className="badge-pts">+2 pts</span>
+              </div>
+              <div className="side-row">
+                <span>Formulário enviado</span>
+                <span className="badge-pts">+3 pts</span>
+              </div>
+              <div className="side-row">
+                <span>Cota 100% no mês</span>
+                <span className="badge-pts">+10 pts</span>
+              </div>
+              <div className="side-row">
+                <span>Envio em até 24h</span>
+                <span className="badge-pts blue">+1 pt bônus</span>
+              </div>
+            </div>
           </div>
         </div>
-
-        {/* 3º Lugar */}
-        <div style={styles.podiumColunaContainer}>
-          <div style={styles.podiumAvatar}>🥉</div>
-          <div style={styles.podiumNome}>Bianca Lima</div>
-          <div style={styles.podiumComunidade}>Vidigal</div>
-          <div style={styles.podiumPontos}>890 pts</div>
-          <div style={{...styles.podiumBloco, height: '100px', background: '#f59e0b', opacity: 0.8}}>
-            <span style={styles.podiumNumero}>3</span>
-          </div>
-        </div>
-      </div>
-
-      <div style={styles.cardTabela}>
-        <h3 style={styles.cardTituloSecundario}>Classificação Geral</h3>
-        <table style={styles.table}>
-          <thead>
-            <tr style={styles.tableHeaderRow}>
-              <th style={styles.th}>Posição</th>
-              <th style={styles.th}>Presidente</th>
-              <th style={styles.th}>Comunidade</th>
-              <th style={styles.th}>Visitas</th>
-              <th style={styles.th}>Pontuação</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr style={styles.tableRow}>
-              <td style={styles.td}>4º</td>
-              <td style={styles.td}>Roberto Silva</td>
-              <td style={styles.td}>Heliópolis</td>
-              <td style={styles.td}>48</td>
-              <td style={styles.td}>820 pts</td>
-            </tr>
-            <tr style={styles.tableRowActive}>
-              <td style={{...styles.td, fontWeight: '700'}}>5º (Você)</td>
-              <td style={{...styles.td, fontWeight: '700'}}>Usuário Demonstração</td>
-              <td style={styles.td}>Comunidade Exemplo</td>
-              <td style={styles.td}>45</td>
-              <td style={{...styles.td, color: '#1e293b', fontWeight: '700'}}>780 pts</td>
-            </tr>
-            <tr style={styles.tableRow}>
-              <td style={styles.td}>6º</td>
-              <td style={styles.td}>Fernanda Costa</td>
-              <td style={styles.td}>Paraisópolis</td>
-              <td style={styles.td}>39</td>
-              <td style={styles.td}>650 pts</td>
-            </tr>
-          </tbody>
-        </table>
       </div>
     </div>
   );
 }
-
-const styles = {
-  pageContainer: { padding: '20px', fontFamily: 'sans-serif', backgroundColor: '#f8fafc', minHeight: '100vh' },
-  headerTela: { marginBottom: '32px' },
-  tituloTela: { fontSize: '28px', fontWeight: '700', color: '#1e293b', margin: '0 0 4px 0' },
-  subtituloTela: { fontSize: '15px', color: '#64748b', margin: 0 },
-  podiumContainer: { display: 'flex', alignItems: 'flex-end', justifyContent: 'center', gap: '24px', margin: '40px 0' },
-  podiumColunaContainer: { display: 'flex', flexDirection: 'column', alignItems: 'center', width: '160px' },
-  podiumAvatar: { fontSize: '40px', marginBottom: '8px' },
-  podiumNome: { fontSize: '15px', fontWeight: '600', color: '#1e293b', textAlign: 'center' },
-  podiumComunidade: { fontSize: '12px', color: '#64748b', marginBottom: '8px' },
-  podiumPontos: { fontSize: '16px', fontWeight: '700', color: '#475569', marginBottom: '12px' },
-  podiumBloco: { width: '100%', borderRadius: '8px 8px 0 0', display: 'flex', alignItems: 'center', justifyContent: 'center' },
-  podiumNumero: { fontSize: '28px', fontWeight: '700', color: '#ffffff' },
-  cardTabela: { backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '12px', overflow: 'hidden' },
-  cardTituloSecundario: { fontSize: '18px', fontWeight: '700', color: '#1e293b', padding: '20px 20px 0 20px', margin: 0 },
-  table: { width: '100%', borderCollapse: 'collapse', textAlign: 'left' },
-  tableHeaderRow: { backgroundColor: '#f8fafc', borderBottom: '1px solid #e2e8f0' },
-  th: { padding: '14px 20px', fontSize: '13px', fontWeight: '600', color: '#64748b', textTransform: 'uppercase' },
-  td: { padding: '16px 20px', fontSize: '15px', color: '#334155', borderBottom: '1px solid #f1f5f9' },
-  tableRow: { backgroundColor: '#ffffff' },
-  tableRowActive: { backgroundColor: '#f1f5f9' }
-};
-
-export default RankingPage;

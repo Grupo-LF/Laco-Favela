@@ -1,0 +1,174 @@
+.pres-container {
+  padding: 40px;
+  background-color: #F4F6F8;
+  min-height: 100vh;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+.pres-header h1 {
+  font-size: 24px;
+  color: #005691;
+  font-weight: 700;
+  margin: 0 0 4px 0;
+}
+.pres-header p {
+  font-size: 13px;
+  color: #666;
+  margin: 0 0 30px 0;
+}
+.pres-grid-2x2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+.pres-card {
+  background: #FFFFFF;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.02);
+}
+.pres-card h3 {
+  font-size: 15px;
+  font-weight: 700;
+  color: #000000;
+  margin: 0 0 20px 0;
+}
+/* Donut Chart styles */
+.pres-donut-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+}
+.pres-donut-chart {
+  position: relative;
+  width: 140px;
+  height: 140px;
+}
+.pres-donut-text {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.pres-donut-text .percentage {
+  font-size: 22px;
+  font-weight: 700;
+  color: #005691;
+  line-height: 1;
+}
+.pres-donut-text .fraction {
+  font-size: 11px;
+  color: #666;
+  margin-top: 2px;
+}
+.pres-donut-footer {
+  text-align: left;
+}
+.pres-donut-footer .footer-main {
+  font-size: 13px;
+  font-weight: 600;
+  color: #333;
+  margin: 0;
+}
+.pres-donut-footer .footer-sub {
+  font-size: 11px;
+  color: #999;
+  margin: 2px 0 0 0;
+}
+/* Rewards styles */
+.pres-rewards-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.reward-item {
+  display: flex;
+  align-items: center;
+  background: #F4F6F8;
+  border-radius: 10px;
+  padding: 14px 16px;
+  gap: 14px;
+}
+.reward-icon {
+  background: rgba(0, 86, 145, 0.08);
+  border-radius: 6px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.reward-info h4 {
+  font-size: 13px;
+  font-weight: 700;
+  color: #005691;
+  margin: 0;
+}
+.reward-info p {
+  font-size: 11px;
+  color: #555;
+  margin: 2px 0 0 0;
+}
+/* History styles */
+.pres-history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.history-row {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.history-label-line {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  color: #333;
+}
+.history-val {
+  font-weight: 600;
+  color: #005691;
+}
+.history-progress-bg {
+  background: #EFEFEF;
+  height: 8px;
+  border-radius: 4px;
+  width: 100%;
+  overflow: hidden;
+}
+.history-progress-fill {
+  background: #005691;
+  height: 100%;
+  border-radius: 4px;
+}
+/* Table rows */
+.pres-table-rows {
+  display: flex;
+  flex-direction: column;
+}
+.table-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 14px 0;
+  border-bottom: 1px solid #EEEEEE;
+  font-size: 13px;
+}
+.table-row:last-child {
+  border-bottom: none;
+}
+.table-row .row-label {
+  color: #555;
+}
+.table-row .row-value.bold {
+  font-weight: 700;
+  color: #000000;
+}
+.table-row .row-value.highlight {
+  color: #FF4D4D;
+}
+.table-row .row-value.blue-text {
+  color: #005691;
+}

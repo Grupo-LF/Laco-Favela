@@ -230,18 +230,42 @@ const Sidebar = ({ tipo, activeView, onNavigate }) => {
           </div>
         )}
 
-        <div style={{ marginTop: 'auto' }}>
-          <a href="#" className="nav-item"
-            onClick={(e) => { e.preventDefault(); handleSair(); }}
+        {/* Bloco de Saída idêntico ao Figma */}
+        <div style={{ marginTop: 'auto', paddingTop: '1rem' }}>
+          <button
+            onClick={handleSair}
             onMouseEnter={() => setHoveredItem('logout')}
             onMouseLeave={() => setHoveredItem(null)}
-            style={{ display: 'flex', alignItems: 'center', gap: '10px', textDecoration: 'none', color: hoveredItem === 'logout' ? 'var(--color-accent, #F5A623)' : 'white', padding: '8px 12px', borderRadius: '8px', transition: 'all 0.2s ease', cursor: 'pointer' }}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '8px',
+              width: '100%',
+              backgroundColor: hoveredItem === 'logout' ? 'rgba(255, 255, 255, 0.15)' : 'rgba(255, 255, 255, 0.08)',
+              color: '#FFFFFF',
+              border: 'none',
+              borderRadius: '8px',
+              padding: '12px 16px',
+              fontFamily: 'inherit',
+              fontSize: '14px',
+              fontWeight: '600',
+              cursor: 'pointer',
+              transition: 'background-color 0.2s ease',
+            }}
           >
             <div style={{ width: '20px', height: '20px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
-              <IconLogout style={{ width: '20px', height: '20px', filter: hoveredItem === 'logout' ? 'brightness(0) saturate(100%) invert(67%) sepia(18%) saturate(3754%) hue-rotate(348deg) brightness(96%) contrast(93%)' : 'brightness(0) invert(1)', transition: 'filter 0.2s ease' }} />
+              <IconLogout 
+                style={{ 
+                  width: '18px', 
+                  height: '18px', 
+                  filter: 'brightness(0) invert(1)', 
+                  transition: 'filter 0.2s ease' 
+                }} 
+              />
             </div>
             Sair
-          </a>
+          </button>
         </div>
       </aside>
     </>

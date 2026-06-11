@@ -1,0 +1,89 @@
+.perf-section-card {
+  background: white;
+  border-radius: 16px;
+  padding: 30px;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.02);
+}
+.perf-section-card.margin-top {
+  margin-top: 30px;
+}
+.perf-section-card h3 {
+  font-size: 15px;
+  font-weight: 700;
+  color: #000;
+  margin: 0 0 24px 0;
+}
+.perf-form-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 16px;
+}
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.form-group.full-width { grid-column: span 12; }
+.form-group.span-8 { grid-column: span 8; }
+.form-group.span-6 { grid-column: span 6; }
+.form-group.span-4 { grid-column: span 4; }
+.form-group.span-3 { grid-column: span 3; }
+
+.form-group label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #000;
+}
+.form-group input {
+  background: #D9D9D9;
+  border: none;
+  border-radius: 6px;
+  padding: 12px 14px;
+  font-size: 13px;
+  color: #444;
+  outline: none;
+  width: 100%;
+}
+.form-group input:disabled {
+  cursor: not-allowed;
+}
+.form-group input::placeholder {
+  color: #777;
+}
+.perf-actions-row {
+  grid-column: span 12;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 14px;
+}
+.btn-secondary {
+  background: #777777;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 20px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.btn-primary {
+  background: #005691;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 20px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.btn-primary-blue {
+  background: #005691;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 24px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
