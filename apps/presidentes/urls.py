@@ -5,7 +5,8 @@ from .views import (
     RankingPresidentesView, 
     AtualizarPresidenteView,
     AdminStatusCotasView,
-    PresidenteHomeView
+    PresidenteHomeView,
+    RegistrarVisitaView
 )
 
 urlpatterns = [
@@ -26,4 +27,10 @@ urlpatterns = [
     
     # Presidente: Home do presidente logado
     path('presidentes/me/home/', PresidenteHomeView.as_view(), name='presidente-home'),
+
+    # Presidente: Registrar visitas feitas
+    path('presidentes/visita/registrar/', RegistrarVisitaView.as_view(), name='registrar-visita'),
+
+
+
 ]
