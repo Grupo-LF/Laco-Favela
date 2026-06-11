@@ -61,8 +61,8 @@ class RespostaCiclo(models.Model):
         ('pendente', 'Pendente'),
     ]
 
-    ciclo = models.ForeignKey(Ciclo, on_delete=models.CASCADE, related_name='respostas')
-    presidente = models.ForeignKey('presidentes.Presidente', on_delete=models.CASCADE)
+    ciclo = models.ForeignKey(Ciclo, on_delete=models.CASCADE, related_name='respostas') 
+    presidente = models.ForeignKey('presidentes.Presidente', on_delete=models.CASCADE, null=True, blank=True)  # 👈 ADICIONE null=True, blank=True
     familia = models.ForeignKey('familias.Familia', on_delete=models.CASCADE,null=True, blank=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pendente')
     observacao = models.TextField(blank=True)

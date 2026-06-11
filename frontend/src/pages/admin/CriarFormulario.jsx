@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { criarCiclo, publicarCiclo, associarRespostasAosPresidentes, listarPresidentes } from '../../services/formularios';
+import { criarCiclo, publicarCiclo, associarRespostasAsFamilias, listarFamilias } from '../../services/formularios';
 
 const CriarFormulario = ({ onNavigate }) => {
   // ========== DECLARAÇÕES DE ESTADO ==========
@@ -7,25 +7,25 @@ const CriarFormulario = ({ onNavigate }) => {
   const [descricao, setDescricao] = useState('');
   const [perguntas, setPerguntas] = useState([]);
   const [novaPergunta, setNovaPergunta] = useState('');
-  const [presidentes, setPresidentes] = useState([]);
-  const [presidentesSelecionados, setPresidentesSelecionados] = useState([]);
+  const [familias, setFamilias] = useState([]);
+  const [familiasSelecionadas, setFamiliasSelecionadas] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  // ========== CARREGAR PRESIDENTES ==========
+  // ========== CARREGAR FAMÍLIAS ==========
   useEffect(() => {
-    carregarPresidentes();
+    carregarFamilias();
   }, []);
 
-  const carregarPresidentes = async () => {
+  const carregarFamilias = async () => {
     try {
       setLoading(true);
-      const data = await listarPresidentes();
-      setPresidentes(data);
+      const data = await listarFamilias();
+      setFamilias(data);
       setError('');
     } catch (err) {
-      console.error('Erro ao carregar presidentes:', err);
-      setError('Erro ao carregar lista de presidentes');
+      console.error('Erro ao carregar famílias:', err);
+      setError('Erro ao carregar lista de famílias');
     } finally {
       setLoading(false);
     }
@@ -95,20 +95,20 @@ const CriarFormulario = ({ onNavigate }) => {
     );
   }, []);
 
-  // ========== FUNÇÕES DE PRESIDENTES ==========
-  const togglePresidente = (presidenteId) => {
-    if (presidentesSelecionados.includes(presidenteId)) {
-      setPresidentesSelecionados(presidentesSelecionados.filter(id => id !== presidenteId));
+  // ========== FUNÇÕES DE FAMÍLIAS ==========
+  const toggleFamilia = (familiaId) => {
+    if (familiasSelecionadas.includes(familiaId)) {
+      setFamiliasSelecionadas(familiasSelecionadas.filter(id => id !== familiaId));
     } else {
-      setPresidentesSelecionados([...presidentesSelecionados, presidenteId]);
+      setFamiliasSelecionadas([...familiasSelecionadas, familiaId]);
     }
   };
 
-  const selecionarTodosPresidentes = () => {
-    if (presidentesSelecionados.length === presidentes.length) {
-      setPresidentesSelecionados([]);
+  const selecionarTodasFamilias = () => {
+    if (familiasSelecionadas.length === familias.length) {
+      setFamiliasSelecionadas([]);
     } else {
-      setPresidentesSelecionados(presidentes.map(p => p.id));
+      setFamiliasSelecionadas(familias.map(f => f.id));
     }
   };
 
@@ -158,8 +158,8 @@ const CriarFormulario = ({ onNavigate }) => {
       return;
     }
 
-    if (presidentesSelecionados.length === 0) {
-      alert('Selecione pelo menos um presidente para responder o formulário');
+    if (familiasSelecionadas.length === 0) {
+      alert('Selecione pelo menos uma família para responder o formulário');
       return;
     }
 
@@ -171,11 +171,9 @@ const CriarFormulario = ({ onNavigate }) => {
         titulo: titulo,
         descricao: descricao,
         perguntas: perguntas,
-        status: 'rascunho'
+        familias_ids: familiasSelecionadas,
+        status: 'publicado'
       });
-
-      await publicarCiclo(ciclo.id);
-      await associarRespostasAosPresidentes(ciclo.id, presidentesSelecionados);
 
       alert('Formulário publicado com sucesso!');
       onNavigate('formularios');
@@ -403,52 +401,52 @@ const CriarFormulario = ({ onNavigate }) => {
           </div>
         </div>
 
-        {/* SELEÇÃO DE PRESIDENTES */}
+        {/* SELEÇÃO DE FAMÍLIAS */}
         <div className="card" style={{ marginTop: '1rem' }}>
-          <h3 style={{ marginBottom: '1rem' }}>Selecionar Presidentes que irão responder</h3>
+          <h3 style={{ marginBottom: '1rem' }}>Selecionar Famílias que irão responder</h3>
 
-          {loading && presidentes.length === 0 ? (
+          {loading && familias.length === 0 ? (
             <div style={{ textAlign: 'center', padding: '1rem' }}>
-              <p>Carregando presidentes...</p>
+              <p>Carregando famílias...</p>
             </div>
           ) : (
             <>
               <div style={{ marginBottom: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <span style={{ fontSize: '14px', color: '#666' }}>
-                  {presidentesSelecionados.length} de {presidentes.length} selecionados
+                  {familiasSelecionadas.length} de {familias.length} selecionadas
                 </span>
-                <button className="btn btn-outline" onClick={selecionarTodosPresidentes} style={{ padding: '0.5rem 1rem', cursor: 'pointer' }}>
-                  {presidentesSelecionados.length === presidentes.length ? 'Desselecionar Todos' : 'Selecionar Todos'}
+                <button className="btn btn-outline" onClick={selecionarTodasFamilias} style={{ padding: '0.5rem 1rem', cursor: 'pointer' }}>
+                  {familiasSelecionadas.length === familias.length ? 'Desselecionar Todas' : 'Selecionar Todas'}
                 </button>
               </div>
 
               <div style={{ maxHeight: '300px', overflowY: 'auto' }}>
-                {presidentes.map(presidente => (
+                {familias.map(familia => (
                   <div
-                    key={presidente.id}
+                    key={familia.id}
                     style={{
                       display: 'flex',
                       alignItems: 'center',
                       padding: '0.75rem',
                       margin: '0.5rem 0',
-                      backgroundColor: presidentesSelecionados.includes(presidente.id) ? '#e3f2fd' : '#f5f5f5',
+                      backgroundColor: familiasSelecionadas.includes(familia.id) ? '#e3f2fd' : '#f5f5f5',
                       borderRadius: '8px',
                       cursor: 'pointer',
                       transition: 'all 0.2s'
                     }}
-                    onClick={() => togglePresidente(presidente.id)}
+                    onClick={() => toggleFamilia(familia.id)}
                   >
                     <input
                       type="checkbox"
-                      checked={presidentesSelecionados.includes(presidente.id)}
-                      onChange={() => togglePresidente(presidente.id)}
+                      checked={familiasSelecionadas.includes(familia.id)}
+                      onChange={() => toggleFamilia(familia.id)}
                       style={{ marginRight: '1rem', cursor: 'pointer' }}
                       onClick={(e) => e.stopPropagation()}
                     />
                     <div>
-                      <strong>{presidente.nome}</strong>
+                      <strong>{familia.nome_responsavel}</strong>
                       <p style={{ fontSize: '12px', color: '#666', margin: '5px 0 0 0' }}>
-                        {presidente.email || 'Sem email'} | {presidente.comunidade || 'Sem comunidade'}
+                        {familia.num_membros} membros | {familia.comunidade || 'Sem comunidade'}
                       </p>
                     </div>
                   </div>
@@ -465,7 +463,7 @@ const CriarFormulario = ({ onNavigate }) => {
            <button
             className="btn btn-primary"
             onClick={handlePublicar}
-            disabled={loading || presidentesSelecionados.length === 0}
+            disabled={loading || familiasSelecionadas.length === 0}
             style={{ padding: '0.5rem 1rem', cursor: 'pointer',background:'var(--color-primary)',color:'#fff' }}
           >
             {loading ? 'Publicando...' : 'Publicar'}

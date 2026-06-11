@@ -13,6 +13,11 @@ export const getCiclos = async () => {
   const response = await api.get('/ciclos');
   return response.data;
 };
+export const notificarResposta = async (respostaId) => {
+  getToken();
+  const response = await api.post(`/respostas/${respostaId}/notificar/`);
+  return response.data;
+};
 
 export const getCicloDetalhado = async (cicloId) => {
   getToken();
@@ -44,7 +49,14 @@ export const enviarRespostaCiclo = async (respostas) => {
   return response.data;
 };
 
-// ========== FUNÇÕES PARA CRIAR FORMULÁRIO ==========
+// ========== FUNÇÃO PARA LISTAR FAMÍLIAS ==========
+export const listarFamilias = async () => {
+  getToken();
+  const response = await api.get('/familias/');
+  return response.data;
+};
+
+// ========== FUNÇÃO CORRIGIDA - CRIA CICLO COM FAMÍLIAS ==========
 export const criarCiclo = async (dados) => {
   getToken();
   
@@ -59,7 +71,7 @@ export const criarCiclo = async (dados) => {
   };
 
   // PREPARA OS DADOS
-  const perguntasFormatadas = dados.perguntas.map((p, idx) => {
+  const perguntasFormatadas = dados.perguntas?.map((p, idx) => {
     const perguntaData = {
       texto: p.texto,
       tipo: mapTipo(p.tipo),
@@ -69,72 +81,87 @@ export const criarCiclo = async (dados) => {
 
     // Só adiciona opcoes se for selecao_unica ou selecao_multipla
     if (p.tipo === 'Resposta Única' || p.tipo === 'Múltipla Escolha') {
-      perguntaData.opcoes = p.opcoes.map((opcao, opIdx) => ({
+      perguntaData.opcoes = p.opcoes?.map((opcao, opIdx) => ({
         texto: opcao,
         ordem: opIdx
-      }));
+      })) || [];
     }
 
     return perguntaData;
-  });
+  }) || [];
 
   // CALCULA O PRAZO PARA 1 MÊS A PARTIR DE HOJE
-  // FORMATO: YYYY-MM-DD (sem horas)
   const hoje = new Date();
   const prazo = new Date(hoje);
   prazo.setMonth(prazo.getMonth() + 1);
   
-  // Formata a data como YYYY-MM-DD
   const ano = prazo.getFullYear();
   const mes = String(prazo.getMonth() + 1).padStart(2, '0');
   const dia = String(prazo.getDate()).padStart(2, '0');
   const prazoFormatado = `${ano}-${mes}-${dia}`;
 
-  console.log('Prazo formatado:', prazoFormatado);
+  console.log('📅 Prazo formatado:', prazoFormatado);
 
+  // ✅ DADOS BASE
   const dadosParaEnviar = {
     titulo: dados.titulo,
     descricao: dados.descricao,
-    prazo: prazoFormatado,  // Formato: YYYY-MM-DD
+    prazo: prazoFormatado,
     perguntas: perguntasFormatadas
   };
 
-  console.log('Dados enviados para API:', JSON.stringify(dadosParaEnviar, null, 2));
+  // ✅ ADICIONA familias_ids se existir
+  if (dados.familias_ids && dados.familias_ids.length > 0) {
+    dadosParaEnviar.familias_ids = dados.familias_ids;
+    console.log('📋 Famílias associadas:', dados.familias_ids);
+  }
+
+  // ✅ ADICIONA status se existir
+  if (dados.status) {
+    dadosParaEnviar.status = dados.status;
+    console.log('📌 Status:', dados.status);
+  }
+
+  console.log('📤 Dados enviados para API:', JSON.stringify(dadosParaEnviar, null, 2));
 
   try {
     const response = await api.post('/ciclos/', dadosParaEnviar);
-    console.log('Resposta da API:', response.data);
+    console.log('✅ Resposta da API:', response.data);
     return response.data;
   } catch (error) {
-    console.error('Erro detalhado da API:', error.response?.data);
+    console.error('❌ Erro detalhado da API:', error.response?.data);
     throw error;
   }
 };
 
+// ========== FUNÇÃO PARA PUBLICAR CICLO ==========
 export const publicarCiclo = async (cicloId) => {
   getToken();
   const response = await api.post(`/ciclos/${cicloId}/publish/`);
   return response.data;
 };
 
+// ========== FUNÇÃO PARA LISTAR PRESIDENTES (mantida para compatibilidade) ==========
 export const listarPresidentes = async () => {
   getToken();
   const response = await api.get('/presidentes/');
   return response.data;
 };
 
+// ========== FUNÇÃO PARA ASSOCIAR RESPOSTAS AOS PRESIDENTES (mantida para compatibilidade) ==========
 export const associarRespostasAosPresidentes = async (cicloId, presidentesIds) => {
   getToken();
   const promises = presidentesIds.map(presidenteId => 
     api.post('/respostas/', {
       ciclo: cicloId,
       presidente: presidenteId,
-      status: 'nao_iniciado'
+      status: 'pendente'
     })
   );
   return Promise.all(promises);
 };
 
+// ========== FUNÇÃO PARA CRIAR CICLO COM PRESIDENTES (mantida para compatibilidade) ==========
 export const criarCicloComPresidentes = async (dados, presidentesIds) => {
   getToken();
   const ciclo = await criarCiclo(dados);
@@ -142,19 +169,32 @@ export const criarCicloComPresidentes = async (dados, presidentesIds) => {
   return ciclo;
 };
 
+// ========== FUNÇÃO PARA SALVAR RASCUNHO ==========
 export const salvarRascunho = async (dados) => {
   getToken();
-  // Rascunho usa o mesmo criarCiclo mas com status diferente
   const dadosComStatus = { ...dados, status: 'rascunho' };
   return criarCiclo(dadosComStatus);
 };
 
+// ========== FUNÇÃO PARA CRIAR CICLO COM FAMÍLIAS (NOVA) ==========
+export const criarCicloComFamilias = async (dados, familiasIds) => {
+  getToken();
+  const dadosCompletos = {
+    ...dados,
+    familias_ids: familiasIds,
+    status: 'publicado'
+  };
+  return criarCiclo(dadosCompletos);
+};
+
 export default {
   // Ciclos
+  notificarResposta,
   listarCiclos,
   getCiclos,
   getCicloDetalhado,
   criarCiclo,
+  criarCicloComFamilias,
   criarCicloComPresidentes,
   publicarCiclo,
   salvarRascunho,
@@ -167,7 +207,8 @@ export default {
   submitResposta,
   enviarRespostaCiclo,
   
-  // Presidentes
+  // Presidentes e Famílias
   listarPresidentes,
+  listarFamilias,
   associarRespostasAosPresidentes,
 };

@@ -64,6 +64,7 @@ class CicloViewSet(viewsets.ModelViewSet):
         ciclo.save(update_fields=['status', 'encerrado_em'])
         return Response(CicloReadSerializer(ciclo).data)
 
+
 class RespostaCicloViewSet(viewsets.ModelViewSet):
     queryset = RespostaCiclo.objects.all().select_related('ciclo', 'presidente', 'familia').prefetch_related('itens__opcoes', 'itens__opcao', 'itens__pergunta')
     serializer_class = RespostaCicloReadSerializer
@@ -115,3 +116,27 @@ class RespostaCicloViewSet(viewsets.ModelViewSet):
         resposta.enviado_em = timezone.now()
         resposta.save(update_fields=['status', 'enviado_em'])
         return Response(RespostaCicloReadSerializer(resposta).data)
+
+    # 👇 ADICIONE ESTE MÉTODO
+    @action(detail=True, methods=['post'], url_path='notificar')
+    def notificar(self, request, pk=None):
+        """
+        Marca uma resposta como completa e registra a data/hora atual
+        """
+        resposta = self.get_object()
+        
+        # Se já estiver completa, retorna erro
+        if resposta.status == 'completo':
+            return Response(
+                {'detail': 'Esta resposta já foi completada anteriormente.'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        # Atualiza status e datas
+        resposta.status = 'completo'
+        resposta.enviado_em = timezone.now()  # Pega a hora atual do servidor
+        resposta.save(update_fields=['status', 'enviado_em', 'atualizado_em'])
+        
+        # Serializa e retorna a resposta atualizada
+        serializer = self.get_serializer(resposta)
+        return Response(serializer.data)

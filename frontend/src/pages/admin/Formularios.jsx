@@ -3,7 +3,7 @@ import { ReactComponent as AddCircle } from '../../assets/add_circle.svg';
 import { ReactComponent as Assign } from '../../assets/assignment.svg';
 import { ReactComponent as Note } from '../../assets/note_alt.svg';
 import { getCiclos, getCicloDetalhado } from '../../services/formularios';
-import { listarPresidentes } from '../../services/presidente';
+import { listarFamilias } from '../../services/familias';
 
 // ========== CONSTANTES ==========
 const STATUS_MAP = {
@@ -115,11 +115,11 @@ const CicloCard = ({ ciclo, stats, isSelected, isMobile, onSelect }) => {
   );
 };
 
-const TabelaRespostas = ({ formularioAtual, presidentesDoCiclo, isMobile, onNavigate }) => {
-  if (presidentesDoCiclo.length === 0) {
+const TabelaRespostas = ({ formularioAtual, familiasDoCiclo, isMobile, onNavigate }) => {
+  if (familiasDoCiclo.length === 0) {
     return (
       <div style={{ textAlign: 'center', padding: '2rem' }}>
-        <p>Nenhum presidente associado a este formulário ainda.</p>
+        <p>Nenhuma família associada a este formulário ainda.</p>
       </div>
     );
   }
@@ -132,39 +132,37 @@ const TabelaRespostas = ({ formularioAtual, presidentesDoCiclo, isMobile, onNavi
             <th></th>
             <th>Presidente</th>
             <th>Respondido em</th>
-            <th>Famílias</th>
-            <th>Eventos</th>
+            <th>Familias</th>
             <th>Status</th>
             <th>Ação</th>
           </tr>
         </thead>
         <tbody>
-          {presidentesDoCiclo.map((presidente) => (
-            <tr key={presidente.id}>
+          {familiasDoCiclo.map((familia) => (
+            <tr key={familia.id}>
                 <td style={{position:'relative',width:'0'}}>
                     <div style={{ backgroundColor: '#D9D9D9', borderRadius: '50%', width: isMobile ? '2.5rem' : '3rem', height: isMobile ? '2.5rem' : '3rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                      <strong>{getIniciais(presidente.nome)}</strong>
+                      <strong>{getIniciais(familia.nome)}</strong>
                     </div>
-                  
+                  {console.log(familiasDoCiclo)}
               </td>
-              <td><h3>{presidente.nome}</h3></td>
-              <td style={{ minWidth: '100px' }}>{formatarData(presidente.respondido_em)}</td>
-              <td style={{ textAlign: 'center',  }}>{presidente.familias_cadastradas || 0}</td>
-              <td style={{ textAlign: 'center', minWidth: '70px' }}>{presidente.eventos_realizados || 0}</td>
+              <td><h3>{familia.presidente}</h3></td>
+              <td style={{ minWidth: '100px' }}>{formatarData(familia.respondido_em)}</td>
+              <td style={{ textAlign: 'center', fontWeight:'600' }}>{familia.nome }</td>
               <td>
                 <span className="badge" style={{
-                  backgroundColor: STATUS_COLORS[mapearStatus(presidente.status)],
+                  backgroundColor: STATUS_COLORS[mapearStatus(familia.status)],
                   color: 'black',
                   padding: isMobile ? '4px 8px' : '6px 12px',
                   fontSize: isMobile ? '0.7rem' : '0.8rem'
                 }}>
-                  {mapearStatus(presidente.status)}
+                  {mapearStatus(familia.status)}
                 </span>
               </td>
               <td style={{position:'relative', left:'4%'}}>
-                {mapearStatus(presidente.status) === 'Completo'
-                  ? <button className="btn btn-outline" style={{ padding: isMobile ? '4px 8px' : '6px 12px', fontSize: isMobile ? '0.7rem' : '0.8rem' }} onClick={() => onNavigate('ver-formulario', { respostaId: presidente.resposta_id })}>Ver</button>
-                  : <button className="btn btn-primary" style={{backgroundColor:'var(--color-primary)',color:'#fff', padding: isMobile ? '4px 8px' : '6px 12px', fontSize: isMobile ? '0.7rem' : '0.8rem' }} onClick={() => onNavigate('notificar', { presidenteId: presidente.id, nome: presidente.nome })}>Notificar</button>
+                {mapearStatus(familia.status) === 'Completo'
+                  ? <button className="btn btn-outline" style={{ padding: isMobile ? '4px 8px' : '6px 12px', fontSize: isMobile ? '0.7rem' : '0.8rem' }} onClick={() => onNavigate('ver-formulario', { respostaId: familia.resposta_id })}>Ver</button>
+                  : <button className="btn btn-primary" style={{backgroundColor:'var(--color-primary)',color:'#fff', padding: isMobile ? '4px 8px' : '6px 12px', fontSize: isMobile ? '0.7rem' : '0.8rem' }} onClick={() => onNavigate('notificar', { familiaId: familia.id, nome: familia.nome })}>Notificar</button>
                 }
               </td>
             </tr>
@@ -201,8 +199,8 @@ const Formularios = ({ onNavigate }) => {
   const [formularioAtual, setFormularioAtual] = useState(null);
   const [ciclos, setCiclos] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [presidentesDoCiclo, setPresidentesDoCiclo] = useState([]);
-  const [todosPresidentes, setTodosPresidentes] = useState([]);
+  const [familiasDoCiclo, setFamiliasDoCiclo] = useState([]);
+  const [todasFamilias, setTodasFamilias] = useState([]);
   const [error, setError] = useState('');
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const [estatisticasCiclos, setEstatisticasCiclos] = useState({});
@@ -217,19 +215,19 @@ const Formularios = ({ onNavigate }) => {
   // Carregar dados iniciais
   useEffect(() => {
     const carregarDados = async () => {
-      await Promise.all([carregarCiclos(), carregarPresidentes()]);
+      await Promise.all([carregarCiclos(), carregarFamilias()]);
     };
     carregarDados();
   }, []);
 
-  const carregarPresidentes = useCallback(async () => {
+  const carregarFamilias = useCallback(async () => {
     try {
-      const data = await listarPresidentes();
-      setTodosPresidentes(data);
+      const data = await listarFamilias();
+      setTodasFamilias(data);
       setError('');
     } catch (err) {
-      console.error('Erro ao carregar presidentes:', err);
-      setError('Erro ao carregar lista de presidentes');
+      console.error('Erro ao carregar famílias:', err);
+      setError('Erro ao carregar lista de famílias');
     }
   }, []);
 
@@ -239,15 +237,15 @@ const Formularios = ({ onNavigate }) => {
     await Promise.all(ciclosList.map(async (ciclo) => {
       try {
         const cicloDetalhado = await getCicloDetalhado(ciclo.id);
-        const presidentes = cicloDetalhado.presidentes_associados || [];
-        const completas = presidentes.filter(p =>
-          ['concluido', 'completo', 'enviado'].includes(p.status)
+        const familias = cicloDetalhado.familias_associadas || [];
+        const completas = familias.filter(f =>
+          ['concluido', 'completo', 'enviado'].includes(f.status)
         ).length;
 
         novasEstatisticas[ciclo.id] = {
-          total: presidentes.length,
+          total: familias.length,
           completas,
-          pendentes: presidentes.length - completas
+          pendentes: familias.length - completas
         };
       } catch (error) {
         console.error(`Erro ao carregar estatísticas do ciclo ${ciclo.id}:`, error);
@@ -279,11 +277,11 @@ const Formularios = ({ onNavigate }) => {
     try {
       const cicloDetalhado = await getCicloDetalhado(ciclo.id);
       setFormularioAtual(cicloDetalhado);
-      setPresidentesDoCiclo(cicloDetalhado.presidentes_associados || []);
+      setFamiliasDoCiclo(cicloDetalhado.familias_associadas || []);
     } catch (error) {
       console.error('Erro ao carregar detalhes do ciclo:', error);
       setFormularioAtual(ciclo);
-      setPresidentesDoCiclo([]);
+      setFamiliasDoCiclo([]);
     }
   }, []);
 
@@ -293,10 +291,10 @@ const Formularios = ({ onNavigate }) => {
   }, [selecionarCiclo]);
 
   // Memoized values
-  const totalPresidentes = useMemo(() => presidentesDoCiclo.length, [presidentesDoCiclo.length]);
+  const totalFamilias = useMemo(() => familiasDoCiclo.length, [familiasDoCiclo.length]);
   const respostasCompletas = useMemo(() =>
-    presidentesDoCiclo.filter(p => ['concluido', 'completo', 'enviado'].includes(p.status)).length,
-    [presidentesDoCiclo]
+    familiasDoCiclo.filter(f => ['concluido', 'completo', 'enviado'].includes(f.status)).length,
+    [familiasDoCiclo]
   );
 
   // Renderização condicional
@@ -357,7 +355,7 @@ const Formularios = ({ onNavigate }) => {
                     </p>
                     {ciclo.status === 'ativo' && (
                       <p className="text-sm" style={{ margin: '5px 0 0 0', color: '#888' }}>
-                        {stats.total} presidentes | {stats.completas} respondidos | {stats.pendentes} pendentes
+                        {stats.total} famílias | {stats.completas} respondidos | {stats.pendentes} pendentes
                       </p>
                     )}
                   </div>
@@ -432,7 +430,7 @@ const Formularios = ({ onNavigate }) => {
 
           <TabelaRespostas
             formularioAtual={formularioAtual}
-            presidentesDoCiclo={presidentesDoCiclo}
+            familiasDoCiclo={familiasDoCiclo}
             isMobile={isMobile}
             onNavigate={onNavigate}
           />

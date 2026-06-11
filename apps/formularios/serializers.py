@@ -29,34 +29,34 @@ class PerguntaWriteSerializer(serializers.ModelSerializer):
 class CicloReadSerializer(serializers.ModelSerializer):
     perguntas = PerguntaReadSerializer(many=True, read_only=True)
     
-    # ADICIONE ESTA LINHA - declara o campo
-    presidentes_associados = serializers.SerializerMethodField()
+    # Campo para famílias associadas
+    familias_associadas = serializers.SerializerMethodField()
 
     class Meta:
         model = Ciclo
         fields = [
             'id', 'titulo', 'descricao', 'status', 'prazo', 
             'criado_em', 'publicado_em', 'encerrado_em', 
-            'perguntas', 'presidentes_associados'
+            'perguntas', 'familias_associadas'
         ]
 
-    # ADICIONE ESTE MÉTODO
-    def get_presidentes_associados(self, obj):
-        # Busca as respostas do ciclo
-        respostas = RespostaCiclo.objects.filter(ciclo=obj).select_related('presidente')
+    def get_familias_associadas(self, obj):
+        # Busca as respostas do ciclo com join no presidente
+        respostas = RespostaCiclo.objects.filter(ciclo=obj).select_related('familia', 'presidente')
         
-        # Retorna os dados dos presidentes
+        # Retorna os dados das famílias
         return [{
-            'id': r.presidente.id,
-            'nome': r.presidente.nome,
+            'id': r.familia.id,
+            'nome': r.familia.nome_responsavel,
+            'presidente': r.presidente.nome if r.presidente else None,
             'status': r.status
-        } for r in respostas if r.presidente]
+        } for r in respostas if r.familia]
 
 
 class CicloWriteSerializer(serializers.ModelSerializer):
     perguntas = PerguntaWriteSerializer(many=True, required=False)
     
-    presidentes_ids = serializers.ListField(
+    familias_ids = serializers.ListField(
         child=serializers.IntegerField(),
         required=False,
         write_only=True
@@ -67,22 +67,26 @@ class CicloWriteSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'titulo', 'descricao', 'status', 'prazo', 
             'criado_em', 'publicado_em', 'encerrado_em', 
-            'perguntas', 'presidentes_ids'
+            'perguntas', 'familias_ids'
         ]
         read_only_fields = ['status', 'criado_em', 'publicado_em', 'encerrado_em']
 
     @transaction.atomic
     def create(self, validated_data):
-        presidentes_ids = validated_data.pop('presidentes_ids', [])
+        familias_ids = validated_data.pop('familias_ids', [])
         perguntas_data = validated_data.pop('perguntas', [])
         ciclo = Ciclo.objects.create(**validated_data)
         self._save_perguntas(ciclo, perguntas_data)
         
-        for presidente_id in presidentes_ids:
+        from apps.familias.models import Familia
+        
+        for familia_id in familias_ids:
+            familia = Familia.objects.get(id=familia_id)
+            
             RespostaCiclo.objects.create(
                 ciclo=ciclo,
-                presidente_id=presidente_id,
-                familia=None,
+                familia_id=familia_id,
+                presidente=familia.presidente,
                 status='pendente',
                 observacao=''
             )
@@ -92,7 +96,7 @@ class CicloWriteSerializer(serializers.ModelSerializer):
     @transaction.atomic
     def update(self, instance, validated_data):
         perguntas_data = validated_data.pop('perguntas', None)
-        presidentes_ids = validated_data.pop('presidentes_ids', None)
+        familias_ids = validated_data.pop('familias_ids', None)
         
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
@@ -102,13 +106,16 @@ class CicloWriteSerializer(serializers.ModelSerializer):
             instance.perguntas.all().delete()
             self._save_perguntas(instance, perguntas_data)
         
-        if presidentes_ids is not None:
+        if familias_ids is not None:
+            from apps.familias.models import Familia
+            
             RespostaCiclo.objects.filter(ciclo=instance).delete()
-            for presidente_id in presidentes_ids:
+            for familia_id in familias_ids:
+                familia = Familia.objects.get(id=familia_id)
                 RespostaCiclo.objects.create(
                     ciclo=instance,
-                    presidente_id=presidente_id,
-                    familia=None,
+                    familia_id=familia_id,
+                    presidente=familia.presidente,
                     status='pendente',
                     observacao=''
                 )
@@ -169,8 +176,8 @@ class RespostaCicloReadSerializer(serializers.ModelSerializer):
         fields = [
             'id',
             'ciclo',
-            'presidente',
             'familia',
+            'presidente',
             'status',
             'observacao',
             'respondido_em',
@@ -188,8 +195,8 @@ class RespostaCicloWriteSerializer(serializers.ModelSerializer):
         fields = [
             'id',
             'ciclo',
-            'presidente',
             'familia',
+            'presidente',
             'status',
             'observacao',
             'respondido_em',
