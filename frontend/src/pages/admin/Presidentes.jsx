@@ -2,8 +2,11 @@ import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { mascaraTelefone, mascaraCNPJ } from '../../utils/masks';
 import { ReactComponent as AddIcon } from '../../assets/addBtn.svg';
 import { ReactComponent as ExportIcon } from '../../assets/file_export.svg';
-import { ESTADO_INICIAL_FORM, OPCOES_TRABALHO, OPCOES_RENDA, OPCOES_MEMBROS } from '../../utils/constants/presidentes';
+import { ESTADO_INICIAL_FORM } from '../../utils/constants/presidentes';
 import api from '../../services/api';
+
+// IMPORTAÇÃO DO COMPONENTE DO MODAL
+import NovoPresidenteModal from '../../components/layout/NovoPresidenteModal';
 
 // ========== CONSTANTES ==========
 const OPCOES_ORDENACAO = [
@@ -21,13 +24,13 @@ const OPCOES_STATUS = [
 ];
 
 // ========== FUNÇÕES UTILITÁRIAS ==========
-
 const getRankColor = (rank) => {
-    if (rank <= 3) {
-      return ['var(--color-primary)','#fff'];  // Cor para ranks 1, 2 e 3
-    }
-    return ['var(--color-accent)','#000'];   // Cor para ranks maiores que 3
-  };
+  if (rank <= 3) {
+    return ['var(--color-primary)', '#fff'];
+  }
+  return ['var(--color-accent)', '#000'];
+};
+
 const calcularStatusPorScore = (score) => {
   if (score >= 70) return 'ativo';
   if (score >= 50) return 'alerta';
@@ -44,7 +47,6 @@ const getStatusTexto = (status) => {
   const map = { ativo: 'Ativo', alerta: 'Alerta', critico: 'Crítico' };
   return map[status] || status;
 };
-
 
 // ========== COMPONENTES ==========
 const BotaoFiltro = ({ ativo, onClick, children, cor = 'var(--color-primary)' }) => (
@@ -81,25 +83,6 @@ const InputField = ({ label, name, value, onChange, required, type = 'text', pla
   </div>
 );
 
-const SelectField = ({ label, name, value, onChange, options, required, error }) => (
-  <div>
-    <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>{label}:</label>
-    <select
-      name={name}
-      value={value}
-      onChange={onChange}
-      required={required}
-      style={{ width: '100%', padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc' }}
-    >
-      <option value="">Selecione...</option>
-      {options.map(opt => (
-        <option key={opt.value} value={opt.value}>{opt.label}</option>
-      ))}
-    </select>
-    {error && <small style={{ color: 'red' }}>{error}</small>}
-  </div>
-);
-
 const BarraProgresso = ({ atual, meta }) => {
   const percentual = Math.min(((atual || 0) / (meta || 100)) * 100, 100);
   return (
@@ -115,17 +98,14 @@ const BarraProgresso = ({ atual, meta }) => {
 };
 
 const CirculoRank = ({ rank }) => (
-  <div style={{ width: '36px', height: '36px', borderRadius: '50%', backgroundColor: getRankColor(rank)[0], display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', fontSize: '13px', color: getRankColor(rank)[1]}}>
+  <div style={{ width: '36px', height: '36px', borderRadius: '50%', backgroundColor: getRankColor(rank)[0], display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', fontSize: '13px', color: getRankColor(rank)[1] }}>
     {rank}
   </div>
 );
 
-
-
 // ========== COMPONENTE PRINCIPAL ==========
 const Presidentes = () => {
-  const [mostrarForm, setMostrarForm] = useState(false);
-  const [form, setForm] = useState({ ...ESTADO_INICIAL_FORM, meta_cotas: '' });
+  const [modalAberto, setModalAberto] = useState(false);
   const [edicao, setEdicao] = useState({ id: '', cota: '', meta_cotas: '', setor: '' });
   const [ordenacao, setOrdenacao] = useState({ tipo: 'ranking', ordem: 'desc' });
   const [filtroStatus, setFiltroStatus] = useState('todos');
@@ -133,7 +113,6 @@ const Presidentes = () => {
   const [presidentesComRank, setPresidentesComRank] = useState([]);
   const [loading, setLoading] = useState(true);
   const [carregando, setCarregando] = useState(false);
-  const [erros, setErros] = useState({});
 
   // Carregar presidentes
   const carregarPresidentes = useCallback(async () => {
@@ -163,39 +142,24 @@ const Presidentes = () => {
     carregarPresidentes();
   }, [carregarPresidentes]);
 
-  // Handlers do formulário
-  const handleChange = (event) => {
-    let { name, value, type, checked } = event.target;
-
-    if (name === 'telefone') value = mascaraTelefone(value);
-    if (name === 'cnpj') value = mascaraCNPJ(value);
-    
-    setForm(prev => ({ ...prev, [name]: type === 'checkbox' ? checked : value }));
-    if (erros[name]) setErros(prev => ({ ...prev, [name]: null }));
-  };
-  
-
-
-  const envioForm = async (event) => {
-    event.preventDefault();
-    
+  // Handler de envio que recebe os dados do Modal e faz o POST na API
+  const handleCadastrarPresidente = async (dadosModal) => {
     const dadosParaEnviar = {
-      ...form,
-      num_membros: parseInt(form.num_membros) || 1,
-      cota: parseInt(form.cota) || 0,
-      meta_cotas: parseInt(form.meta_cotas) || 100
+      ...ESTADO_INICIAL_FORM,
+      nome: dadosModal.nome,
+      setor: dadosModal.setor,
+      num_membros: 1,
+      cota: 0,
+      meta_cotas: 100
     };
 
     try {
       setCarregando(true);
-      setErros({});
-      
       const response = await api.post('/presidentes/', dadosParaEnviar);
       if (response.status === 201 || response.status === 200) {
         alert('Presidente cadastrado com sucesso!');
+        setModalAberto(false);
         carregarPresidentes();
-        setForm({ ...ESTADO_INICIAL_FORM, meta_cotas: '' });
-        setMostrarForm(false);
       }
     } catch (error) {
       console.error('Erro ao cadastrar:', error);
@@ -271,17 +235,17 @@ const Presidentes = () => {
     <div className="presi">
       {/* Header */}
       <div className="header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', flexWrap: 'wrap', gap: '1rem' }}>
-        <h2 style={{ margin: 0 ,color:'var(--color-primary)'}}>Presidentes</h2>
+        <h2 style={{ margin: 0, color: 'var(--color-primary)' }}>Presidentes</h2>
         <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-          <button className="btn btn-outline" style={{ padding: '0.5rem 1rem', cursor: 'pointer' }}>Exportar lista <ExportIcon></ExportIcon></button>
-          <button className="btn btn-primary" onClick={() => setMostrarForm(!mostrarForm)} style={{ padding: '0.5rem 1rem', backgroundColor: 'var(--color-primary)', color: '#fff', border: 'none', cursor: 'pointer' }}>
-            Novo Presidente<AddIcon/>
+          <button className="btn btn-outline" style={{ padding: '0.5rem 1rem', cursor: 'pointer' }}>Exportar lista <ExportIcon /></button>
+          <button className="btn btn-primary" onClick={() => setModalAberto(true)} style={{ padding: '0.5rem 1rem', backgroundColor: 'var(--color-primary)', color: '#fff', border: 'none', cursor: 'pointer' }}>
+            Novo Presidente<AddIcon />
           </button>
         </div>
       </div>
 
       <div className="view-section active" style={{ padding: '2rem' }}>
-       
+        
         {/* Filtros */}
         <div className="card" style={{ boxShadow: '0 2px 4px rgba(0,0,0,0.1)', marginBottom: '1rem', overflowX: 'auto' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
@@ -304,12 +268,12 @@ const Presidentes = () => {
         </div>
 
         {/* Tabela */}
-        <div className="card" style={{ padding: '1.5rem' , boxShadow: '0 2px 4px rgba(0,0,0,0.1)', marginBottom: '2rem', overflowX: 'auto' }}>
+        <div className="card" style={{ padding: '1.5rem', boxShadow: '0 2px 4px rgba(0,0,0,0.1)', marginBottom: '2rem', overflowX: 'auto' }}>
           <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: '1000px', borderSpacing: 0 }}>
             <thead>
               <tr style={{ borderBottom: '2px solid #ddd' }}>
                 <th style={{ padding: '12px 8px', textAlign: 'center', fontWeight: '600', fontSize: '13px' }}>RANK</th>
-                <th style={{ padding: '12px 8px', textAlign: 'left', fontWeight: '600', fontSize: '13px'}}>PRESIDENTE</th>
+                <th style={{ padding: '12px 8px', textAlign: 'left', fontWeight: '600', fontSize: '13px' }}>PRESIDENTE</th>
                 <th style={{ padding: '12px 8px', textAlign: 'center', fontWeight: '600', fontSize: '13px' }}>SETOR</th>
                 <th style={{ padding: '12px 8px', textAlign: 'center', fontWeight: '600', fontSize: '13px' }}>COTAS</th>
                 <th style={{ padding: '12px 8px', textAlign: 'center', fontWeight: '600', fontSize: '13px' }}>VISITAS</th>
@@ -335,15 +299,16 @@ const Presidentes = () => {
                   const isLast = index === presidentesOrdenados.length - 1;
                   
                   return (
-                    <tr key={p.id} style={{ borderBottom: isLast ? 'none' : '1px solid #eee', backgroundColor: '#fff'  }}>
+                    <tr key={p.id} style={{ borderBottom: isLast ? 'none' : '1px solid #eee', backgroundColor: '#fff' }}>
                       <td style={{ padding: '12px 8px', textAlign: 'center' }}><CirculoRank rank={p.rank_fixo} /></td>
                       <td style={{ padding: '12px 8px', textAlign: 'left' }}>
-                      <h3 style={{ fontSize: '14px', whiteSpace: 'nowrap' }}>{p.nome}</h3>                      </td>
+                        <h3 style={{ fontSize: '14px', whiteSpace: 'nowrap' }}>{p.nome}</h3>
+                      </td>
                       <td style={{ padding: '12px 8px', textAlign: 'center', fontSize: '13px' }}>{p.setor || p.comunidade}</td>
-                      <td style={{ padding: '16px 8px', textAlign: 'center', minWidth: '80px', }}><BarraProgresso atual={p.cota} meta={p.meta_cotas} /></td>
+                      <td style={{ padding: '16px 8px', textAlign: 'center', minWidth: '80px' }}><BarraProgresso atual={p.cota} meta={p.meta_cotas} /></td>
                       <td style={{ padding: '12px 8px', textAlign: 'center', fontWeight: '500', fontSize: '13px' }}>{p.visitas || 0}</td>
                       <td style={{ padding: '12px 8px', textAlign: 'center', fontWeight: '500', fontSize: '13px' }}>{p.eventos || 0}</td>
-                      <td style={{ padding: '12px 8px', textAlign: 'center', fontWeight: '500', fontSize: '13px',  }}>{p.penalizacao || 0}</td>
+                      <td style={{ padding: '12px 8px', textAlign: 'center', fontWeight: '500', fontSize: '13px' }}>{p.penalizacao || 0}</td>
                       <td style={{ padding: '12px 8px', textAlign: 'center', fontWeight: '500', fontSize: '13px' }}>{score}</td>
                       <td style={{ padding: '12px 8px', textAlign: 'center' }}>
                         <span className="badge" style={{ ...badgeStyle, padding: '4px 10px', borderRadius: '12px', fontSize: '11px', fontWeight: '500' }}>
@@ -364,7 +329,7 @@ const Presidentes = () => {
         </div>
 
         {/* Edição */}
-        <div className="card" style={{ padding: '30px 20px', backgroundColor: '#D3D3D3', borderRadius: '8px'}}>
+        <div className="card" style={{ padding: '30px 20px', backgroundColor: '#D3D3D3', borderRadius: '8px' }}>
           <h4 style={{ fontSize: '18px', marginBottom: '1rem' }}>Editar Cota</h4>
           <p style={{ color: '#666', fontSize: '14px', marginBottom: '1.5rem' }}>Atualize a cota atual, a meta de famílias e o setor do presidente</p>
 
@@ -393,6 +358,15 @@ const Presidentes = () => {
           </div>
         </div>
       </div>
+
+      {/* RENDERIZAÇÃO DO MODAL FIGMA */}
+      {modalAberto && (
+        <NovoPresidenteModal 
+          onFechar={() => setModalAberto(false)} 
+          onCadastrar={handleCadastrarPresidente}
+          carregando={carregando}
+        />
+      )}
     </div>
   );
 };
