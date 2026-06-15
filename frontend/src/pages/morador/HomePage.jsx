@@ -10,8 +10,8 @@ const HomePage = ({ onNavigate }) => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const response = await fetch('/api/dashboard');
-        if (!response.ok) throw new Error('Falha ao carregar dados');
+        const response = await fetch('http://127.0.0.1:8000/api/dashboard/');
+        if (!response.ok) throw new Error('Falha ao carregar dados do servidor');
         const result = await response.json();
         setData(result);
       } catch (err) {
@@ -23,46 +23,97 @@ const HomePage = ({ onNavigate }) => {
     fetchData();
   }, []);
 
-  if (loading) return <div className="loading">Carregando...</div>;
-  if (error) return <div className="error">Erro: {error}</div>;
+  if (loading) return <div className="loading-state">Carregando painel...</div>;
+  if (error) return <div className="error-state">Aviso: {error}</div>;
 
   return (
-    <div className="home-layout">
-      <aside className="sidebar">
-        <nav>
-          <button onClick={() => onNavigate('home')}>Início</button>
-          <button onClick={() => onNavigate('reservas')}>Reservas</button>
-          <button onClick={() => onNavigate('visitantes')}>Visitantes</button>
-        </nav>
-      </aside>
-      <main className="main">
-        <header className="topbar">
-          <h1>Olá, {data.usuario.nome}</h1>
-        </header>
-        <section className="content">
-          <div className="greeting">
-            <p>Bem-vindo ao seu condomínio digital.</p>
+    <div className="home-container">
+      {/* Título de Boas-vindas */}
+      <h1 className="welcome-title">Olá, {data?.usuario?.nome || 'Pedro'}!</h1>
+
+      {/* Seção 1: Acesso Rápido */}
+      <section className="quick-access-section">
+        <h2>Acesso Rápido</h2>
+        <div className="quick-access-grid">
+          
+          <div className="access-card" onClick={() => onNavigate('acompanhamento')}>
+            <svg className="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+              <circle cx="12" cy="12" r="3"/>
+            </svg>
+            <span>Acompanhamento</span>
           </div>
-          <div className="quick-access">
-            <div className="card" onClick={() => onNavigate('cota')}>
-              <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" /></svg>
-              <span>Cota: {data.cota.status}</span>
+
+          <div className="access-card" onClick={() => onNavigate('ranking')}>
+            <svg className="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+            </svg>
+            <span>Ranking</span>
+          </div>
+
+          <div className="access-card" onClick={() => onNavigate('feedback')}>
+            <svg className="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+              <path d="M12 7v5M12 16h.01"/>
+            </svg>
+            <span>Feedback Anônimo</span>
+          </div>
+
+          <div className="access-card" onClick={() => onNavigate('ser-presidente')}>
+            <svg className="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+              <circle cx="9" cy="7" r="4"/>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+            </svg>
+            <span>Ser Presidente</span>
+          </div>
+
+        </div>
+      </section>
+
+      {/* Seção 2: Dois Cards Inferiores */}
+      <div className="dashboard-bottom-flex">
+        
+        {/* Card: Próximos Eventos */}
+        <div className="info-box events-box">
+          <h3>Próximos Eventos</h3>
+          <div className="events-list">
+            {data?.eventos && data.eventos.length > 0 ? (
+              data.eventos.map((e, index) => (
+                <div key={e.id || index} className={`event-item color-${(index % 2) === 0 ? 'orange' : 'blue'}`}>
+                  <span className="event-name">{e.titulo || e.nome}</span>
+                  <span className="event-date">{e.data_detalhe || 'Data a definir'}</span>
+                </div>
+              ))
+            ) : (
+              <div className="empty-state">Nenhum evento programado.</div>
+            )}
+          </div>
+        </div>
+
+        {/* Card: Engajamento */}
+        <div className="info-box engagement-box">
+          <h3>Engajamento</h3>
+          <div className="engagement-content">
+            <svg className="tree-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M12 19V5M12 5l-4 4M12 5l4 4M5 19h14"/>
+            </svg>
+            
+            <span className="level-text">{data?.engajamento_nivel || 'Nível 3 - Engajado'}</span>
+            <span className="points-subtext">{data?.engajamento_pontos || '67/100 pontos'}</span>
+            
+            {/* Barra de Progresso */}
+            <div className="progress-container">
+              <div 
+                className="progress-bar" 
+                style={{ width: `${data?.engajamento_porcentagem || 67}%` }}
+              ></div>
             </div>
-            <div className="card" onClick={() => onNavigate('formularios')}>
-              <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6z" /></svg>
-              <span>Formulários ({data.formularios.length})</span>
-            </div>
           </div>
-          <div className="events-card">
-            <h3>Próximos Eventos</h3>
-            <ul>{data.eventos.map(e => <li key={e.id}>{e.titulo}</li>)}</ul>
-          </div>
-          <div className="engagement-card">
-            <h3>Engajamento</h3>
-            <p>Sua participação nas assembleias: {data.engajamento}%</p>
-          </div>
-        </section>
-      </main>
+        </div>
+
+      </div>
     </div>
   );
 };
