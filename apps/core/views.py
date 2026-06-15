@@ -43,3 +43,51 @@ def dashboard_morador(request):
         "engajamento_porcentagem": 67
     }
     return Response(dados_teste)
+
+# 3. NOVA VIEW: Notificações do Morador (Dados para o Figma)
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def lista_notificacoes(request):
+    notificacoes_teste = [
+        {
+            "id": 1,
+            "tipo": "reuniao",
+            "titulo": "Reunião da comunidade",
+            "mensagem": "Amanhã às 18h no Centro Comunitário – Assunto: Melhorias na praça central e iluminação.",
+            "tempo_passado": "Hoje, 09:14",
+            "lida": False
+        },
+        {
+            "id": 2,
+            "tipo": "status",
+            "titulo": "Status Atualizado",
+            "mensagem": "Sua situação foi atualizada para Aprovado. Confira os detalhes em Acompanhamento.",
+            "tempo_passado": "Ontem, 14:32",
+            "lida": False
+        },
+        {
+            "id": 3,
+            "tipo": "acao",
+            "titulo": "Nova Ação Disponível",
+            "mensagem": "Uma nova ação da comunidade está disponível para você participar. Acesse Acompanhamento para saber mais.",
+            "tempo_passado": "Ontem, 11:00",
+            "lida": False
+        },
+        {
+            "id": 4,
+            "tipo": "palestra",
+            "titulo": "Palestra: Direitos do Morador",
+            "mensagem": "O evento vai ser realizado na praça central às 16h. Contamos com a sua participação!",
+            "tempo_passado": "3 dias atrás",
+            "lida": True
+        },
+        {
+            "id": 5,
+            "tipo": "ranking",
+            "titulo": "Você subiu no Ranking!",
+            "mensagem": "Parabéns! Você alcançou o Nível 3 de engajamento na comunidade.",
+            "tempo_passado": "1 semana atrás",
+            "lida": True
+        }
+    ]
+    return Response(notificacoes_teste)
