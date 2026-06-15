@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from apps.familias.models import Familia
 from .models import Presidente
 
 class PresidenteSerializer(serializers.ModelSerializer):

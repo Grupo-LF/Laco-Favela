@@ -1,6 +1,7 @@
+from django.utils import timezone
 from django.db import transaction
 from rest_framework import serializers
-
+from apps.formularios.models import Notificacao
 from .models import Ciclo, RespostaCiclo, Pergunta, Opcao, RespostaItem
 
 
@@ -283,3 +284,19 @@ class RespostaCicloWriteSerializer(serializers.ModelSerializer):
         if pergunta.tipo == 'selecao_multipla':
             return bool(item.get('opcoes'))
         return False
+
+class NotificacaoSerializer(serializers.ModelSerializer):
+    tempo_passado = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Notificacao
+        fields = ['id', 'familia', 'titulo', 'mensagem', 'categoria', 'lida', 'criado_em', 'tempo_passado']
+
+    def get_tempo_passado(self, obj):
+        # Retorna uma string amigável (Ex: "Hoje, 14:32" ou "Ontem")
+        agora = timezone.now()
+        if obj.criado_em.date() == agora.date():
+            return f"Hoje, {obj.criado_em.strftime('%H:%M')}"
+        elif obj.criado_em.date() == (agora - timezone.timedelta(days=1)).date():
+            return f"Ontem, {obj.criado_em.strftime('%H:%M')}"        
+        return obj.criado_em.strftime('%d/%m/%Y')

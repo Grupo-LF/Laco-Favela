@@ -3,6 +3,15 @@ from django.conf import settings
 
 # Create your models here.
 class Familia(models.Model):
+
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL, 
+        on_delete=models.CASCADE, 
+        related_name='familia_profile',
+        null=True,
+        blank=True
+    )
+
     RENDA_CHOICES = [
         ('sem_renda', 'Sem renda fixa'),
         ('ate_meio', 'Até meio salário mínimo'),
