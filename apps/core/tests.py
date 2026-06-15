@@ -173,3 +173,27 @@ class TesteAdminFormularios(BaseSeleniumTest):
         time.sleep(2)
         botao = self.browser.find_element(By.XPATH, "//button[contains(text(), 'Ver todos')]")
         self.assertTrue(botao.is_displayed())
+
+class TesteAdminPresidentesRanking(BaseSeleniumTest):
+
+    # SCRUM-9: Admin quer visualizar ranking de presidentes
+    def test_tabela_ranking_visivel(self):
+        self.fazer_login('admin', 'admin123')
+        self.clicar_menu('Presidentes')
+        time.sleep(2)
+        tabela = self.browser.find_element(By.TAG_NAME, 'table')
+        self.assertTrue(tabela.is_displayed())
+
+    def test_botao_novo_presidente_visivel(self):
+        self.fazer_login('admin', 'admin123')
+        self.clicar_menu('Presidentes')
+        time.sleep(2)
+        botao = self.browser.find_element(By.XPATH, "//button[contains(text(), 'Novo Presidente')]")
+        self.assertTrue(botao.is_displayed())
+
+    def test_filtros_ordenacao_visiveis(self):
+        self.fazer_login('admin', 'admin123')
+        self.clicar_menu('Presidentes')
+        time.sleep(2)
+        filtro = self.browser.find_element(By.XPATH, "//button[contains(text(), 'Score')]")
+        self.assertTrue(filtro.is_displayed())
