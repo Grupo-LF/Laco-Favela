@@ -1,8 +1,12 @@
 from django.urls import path
+from rest_framework import viewsets
+from rest_framework.routers import DefaultRouter
+
 from .views import (
-    ListaCreatePresidentesView, 
-    AtualizarCotaView, 
-    RankingPresidentesView, 
+    FamiliaCreateView,
+    ListaCreatePresidentesView,
+    AtualizarCotaView,
+    RankingPresidentesView,
     AtualizarPresidenteView,
     AdminStatusCotasView,
     PresidenteHomeView,
@@ -27,6 +31,7 @@ urlpatterns = [
     
     # Presidente: Home do presidente logado
     path('presidentes/me/home/', PresidenteHomeView.as_view(), name='presidente-home'),
+    path('familias/cadastrar/', FamiliaCreateView.as_view(), name='cadastrar-familia'),
 
     # Presidente: Registrar visitas feitas
     path('presidentes/visita/registrar/', RegistrarVisitaView.as_view(), name='registrar-visita'),
