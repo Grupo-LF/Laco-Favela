@@ -17,7 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from apps.core.views import login_view
-    
+from apps.core.views import dashboard_morador
     
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -28,4 +28,5 @@ urlpatterns = [
     path('api/', include('apps.dadosGerais.urls')),
     path('api/', include('apps.ranking.urls')),
     path('api/login/', login_view),
+    path('api/dashboard/', dashboard_morador, name='dashboard_morador'),
 ]
