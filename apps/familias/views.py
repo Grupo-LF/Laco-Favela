@@ -1,15 +1,16 @@
-from django.conf import settings
-from django.db.models import Q
-from django.utils import timezone
-from rest_framework import status, viewsets,generics
-from rest_framework.decorators import action
-from rest_framework.permissions import IsAuthenticated, IsAdminUser
-from rest_framework.response import Response
-
 from .models import Familia
+from django.db.models import Q
+from django.conf import settings
+from django.utils import timezone
+from rest_framework.response import Response
+from rest_framework.decorators import action
+from apps.formularios.models import Notificacao
+from rest_framework import status, viewsets, generics
+from apps.formularios.serializers import NotificacaoSerializer
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from .serializers import FamiliaSerializer, FamiliaRankingSerializer, FamiliaRankingParticipacaoSerializer
 
-# Create your views here.
+
 class FamiliaViewSet(viewsets.ModelViewSet):
     queryset = Familia.objects.all()
     serializer_class = FamiliaSerializer
@@ -61,6 +62,16 @@ class FamiliaViewSet(viewsets.ModelViewSet):
         familia.aprovada = status_value == 'aprovada'
         familia.atualizado_em = timezone.now()
         familia.save(update_fields=['status', 'aprovada', 'atualizado_em'])
+
+        # --- DISPARO DA NOTIFICAÇÃO INDIVIDUAL ---
+        status_limpo = status_value.replace('_', ' ').title()
+        Notificacao.objects.create(
+            familia=familia,
+            titulo="Status Atualizado",
+            mensagem=f"Sua situação foi atualizada para {status_limpo}. Confira os detalhes em Acompanhamento.",
+            categoria='status'
+        )
+
         return Response(self.get_serializer(familia).data)
 
     @action(detail=False, methods=['post'], url_path='bulk-set-status')
@@ -74,26 +85,40 @@ class FamiliaViewSet(viewsets.ModelViewSet):
         if status_value not in valid_status:
             return Response({'detail': 'Status invalido.'}, status=status.HTTP_400_BAD_REQUEST)
 
-        updated = Familia.objects.filter(id__in=ids).update(
-            status=status_value,
-            aprovada=status_value == 'aprovada',
-            atualizado_em=timezone.now(),
-        )
-        return Response({'updated': updated})
+        familias = Familia.objects.filter(id__in=ids)
+        notificacoes_lista = []
+        status_limpo = status_value.replace('_', ' ').title()
+
+        for familia in familias:
+            familia.status = status_value
+            familia.aprovada = status_value == 'aprovada'
+            familia.atualizado_em = timezone.now()
+            familia.save()
+            
+            notificacoes_lista.append(Notificacao(
+                familia=familia,
+                titulo="Status Atualizado",
+                mensagem=f"Sua situação foi atualizada para {status_limpo}. Confira os detalhes em Acompanhamento.",
+                categoria='status'
+            ))
+            
+        if notificacoes_lista:
+            Notificacao.objects.bulk_create(notificacoes_lista)
+
+        return Response({'updated': familias.count()})
+
+
 class RankingFamiliasView(generics.ListAPIView):
-    # Aqui usamos o serializer do ranking que calcula a pontuação
     serializer_class = FamiliaRankingSerializer
-    permission_classes = [IsAuthenticated] # 2. ADICIONE ESTA LINHA AQUI (Abre o acesso público)
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        # Traz apenas as famílias aprovadas para o ranking
         return Familia.objects.filter(aprovada=True)
 
     def list(self, request, *args, **kwargs):
         queryset = self.get_queryset()
         serializer = self.get_serializer(queryset, many=True)
         
-        # Ordena os dados pela 'pontuacao_prioridade' de forma decrescente (reverse=True)
         dados_ordenados = sorted(
             serializer.data, 
             key=lambda k: k['pontuacao_prioridade'], 
@@ -103,12 +128,8 @@ class RankingFamiliasView(generics.ListAPIView):
         return Response(dados_ordenados)
 
 class RankingParticipacaoView(generics.ListAPIView):
-
-    #Retorna a lista de famílias aprovadas ordenada por quem participa mais (maior pontuação)
-    
     serializer_class = FamiliaRankingParticipacaoSerializer
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        # Filtra apenas famílias aprovadas e ordena decrescente (-) pelos pontos de participação
         return Familia.objects.filter(aprovada=True).order_by('-pontos_participacao')
