@@ -2,9 +2,10 @@ from django.conf import settings
 from django.utils import timezone
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
-from rest_framework.permissions import AllowAny, IsAdminUser
 from rest_framework.response import Response
-
+from rest_framework.permissions import AllowAny, IsAdminUser
+from apps.formularios.models import Notificacao
+from apps.formularios.serializers import NotificacaoSerializer
 from .models import Ciclo, RespostaCiclo
 from .serializers import (
     CicloReadSerializer,
@@ -115,3 +116,24 @@ class RespostaCicloViewSet(viewsets.ModelViewSet):
         resposta.enviado_em = timezone.now()
         resposta.save(update_fields=['status', 'enviado_em'])
         return Response(RespostaCicloReadSerializer(resposta).data)
+
+class NotificacaoViewSet(viewsets.ModelViewSet):
+    queryset = Notificacao.objects.all()
+    serializer_class = NotificacaoSerializer
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        # Filtra as notificações baseadas no parâmetro enviado pelo Front (ID da Família)
+        familia_param = self.request.query_params.get('familia')
+        if familia_param:
+            queryset = queryset.filter(familia_id=familia_param)
+        return queryset
+
+    @action(detail=False, methods=['post'], url_path='marcar-todas-lidas')
+    def marcar_todas_lidas(self, request):
+        familia_id = request.data.get('familia')
+        if not familia_id:
+            return Response({'detail': 'ID da família não informado.'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        Notificacao.objects.filter(familia_id=familia_id, lida=False).update(lida=True)
+        return Response({'status': 'Sucesso'})
