@@ -91,3 +91,23 @@ class RespostaItem(models.Model):
 
     class Meta:
         ordering = ['id']
+
+class Notificacao(models.Model):
+    CATEGORIA_CHOICES = [
+        ('status', 'Alteração de Status'),
+        ('comunidade', 'Comunicado Geral'),
+        ('ranking', 'Ranking'),
+    ]
+
+    familia = models.ForeignKey('familias.Familia', on_delete=models.CASCADE, related_name='notificacoes')
+    titulo = models.CharField(max_length=150)
+    mensagem = models.TextField()
+    categoria = models.CharField(max_length=30, choices=CATEGORIA_CHOICES, default='status')
+    lida = models.BooleanField(default=False)
+    criado_em = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-criado_em']
+
+    def __str__(self):
+        return f"{self.titulo} - {self.categoria}"
