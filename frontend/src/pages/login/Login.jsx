@@ -1,7 +1,7 @@
 // frontend/src/pages/login/Login.jsx
 import React, { useState } from 'react';
 import '../../styles/pages/login.css';
-import {api} from '../../services/api'; // Importa seu axios configurado
+import { api } from '../../services/api'; // Importa seu axios configurado
 
 function Login({ onLogin, handleLoginTest }) {
   const [username, setUsername] = useState('');
@@ -9,21 +9,21 @@ function Login({ onLogin, handleLoginTest }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(''); // ADICIONEI estado de erro
   const [testMode, setTestMode] = useState(false); // MODO TESTE
-  
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     // MODO TESTE ATIVO
     if (testMode) {
       setLoading(true);
       setError('');
-      
+
       // Verifica se o usuário digitou "presidente"
       if (username.toLowerCase() === 'presidente') {
         handleLoginTest('presidente');
         return;
       }
-      
+
       // Verifica se o usuário digitou "admin"
       if (username.toLowerCase() === 'admin') {
         handleLoginTest('admin');
@@ -33,35 +33,40 @@ function Login({ onLogin, handleLoginTest }) {
         handleLoginTest('morador');
         return;
       }
-      
+
       // Se não for presidente nem admin, mostra erro
       setError('Acesso negado. Apenas "presidente" ou "admin" ou "morador" têm permissão no modo teste.');
       setLoading(false);
       return;
     }
-    
+
     // MODO NORMAL (original)
     setLoading(true);
     setError(''); // Limpa erro anterior
-    
+
     try {
+      console.log('=== DEBUG LOGIN ===');
+      console.log('URL completa:', `${api.defaults.baseURL}/login/`);
+      console.log('Dados enviados:', { username, password });
+      console.log('Headers:', api.defaults.headers);
+
       // 🔥 CHAMA SUA API REAL usando axios
       const response = await api.post('/login/', {
         username: username,
         password: password
       });
-      
+
       // Pega os dados da resposta
       const { token, tipo, nome } = response.data;
-      
+
       // Salva o token no localStorage (seu interceptor já vai pegar automaticamente)
       localStorage.setItem('token', token);
       localStorage.setItem('nome', nome);
       console.log(response.data);
       console.log(nome)
       // Chama o callback do App passando o tipo e token
-      onLogin(tipo, token,nome);
-      
+      onLogin(tipo, token, nome);
+
     } catch (err) {
       // Trata erro da requisição
       const errorMessage = err.response?.data?.error || 'Erro ao fazer login';
@@ -74,23 +79,23 @@ function Login({ onLogin, handleLoginTest }) {
   return (
     <div className="login-container">
       <div className="login-card">
-       
+
         <h2 className="login-title">Laço Favela</h2>
         {/* BOTÃO TOGGLE - MODO TESTE */}
-        <div style={{ 
-          display: 'flex', 
+        <div style={{
+          display: 'flex',
           flexDirection: 'column',
-          alignItems: 'center', 
+          alignItems: 'center',
           marginBottom: '20px',
           gap: '8px',
           easeInOut: '0.3s'
-             }}>
+        }}>
           <span style={{ fontWeight: 'bold', color: testMode ? '#f97316' : '#fcd523' }}>
             Modo Teste
           </span>
           <label style={{ position: 'relative', display: 'inline-block', width: '50px', height: '24px' }}>
-            <input 
-              type="checkbox" 
+            <input
+              type="checkbox"
               checked={testMode}
               onChange={(e) => {
                 setTestMode(e.target.checked);
@@ -124,14 +129,14 @@ function Login({ onLogin, handleLoginTest }) {
             </span>
           </label>
         </div>
- 
+
         {/* Mostra erro se houver */}
         {error && (
           <p className="text-center" style={{ fontSize: '13px', color: '#e74c3c', marginBottom: '1rem' }}>
             ❌ {error}
           </p>
         )}
-        
+
         <form onSubmit={handleSubmit}>
           <div className="login-field" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <label>Usuário: </label>
@@ -144,7 +149,7 @@ function Login({ onLogin, handleLoginTest }) {
               required
             />
           </div>
-          
+
           <div className="login-field" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <label>Senha: </label>
             <input
@@ -156,12 +161,12 @@ function Login({ onLogin, handleLoginTest }) {
               required={!testMode} // Senha não é obrigatória no modo teste
             />
           </div>
-                  
+
           <button type="submit" className="login-btn" disabled={loading}>
             {loading ? 'Entrando...' : testMode ? 'Testar' : 'Entrar'}
           </button>
         </form>
-        
+
         {/* Mensagem indicando como usar o modo teste */}
         {testMode && (
           <p style={{ fontSize: '12px', color: '#f97316', textAlign: 'center', marginTop: '15px' }}>

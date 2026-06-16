@@ -12,19 +12,24 @@ const CriarFormulario = ({ onNavigate }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
+  console.log('🟢 [CriarFormulario] Componente renderizado');
+
   // ========== CARREGAR FAMÍLIAS ==========
   useEffect(() => {
+    console.log('🟢 [CriarFormulario] useEffect - carregarFamilias');
     carregarFamilias();
   }, []);
 
   const carregarFamilias = async () => {
+    console.log('🔄 [carregarFamilias] Iniciando...');
     try {
       setLoading(true);
       const data = await listarFamilias();
+      console.log('✅ [carregarFamilias] Famílias carregadas:', data.length);
       setFamilias(data);
       setError('');
     } catch (err) {
-      console.error('Erro ao carregar famílias:', err);
+      console.error('❌ [carregarFamilias] Erro:', err);
       setError('Erro ao carregar lista de famílias');
     } finally {
       setLoading(false);
@@ -33,8 +38,9 @@ const CriarFormulario = ({ onNavigate }) => {
 
   // ========== FUNÇÕES DE PERGUNTAS ==========
   const adicionarPergunta = (tipo) => {
+    console.log('📝 [adicionarPergunta] Tipo:', tipo, 'Texto:', novaPergunta);
     if (novaPergunta.trim() === '') {
-      //colocar um aviso na tela. Sem ser alert 
+      console.warn('⚠️ [adicionarPergunta] Pergunta vazia, ignorando');
       return;
     }
 
@@ -44,17 +50,21 @@ const CriarFormulario = ({ onNavigate }) => {
       tipo: tipo,
       opcoes: tipo === 'Resposta Única' || tipo === 'Múltipla Escolha' ? ['Opção 1', 'Opção 2', 'Opção 3'] : []
     }]);
+    console.log('✅ [adicionarPergunta] Pergunta adicionada. Total:', perguntas.length + 1);
     setNovaPergunta('');
   };
 
   const removerPergunta = (id) => {
+    console.log('🗑️ [removerPergunta] ID:', id);
     if (window.confirm('Tem certeza que deseja remover esta pergunta?')) {
       setPerguntas(perguntas.filter(p => p.id !== id));
+      console.log('✅ [removerPergunta] Pergunta removida');
     }
   };
 
   // ========== FUNÇÕES PARA EDITAR OPÇÕES ==========
   const adicionarOpcao = useCallback((perguntaId) => {
+    console.log('➕ [adicionarOpcao] Pergunta ID:', perguntaId);
     setPerguntas(prevPerguntas => 
       prevPerguntas.map(p => {
         if (p.id === perguntaId) {
@@ -66,6 +76,7 @@ const CriarFormulario = ({ onNavigate }) => {
   }, []);
 
   const removerOpcao = useCallback((perguntaId, opcaoIndex) => {
+    console.log('➖ [removerOpcao] Pergunta ID:', perguntaId, 'Opção Index:', opcaoIndex);
     setPerguntas(prevPerguntas => 
       prevPerguntas.map(p => {
         if (p.id === perguntaId) {
@@ -83,6 +94,7 @@ const CriarFormulario = ({ onNavigate }) => {
   }, []);
 
   const atualizarOpcao = useCallback((perguntaId, opcaoIndex, novoValor) => {
+    console.log('✏️ [atualizarOpcao] Pergunta ID:', perguntaId, 'Opção:', opcaoIndex, 'Novo valor:', novoValor);
     setPerguntas(prevPerguntas => 
       prevPerguntas.map(p => {
         if (p.id === perguntaId) {
@@ -97,29 +109,43 @@ const CriarFormulario = ({ onNavigate }) => {
 
   // ========== FUNÇÕES DE FAMÍLIAS ==========
   const toggleFamilia = (familiaId) => {
+    console.log('🔄 [toggleFamilia] Familia ID:', familiaId);
     if (familiasSelecionadas.includes(familiaId)) {
       setFamiliasSelecionadas(familiasSelecionadas.filter(id => id !== familiaId));
+      console.log('❌ Removida. Total:', familiasSelecionadas.length - 1);
     } else {
       setFamiliasSelecionadas([...familiasSelecionadas, familiaId]);
+      console.log('✅ Adicionada. Total:', familiasSelecionadas.length + 1);
     }
   };
 
   const selecionarTodasFamilias = () => {
+    console.log('🔘 [selecionarTodasFamilias]');
     if (familiasSelecionadas.length === familias.length) {
       setFamiliasSelecionadas([]);
+      console.log('❌ Todas desselecionadas');
     } else {
       setFamiliasSelecionadas(familias.map(f => f.id));
+      console.log('✅ Todas selecionadas:', familias.length);
     }
   };
 
   // ========== FUNÇÃO SALVAR RASCUNHO ==========
   const handleSalvar = async () => {
+    console.log('=' .repeat(50));
+    console.log('💾 [handleSalvar] INICIANDO SALVAR COMO RASCUNHO');
+    console.log('📝 Título:', titulo);
+    console.log('📝 Descrição:', descricao);
+    console.log('📝 Perguntas:', perguntas.length);
+    
     if (!titulo) {
+      console.warn('❌ [handleSalvar] Título vazio');
       alert('Digite o título do formulário');
       return;
     }
 
     if (perguntas.length === 0) {
+      console.warn('❌ [handleSalvar] Nenhuma pergunta');
       alert('Adicione pelo menos uma pergunta ao formulário');
       return;
     }
@@ -127,38 +153,54 @@ const CriarFormulario = ({ onNavigate }) => {
     setLoading(true);
     setError('');
 
-    try {
-      const ciclo = await criarCiclo({
-        titulo: titulo,
-        descricao: descricao,
-        perguntas: perguntas,
-        status: 'rascunho'
-      });
+    const dadosParaEnviar = {
+      titulo: titulo,
+      descricao: descricao,
+      perguntas: perguntas,
+      status: 'rascunho'
+    };
+    console.log('📤 [handleSalvar] Dados enviados:', JSON.stringify(dadosParaEnviar, null, 2));
 
-      console.log('Rascunho salvo:', ciclo);
+    try {
+      const ciclo = await criarCiclo(dadosParaEnviar);
+      console.log('✅ [handleSalvar] Resposta:', ciclo);
+      console.log('✅ [handleSalvar] Status retornado:', ciclo.status);
       alert('Formulário salvo como rascunho!');
       onNavigate('formularios');
     } catch (err) {
-      console.error('Erro ao salvar:', err);
+      console.error('❌ [handleSalvar] Erro:', err);
+      console.error('❌ Detalhes:', err.response?.data);
       setError(err.response?.data?.detail || 'Erro ao salvar formulário');
     } finally {
       setLoading(false);
+      console.log('🏁 [handleSalvar] Finalizado');
+      console.log('=' .repeat(50));
     }
   };
 
   // ========== FUNÇÃO PUBLICAR ==========
   const handlePublicar = async () => {
+    console.log('=' .repeat(50));
+    console.log('🚀 [handlePublicar] INICIANDO PUBLICAÇÃO');
+    console.log('📝 Título:', titulo);
+    console.log('📝 Descrição:', descricao);
+    console.log('📝 Perguntas:', perguntas.length);
+    console.log('📝 Famílias selecionadas:', familiasSelecionadas.length, familiasSelecionadas);
+    
     if (!titulo) {
+      console.warn('❌ [handlePublicar] Título vazio');
       alert('Digite o título do formulário');
       return;
     }
 
     if (perguntas.length === 0) {
+      console.warn('❌ [handlePublicar] Nenhuma pergunta');
       alert('Adicione pelo menos uma pergunta ao formulário');
       return;
     }
 
     if (familiasSelecionadas.length === 0) {
+      console.warn('❌ [handlePublicar] Nenhuma família selecionada');
       alert('Selecione pelo menos uma família para responder o formulário');
       return;
     }
@@ -166,22 +208,59 @@ const CriarFormulario = ({ onNavigate }) => {
     setLoading(true);
     setError('');
 
-    try {
-      const ciclo = await criarCiclo({
-        titulo: titulo,
-        descricao: descricao,
-        perguntas: perguntas,
-        familias_ids: familiasSelecionadas,
-        status: 'publicado'
-      });
+    // Transformar perguntas para o formato do backend
+    const perguntasFormatadas = perguntas.map((p, idx) => ({
+      texto: p.texto,
+      tipo: p.tipo === 'Resposta Única' ? 'selecao_unica' : 
+            p.tipo === 'Múltipla Escolha' ? 'selecao_multipla' : 'texto',
+      obrigatoria: true,
+      ordem: idx,
+      opcoes: p.opcoes?.map((opcao, opIdx) => ({
+        texto: opcao,
+        ordem: opIdx
+      })) || []
+    }));
 
+    const dadosParaEnviar = {
+      titulo: titulo,
+      descricao: descricao,
+      perguntas: perguntasFormatadas,
+      familias_ids: familiasSelecionadas,
+      status: 'ativo'  // ← ATENÇÃO: Está enviando 'ativo'
+    };
+
+    console.log('📤 [handlePublicar] STATUS SENDO ENVIADO:', dadosParaEnviar.status);
+    console.log('📤 [handlePublicar] Dados completos:', JSON.stringify(dadosParaEnviar, null, 2));
+
+    try {
+      console.log('🔄 [handlePublicar] Chamando criarCiclo...');
+      const ciclo = await criarCiclo(dadosParaEnviar);
+      
+      console.log('✅ [handlePublicar] RESPOSTA DO BACKEND:');
+      console.log('   - ID:', ciclo.id);
+      console.log('   - Título:', ciclo.titulo);
+      console.log('   - Status RECEBIDO:', ciclo.status);
+      
+      if (ciclo.status === 'ativo') {
+        console.log('🎉 [handlePublicar] SUCESSO! Ciclo criado como ATIVO');
+      } else {
+        console.warn(`⚠️ [handlePublicar] ATENÇÃO! Status retornado: "${ciclo.status}" (esperado "ativo")`);
+        console.warn('   → O backend pode estar ignorando o status enviado');
+      }
+      
       alert('Formulário publicado com sucesso!');
       onNavigate('formularios');
+      
     } catch (err) {
-      console.error('Erro ao publicar:', err);
+      console.error('❌ [handlePublicar] ERRO:');
+      console.error('   - Mensagem:', err.message);
+      console.error('   - Status:', err.response?.status);
+      console.error('   - Dados do erro:', err.response?.data);
       setError(err.response?.data?.detail || 'Erro ao publicar formulário');
     } finally {
       setLoading(false);
+      console.log('🏁 [handlePublicar] Finalizado');
+      console.log('=' .repeat(50));
     }
   };
 
@@ -314,7 +393,10 @@ const CriarFormulario = ({ onNavigate }) => {
               className="input-full"
               style={{ flex: 1, padding: '0.5rem', border: 'none', outline:'none', borderRadius: '4px' }}
               value={titulo}
-              onChange={(e) => setTitulo(e.target.value)}
+              onChange={(e) => {
+                console.log('📝 [Título] alterado:', e.target.value);
+                setTitulo(e.target.value);
+              }}
             />
           </div>
         </div>
@@ -328,7 +410,10 @@ const CriarFormulario = ({ onNavigate }) => {
               className="input-full"
               style={{ flex: 1, padding: '0.5rem', border: 'none',outline:'none', borderRadius: '4px' }}
               value={descricao}
-              onChange={(e) => setDescricao(e.target.value)}
+              onChange={(e) => {
+                console.log('📝 [Descrição] alterado:', e.target.value);
+                setDescricao(e.target.value);
+              }}
             />
           </div>
         </div>
@@ -370,7 +455,10 @@ const CriarFormulario = ({ onNavigate }) => {
             className="input-underline"
             style={{ width: '100%', padding: '0.5rem', marginTop: '0.5rem', border: 'none', borderBottom: '1px solid #ccc' }}
             value={novaPergunta}
-            onChange={(e) => setNovaPergunta(e.target.value)}
+            onChange={(e) => {
+              console.log('📝 [NovaPergunta] alterado:', e.target.value);
+              setNovaPergunta(e.target.value);
+            }}
           />
         </div>
 

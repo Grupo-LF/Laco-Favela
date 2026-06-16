@@ -69,13 +69,28 @@ class CicloWriteSerializer(serializers.ModelSerializer):
             'criado_em', 'publicado_em', 'encerrado_em', 
             'perguntas', 'familias_ids'
         ]
-        read_only_fields = ['status', 'criado_em', 'publicado_em', 'encerrado_em']
+        # 🔥 CORRIGIDO: 'status' removido do read_only_fields
+        read_only_fields = ['criado_em', 'publicado_em', 'encerrado_em']
 
     @transaction.atomic
     def create(self, validated_data):
+        # 🔥 DEBUG: Mostra o que está chegando
+        print("📦 [SERIALIZER] validated_data:", validated_data)
+        print("📦 [SERIALIZER] Status recebido:", validated_data.get('status'))
+        
         familias_ids = validated_data.pop('familias_ids', [])
         perguntas_data = validated_data.pop('perguntas', [])
+        
+        # 🔥 CORRIGIDO: Só define status padrão se não veio do frontend
+        if 'status' not in validated_data:
+            validated_data['status'] = 'rascunho'
+            print("📦 [SERIALIZER] Status não veio, usando padrão: rascunho")
+        else:
+            print(f"📦 [SERIALIZER] Status veio do frontend: {validated_data['status']}")
+        
         ciclo = Ciclo.objects.create(**validated_data)
+        print(f"✅ [SERIALIZER] Ciclo criado com status: {ciclo.status}")
+        
         self._save_perguntas(ciclo, perguntas_data)
         
         from apps.familias.models import Familia
