@@ -50,3 +50,9 @@ def lista_notificacoes(request):
         {"id": 5, "tipo": "ranking", "titulo": "Você subiu no Ranking!", "mensagem": "Parabéns! Você alcançou o Nível 3.", "tempo_passado": "1 semana atrás", "lida": True}
     ]
     return Response(notificacoes_teste)
+
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def marcar_todas_lidas(request):
+    # Por enquanto retorna sucesso (dados ainda são mock)
+    return Response({'status': 'ok', 'mensagem': 'Todas as notificações foram marcadas como lidas.'})
