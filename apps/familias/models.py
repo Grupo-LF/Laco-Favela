@@ -38,6 +38,15 @@ class Familia(models.Model):
         null=True,
         related_name='familias'
     )
+
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL, 
+        on_delete=models.CASCADE, 
+        related_name='familia_profile',
+        null=True, # Importante: permite criar famílias sem usuário inicialmente
+        blank=True
+    )
+
     nome_responsavel = models.CharField(max_length=100)
     endereco = models.CharField(max_length=200)
     comunidade = models.CharField(max_length=100)

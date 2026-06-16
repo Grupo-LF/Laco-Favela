@@ -7,24 +7,53 @@ const HomePage = ({ onNavigate }) => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    // Dados fiéis ao Figma caso o back-end não responda
+    const loadMockData = () => {
+      setData({
+        usuario: {
+          nome: "Pedro"
+        },
+        eventos: [
+          {
+            id: 1, 
+            titulo: "Reunião Comunitária", 
+            data_detalhe: "11/06/2026 - 18h no Centro Comunitário de Fitilho"
+          },
+          {
+            id: 2, 
+            titulo: "Ação para Crianças", 
+            data_detalhe: "18/06/2026 - 16h na Praça Central Laço"
+          }
+        ],
+        engajamento_nivel: "Nível 3 - Engajado",
+        engajamento_pontos: "67/100 pontos",
+        engajamento_porcentagem: 67
+      });
+    };
+
     const fetchData = async () => {
       try {
         setLoading(true);
+        setError(null);
         const response = await fetch('http://127.0.0.1:8000/api/dashboard/');
-        if (!response.ok) throw new Error('Falha ao carregar dados do servidor');
-        const result = await response.json();
-        setData(result);
+        if (response.ok) {
+          const result = await response.json();
+          setData(result);
+        } else {
+          loadMockData();
+        }
       } catch (err) {
-        setError(err.message);
+        console.error("Erro ao buscar dados do servidor, usando mock:", err);
+        loadMockData(); // Ativa os dados do Figma se o Django estiver desligado
       } finally {
         setLoading(false);
       }
     };
+
     fetchData();
   }, []);
 
   if (loading) return <div className="loading-state">Carregando painel...</div>;
-  if (error) return <div className="error-state">Aviso: {error}</div>;
 
   return (
     <div className="home-container">

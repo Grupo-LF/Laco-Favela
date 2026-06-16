@@ -10,24 +10,27 @@ from apps.formularios.serializers import NotificacaoSerializer
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from .serializers import FamiliaSerializer, FamiliaRankingSerializer, FamiliaRankingParticipacaoSerializer
 
-
 class FamiliaViewSet(viewsets.ModelViewSet):
     queryset = Familia.objects.all()
     serializer_class = FamiliaSerializer
 
     def get_queryset(self):
-
+        # 1. Base inicial
         queryset = super().get_queryset().select_related('presidente')
         user = self.request.user
 
+        # 2. SEGURANÇA: Filtra o acesso conforme o perfil do usuário
         if not user.is_staff:
             if hasattr(user, 'presidente_profile'):
+                # Presidente vê apenas as famílias da sua comunidade/liderança
                 queryset = queryset.filter(presidente=user.presidente_profile)
             else:
+                # Morador vê apenas a própria família vinculada
                 queryset = queryset.filter(user=user)
 
+        # 3. FILTROS DE CONSULTA
         params = self.request.query_params
-
+        
         status_param = params.get('status')
         if status_param:
             queryset = queryset.filter(status=status_param)
@@ -144,3 +147,14 @@ class RankingParticipacaoView(generics.ListAPIView):
 
     def get_queryset(self):
         return Familia.objects.filter(aprovada=True).order_by('-pontos_participacao')
+    
+class StatusMeuCadastroView(generics.RetrieveAPIView):
+    serializer_class = FamiliaSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self):
+        try:
+            return self.request.user.familia_profile
+        except AttributeError:
+            from rest_framework.exceptions import NotFound
+            raise NotFound("Este usuário não possui uma família vinculada.")

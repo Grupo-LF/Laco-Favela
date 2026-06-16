@@ -16,8 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from apps.core.views import login_view
-from apps.core.views import dashboard_morador
+from apps.core.views import login_view, dashboard_morador, lista_notificacoes, marcar_todas_lidas
     
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -29,4 +28,6 @@ urlpatterns = [
     path('api/', include('apps.ranking.urls')),
     path('api/login/', login_view),
     path('api/dashboard/', dashboard_morador, name='dashboard_morador'),
+    path('api/notificacoes/', lista_notificacoes, name='lista_notificacoes'),
+    path('api/notificacoes/marcar-todas-lidas/', marcar_todas_lidas, name='marcar_todas_lidas'),
 ]
