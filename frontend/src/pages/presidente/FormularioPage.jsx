@@ -70,9 +70,9 @@ const FormularioPage = () => {
                 aria-expanded={openId === cycle.id}
               >
                 <div className="formulario-page__accordion-left">
-                  <span className="formulario-page__icon-form">
+                  {/* <span className="formulario-page__icon-form">
                     <IconFormulario />
-                  </span>
+                  </span> */}
                   <span className="formulario-page__accordion-name">{cycle.name}</span>
                 </div>
 
