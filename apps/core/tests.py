@@ -246,3 +246,52 @@ class TestePresidente(BaseSeleniumTest):
         time.sleep(2)
         conteudo = self.browser.find_element(By.CLASS_NAME, 'main-content')
         self.assertTrue(conteudo.is_displayed())
+
+class TesteMorador(BaseSeleniumTest):
+
+    # História 3 - Morador
+    def test_login_morador(self):
+        self.fazer_login('morador', 'morador123')
+        sidebar = self.browser.find_element(By.TAG_NAME, 'aside')
+        self.assertTrue(sidebar.is_displayed())
+
+    def test_home_morador_visivel(self):
+        self.fazer_login('morador', 'morador123')
+        time.sleep(2)
+        conteudo = self.browser.find_element(By.CLASS_NAME, 'main-content')
+        self.assertTrue(conteudo.is_displayed())
+
+    def test_visualizar_notificacoes(self):
+        self.fazer_login('morador', 'morador123')
+        self.clicar_menu('Notificações')
+        time.sleep(2)
+        conteudo = self.browser.find_element(By.CLASS_NAME, 'main-content')
+        self.assertTrue(conteudo.is_displayed())
+
+    def test_visualizar_acompanhamento(self):
+        self.fazer_login('morador', 'morador123')
+        self.clicar_menu('Acompanhamento')
+        time.sleep(2)
+        conteudo = self.browser.find_element(By.CLASS_NAME, 'main-content')
+        self.assertTrue(conteudo.is_displayed())
+
+    def test_visualizar_ranking(self):
+        self.fazer_login('morador', 'morador123')
+        self.clicar_menu('Ranking')
+        time.sleep(2)
+        conteudo = self.browser.find_element(By.CLASS_NAME, 'main-content')
+        self.assertTrue(conteudo.is_displayed())
+
+    def test_visualizar_feedback(self):
+        self.fazer_login('morador', 'morador123')
+        self.clicar_menu('Feedback')
+        time.sleep(2)
+        conteudo = self.browser.find_element(By.CLASS_NAME, 'main-content')
+        self.assertTrue(conteudo.is_displayed())
+
+    def test_visualizar_ser_presidente(self):
+        self.fazer_login('morador', 'morador123')
+        self.clicar_menu('Ser Presidente')
+        time.sleep(2)
+        conteudo = self.browser.find_element(By.CLASS_NAME, 'main-content')
+        self.assertTrue(conteudo.is_displayed())
