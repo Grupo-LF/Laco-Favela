@@ -197,3 +197,52 @@ class TesteAdminPresidentesRanking(BaseSeleniumTest):
         time.sleep(2)
         filtro = self.browser.find_element(By.XPATH, "//button[contains(text(), 'Score')]")
         self.assertTrue(filtro.is_displayed())
+
+class TestePresidente(BaseSeleniumTest):
+
+    # História 2 - Presidente de Rua
+    def test_login_presidente(self):
+        self.fazer_login('presidente', 'presidente123')
+        sidebar = self.browser.find_element(By.TAG_NAME, 'aside')
+        self.assertTrue(sidebar.is_displayed())
+
+    def test_home_presidente_visivel(self):
+        self.fazer_login('presidente', 'presidente123')
+        time.sleep(2)
+        conteudo = self.browser.find_element(By.CLASS_NAME, 'main-content')
+        self.assertTrue(conteudo.is_displayed())
+
+    def test_visualizar_familias(self):
+        self.fazer_login('presidente', 'presidente123')
+        self.clicar_menu('Famílias')
+        time.sleep(2)
+        conteudo = self.browser.find_element(By.CLASS_NAME, 'main-content')
+        self.assertTrue(conteudo.is_displayed())
+
+    def test_visualizar_formularios(self):
+        self.fazer_login('presidente', 'presidente123')
+        self.clicar_menu('Formulários')
+        time.sleep(2)
+        conteudo = self.browser.find_element(By.CLASS_NAME, 'main-content')
+        self.assertTrue(conteudo.is_displayed())
+
+    def test_visualizar_ranking(self):
+        self.fazer_login('presidente', 'presidente123')
+        self.clicar_menu('Ranking')
+        time.sleep(2)
+        conteudo = self.browser.find_element(By.CLASS_NAME, 'main-content')
+        self.assertTrue(conteudo.is_displayed())
+
+    def test_visualizar_meu_indicador(self):
+        self.fazer_login('presidente', 'presidente123')
+        self.clicar_menu('Meu indicador')
+        time.sleep(2)
+        conteudo = self.browser.find_element(By.CLASS_NAME, 'main-content')
+        self.assertTrue(conteudo.is_displayed())
+
+    def test_visualizar_registros(self):
+        self.fazer_login('presidente', 'presidente123')
+        self.clicar_menu('Registros')
+        time.sleep(2)
+        conteudo = self.browser.find_element(By.CLASS_NAME, 'main-content')
+        self.assertTrue(conteudo.is_displayed())
