@@ -95,3 +95,9 @@ def lista_notificacoes(request):
         }
     ]
     return Response(notificacoes_teste)
+
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def marcar_todas_lidas(request):
+    # Por enquanto retorna sucesso (dados ainda são mock)
+    return Response({'status': 'ok', 'mensagem': 'Todas as notificações foram marcadas como lidas.'})
