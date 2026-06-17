@@ -21,12 +21,12 @@ from apps.core.views import login_view, dashboard_morador, lista_notificacoes
     
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/', include('apps.presidentes.urls')),
-    path('api/', include('apps.familias.urls')),
-    path('api/', include('apps.feedbacks.urls')),
-    path('api/', include('apps.formularios.urls')),
-    path('api/', include('apps.dadosGerais.urls')),
-    path('api/', include('apps.ranking.urls')),
+    path('api/presidentes/', include('apps.presidentes.urls')),
+    path('api/familias/', include('apps.familias.urls')),
+    path('api/feedbacks/', include('apps.feedbacks.urls')),
+    path('api/forumularios/', include('apps.formularios.urls')),
+    path('api/dadosGerais/', include('apps.dadosGerais.urls')),
+    path('api/ranking/', include('apps.ranking.urls')),
     path('api/login/', login_view),
     path('api/dashboard/', dashboard_morador, name='dashboard_morador'),
     path('api/notificacoes/', lista_notificacoes, name='lista_notificacoes'),
