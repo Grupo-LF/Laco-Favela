@@ -61,6 +61,17 @@ Como o projeto está em fase de definição, estas são as tecnologias que prete
 
 <details>
 <summary>📅 Status Report 2</summary>
+  
+### frontend jira : 
+
+- sprint admin: <img width="1600" height="759" alt="sprint_admin" src="https://github.com/user-attachments/assets/0ae36b34-8bef-4692-96b9-2600e05c7b0c" />
+
+- sprint presidente de rua : <img width="1600" height="756" alt="sprint_presidente_de_rua" src="https://github.com/user-attachments/assets/b603bf62-36ba-4a08-b42c-6b7592506398" />
+
+- sprint morador : <img width="1600" height="755" alt="sprint_morador" src="https://github.com/user-attachments/assets/cce813d6-e3ee-4764-963e-d38e8e744a8a" />
+
+
+
 
 ## 🌐 Deploy
 
