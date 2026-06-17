@@ -68,6 +68,9 @@ Como o projeto está em fase de definição, estas são as tecnologias que prete
 
 - sprint presidente de rua : <img width="1600" height="756" alt="sprint_presidente_de_rua" src="https://github.com/user-attachments/assets/b603bf62-36ba-4a08-b42c-6b7592506398" />
 
+- sprint morador : <img width="1600" height="755" alt="sprint_morador" src="https://github.com/user-attachments/assets/cce813d6-e3ee-4764-963e-d38e8e744a8a" />
+
+
 
 
 ## 🌐 Deploy
