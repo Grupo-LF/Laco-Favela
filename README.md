@@ -61,9 +61,8 @@ Como o projeto está em fase de definição, estas são as tecnologias que prete
 
 <details>
 <summary>📅 Status Report 2</summary>
-## frontend jira : 
--sprint admin: 
-  <img width="1896" height="910" alt="image" src="https://github.com/user-attachments/assets/e95ffa76-0c8e-4907-9a05-c7e2d0427d12" />
+### frontend jira : 
+- sprint admin: <img width="1896" height="910" alt="image" src="https://github.com/user-attachments/assets/e95ffa76-0c8e-4907-9a05-c7e2d0427d12" />
 
 ## 🌐 Deploy
 
