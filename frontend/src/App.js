@@ -13,18 +13,9 @@ function App() {
     localStorage.setItem('tipo', tipo);
     localStorage.setItem('nome', nome);
     setTipoUsuario(tipo);
-  };  
-  
-  const handleLoginTest = (tipo) => {
-    localStorage.setItem('tipo', tipo);
-    console.log('Tipo de usuário salvo no localStorage (modo teste):', tipo);
-    setTipoUsuario(tipo);
-  }
-  
-  // Se não tem tipo, mostra login
-  if (!tipoUsuario) return <Login onLogin={handleLogin} handleLoginTest={handleLoginTest} />;
+  };
 
-  // Se tem tipo, mostra app correspondente
+  if (!tipoUsuario) return <Login onLogin={handleLogin} />;
   if (tipoUsuario === 'morador') return <AppMorador />;
   if (tipoUsuario === 'admin') return <AppAdmin />;
   if (tipoUsuario === 'presidente') return <AppPresidente />;
