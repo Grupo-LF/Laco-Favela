@@ -75,7 +75,7 @@ Como o projeto está em fase de definição, estas são as tecnologias que prete
 
 ### 🎥 apresentação : 
 
-- ▶️ [https://www.canva.com/design/DAHMFAfag6w/OpvAdwX1SgftRId3Sr9qyQ/view?utm_content=DAHMFAfag6w&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=h0f12de1401]
+- ▶️ [Slide SR2](https://www.canva.com/design/DAHMFAfag6w/OpvAdwX1SgftRId3Sr9qyQ/view?utm_content=DAHMFAfag6w&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=h0f12de1401)
 
 
 ## 🌐 Deploy
