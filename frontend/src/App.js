@@ -1,5 +1,6 @@
 // App.js
 import React, { useState } from 'react';
+import { BrowserRouter } from 'react-router-dom';
 import AppAdmin from './AppAdmin';
 import AppPresidente from './AppPresidente';
 import AppMorador from './AppMorador';
@@ -15,10 +16,14 @@ function App() {
     setTipoUsuario(tipo);
   };
 
-  if (!tipoUsuario) return <Login onLogin={handleLogin} />;
-  if (tipoUsuario === 'morador') return <AppMorador />;
-  if (tipoUsuario === 'admin') return <AppAdmin />;
-  if (tipoUsuario === 'presidente') return <AppPresidente />;
+  return (
+    <BrowserRouter>
+      {!tipoUsuario && <Login onLogin={handleLogin} />}
+      {tipoUsuario === 'morador' && <AppMorador />}
+      {tipoUsuario === 'admin' && <AppAdmin />}
+      {tipoUsuario === 'presidente' && <AppPresidente />}
+    </BrowserRouter>
+  );
 }
 
 export default App;
