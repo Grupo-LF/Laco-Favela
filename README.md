@@ -62,7 +62,7 @@ Como o projeto está em fase de definição, estas são as tecnologias que prete
 <details>
 <summary>📅 Status Report 2</summary>
   
-### frontend jira : 
+### Frontend Jira : 
 
 - sprint admin: <img width="1600" height="759" alt="sprint_admin" src="https://github.com/user-attachments/assets/0ae36b34-8bef-4692-96b9-2600e05c7b0c" />
 
@@ -70,7 +70,7 @@ Como o projeto está em fase de definição, estas são as tecnologias que prete
 
 - sprint morador : <img width="1600" height="755" alt="sprint_morador" src="https://github.com/user-attachments/assets/cce813d6-e3ee-4764-963e-d38e8e744a8a" />
 
-### backend jira : 
+### Backend Jira : 
 
 - sprint admin: <img width="1440" height="697" alt="Captura de Tela 2026-06-18 às 14 49 12" src="https://github.com/user-attachments/assets/5150dc2f-c287-4c64-9002-144118adaf64" />
 
@@ -78,12 +78,16 @@ Como o projeto está em fase de definição, estas são as tecnologias que prete
 
 - sprint morador : <img width="1440" height="703" alt="Captura de Tela 2026-06-18 às 15 25 41" src="https://github.com/user-attachments/assets/225681e5-254f-4d2c-9488-499c36ad3676" />
 
-### video do ci/cd : 
+### Video do CI/CD : 
 https://youtu.be/ZAWO65FJU_g
-### 🎥 apresentação : 
+
+### 🎥 Apresentação : 
 
 - ▶️ [Slide SR2](https://www.canva.com/design/DAHMFAfag6w/OpvAdwX1SgftRId3Sr9qyQ/view?utm_content=DAHMFAfag6w&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=h0f12de1401)
 
+### Relatório de Programação em Par: 
+
+- 📄 [Relatório](https://docs.google.com/document/d/1sziP8WaqH9qEw7ZsgEdP147fllXopd1oYA0Gfz3X74M/edit?usp=sharing)
 
 ## 🌐 Deploy
 
