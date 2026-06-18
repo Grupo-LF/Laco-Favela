@@ -78,6 +78,8 @@ Como o projeto está em fase de definição, estas são as tecnologias que prete
 
 - sprint morador : <img width="1440" height="703" alt="Captura de Tela 2026-06-18 às 15 25 41" src="https://github.com/user-attachments/assets/225681e5-254f-4d2c-9488-499c36ad3676" />
 
+### video do ci/cd : 
+https://youtu.be/ZAWO65FJU_g
 ### 🎥 apresentação : 
 
 - ▶️ [Slide SR2](https://www.canva.com/design/DAHMFAfag6w/OpvAdwX1SgftRId3Sr9qyQ/view?utm_content=DAHMFAfag6w&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=h0f12de1401)
