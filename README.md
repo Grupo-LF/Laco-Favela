@@ -65,13 +65,18 @@ Como o projeto está em fase de definição, estas são as tecnologias que prete
 ### frontend jira : 
 
 - sprint admin: <img width="1600" height="759" alt="sprint_admin" src="https://github.com/user-attachments/assets/0ae36b34-8bef-4692-96b9-2600e05c7b0c" />
-<img width="1440" height="697" alt="Captura de Tela 2026-06-18 às 14 49 12" src="https://github.com/user-attachments/assets/5150dc2f-c287-4c64-9002-144118adaf64" />
 
 - sprint presidente de rua : <img width="1600" height="756" alt="sprint_presidente_de_rua" src="https://github.com/user-attachments/assets/b603bf62-36ba-4a08-b42c-6b7592506398" />
-<img width="1440" height="702" alt="Captura de Tela 2026-06-18 às 15 04 04" src="https://github.com/user-attachments/assets/b9492e55-937b-40f5-9ea6-d35e11c15f16" />
 
 - sprint morador : <img width="1600" height="755" alt="sprint_morador" src="https://github.com/user-attachments/assets/cce813d6-e3ee-4764-963e-d38e8e744a8a" />
-<img width="1440" height="703" alt="Captura de Tela 2026-06-18 às 15 25 41" src="https://github.com/user-attachments/assets/225681e5-254f-4d2c-9488-499c36ad3676" />
+
+### backend jira : 
+
+- sprint admin: <img width="1440" height="697" alt="Captura de Tela 2026-06-18 às 14 49 12" src="https://github.com/user-attachments/assets/5150dc2f-c287-4c64-9002-144118adaf64" />
+
+- sprint presidente de rua : <img width="1440" height="702" alt="Captura de Tela 2026-06-18 às 15 04 04" src="https://github.com/user-attachments/assets/b9492e55-937b-40f5-9ea6-d35e11c15f16" />
+
+- sprint morador : <img width="1440" height="703" alt="Captura de Tela 2026-06-18 às 15 25 41" src="https://github.com/user-attachments/assets/225681e5-254f-4d2c-9488-499c36ad3676" />
 
 ### 🎥 apresentação : 
 
